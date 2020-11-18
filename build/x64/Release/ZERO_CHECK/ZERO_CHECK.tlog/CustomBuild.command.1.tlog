@@ -1,0 +1,10 @@
+^C:\USERS\INOUESHINICHI\DESKTOP\QTIMGPROCGUIAPP\BUILD\CMAKEFILES\D5127A31D9C3901B9B1C8AAA27D40298\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/InoueShinichi/Desktop/QtImgProcGuiApp -BC:/Users/InoueShinichi/Desktop/QtImgProcGuiApp/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/InoueShinichi/Desktop/QtImgProcGuiApp/build/QtImgProcGuiApp.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
