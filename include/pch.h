@@ -1,5 +1,5 @@
-#ifndef __PCH_HPP__
-#define __PCH_HPP__
+#ifndef __IS_PCH_H__
+#define __IS_PCH_H__
 
 #include <cstddef>
 #include <limits>
@@ -70,17 +70,21 @@
 #include <codecvt>     // std::codecvt_utf8
 #include <bitset>      
 #include <type_traits>
-#include <io.h>        // _isatty (C Runtime Library)
+
   
 using namespace std::literals;
 
+#if defined(WIN32)
+
+// C Runtime Library
+#include <io.h>        // _isatty()
 
 // Windows
 #include <Windows.h>
 #include <WinUser.h>
 // #include <CommCtrl.h>  // コモンコントロール(Tool Bar & Status Bar etc..)
 #include <atlstr.h>    // CString
-
+#endif()
 
 namespace Is
 {
@@ -89,19 +93,6 @@ namespace Is
      * */
     std::string return_current_datetime();
 
-    /**
-     * ImageDrawScene上で扱うFigureタイプ
-     * */
-    enum class VisualType : int
-    {
-        ROI = 0,
-        LINE,
-        ELLIPSE,
-        CROSS_LINE,
-        PROFILE_X,
-        PROFILE_Y,
-        MASK,
-    };
 }
 
 

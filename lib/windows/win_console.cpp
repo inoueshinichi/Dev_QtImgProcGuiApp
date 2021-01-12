@@ -1,5 +1,5 @@
-#include "win_console.hpp"
-#include "win_exception.hpp"
+#include "win_console.h"
+#include "win_exception.h"
 
 namespace Is
 {

@@ -1,4 +1,4 @@
-#include "pch.hpp"
+#include "pch.h"
 
 namespace Is
 {
@@ -7,7 +7,7 @@ namespace Is
      * */
     std::string return_current_datetime()
     {
-            // 現在日時を文字列で返す
+        // 現在日時を文字列で返す
         auto now = std::chrono::system_clock::now();
         std::time_t in_time_t = std::chrono::system_clock::to_time_t(now);
         std::stringstream ss;

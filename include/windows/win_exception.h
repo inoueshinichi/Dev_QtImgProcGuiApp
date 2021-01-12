@@ -1,7 +1,7 @@
-#ifndef __IS_WIN_EXCEPTION_HPP__
-#define __IS_WIN_EXCEPTION_HPP__
+#ifndef __IS_WIN_EXCEPTION_H__
+#define __IS_WIN_EXCEPTION_H__
 
-#include "pch.hpp"
+#include "pch.h"
 
 namespace Is
 {

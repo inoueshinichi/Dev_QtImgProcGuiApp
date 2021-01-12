@@ -1,6 +1,6 @@
-#ifndef __IS_WIN_CONSOLE_HPP__
-#define __IS_WIN_CONSOLE_HPP__
-#include "pch.hpp"
+#ifndef __IS_WIN_CONSOLE_H__
+#define __IS_WIN_CONSOLE_H__
+#include "pch.h"
 
 namespace Is
 {
