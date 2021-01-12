@@ -1,9 +1,0 @@
-{
-    "files.associations": {
-        "locale": "cpp",
-        "qapplication": "cpp",
-        "qlabel": "cpp",
-        "qpainter": "cpp",
-        "memory": "cpp"
-    }
-}
