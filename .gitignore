@@ -1,0 +1,9 @@
+# Directories
+/build
+
+# Files
+*.bmp
+*.png
+*.tiff
+*.jpg
+*.jpeg

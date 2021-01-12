@@ -1,4 +1,4 @@
-#include "image_draw_view.hpp"
+#include "image_draw_view.h"
 
 #include <QString>
 #include <QMessageBox>

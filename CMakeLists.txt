@@ -8,155 +8,237 @@ message("CMake Version: ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PA
 # 詳細情報の表示
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
-# C++17
-set(CMAKE_CXX_STANDARD 17)
+###############################################################################
+# 全ターゲットに影響を与えるオプション
+###############################################################################
+message(STATUS "========== [START] C++ All Target Options ==========")
+
+# ========== Options ==========
+option(BUILD_OPENMP "Enable/Disable OpenMP" ON)
+option(BUILD_CPP_TEST "Enable/Disable Test" ON)
+option(BUILD_SHARED_LIB "Enable/Disable DLL Libs" ON)
+# set(BUILD_SHARED_LIBS ON)
+
+# C++20
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 message("CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
 
 # プラットフォーム毎のコンパイラオプション(マルチ・コンフィギュレーションに対応)
 if (MSVC)
-    # ソースコードでUTF-8を使う(MSVC++)
-    add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
-
-    # C++11以降を利用した場合にマクロ変数__cplusplusの値を利用中のC++バージョンに合わせる(つけないとC++98相当の値になる)
-    add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/Zc:__cplusplus>")
+    message(STATUS "Compiler: MSVC in Windows")
 
     # Build Options
-	set(CMAKE_CXX_FLAGS "/EHsc /W3 /GR /openmp /D_WINDOWS /DWIN32") # /constexpr
-	set(CMAKE_CXX_FLAGS_DEBUG "/Ob0 /Od /MDd /Zi /RTC1 /D_DEBUG")
-	set(CMAKE_CXX_FLAGS_RELEASE "/Ob2 /O2 /MD /DNDEBUG")
-	set(CMAKE_CXX_FLAGS_MINSIZEREL "/O1 /MD /DNDEBUG")
-    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/Od /MDd /Zi /RTC1 /D_DEBUG")
-    
+    string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}") # デフォルトの`/W[0-4]`を削除
+    set(CMAKE_CXX_FLAGS "/DWIN32 /D_WINDOWS /GR /EHsc /W4")
+    set(CMAKE_CXX_FLAGS_DEBUG "/Ob0 /Od /MDd /Zi /RTC1") # /MDd or /Od が指定されている場合、#include <windows>内部で_DEBUGマクロが定義される
+    set(CMAKE_CXX_FLAGS_RELEASE "/Ob2 /O2 /MD /DNDEBUG") # /DNDEBUGマクロはstatic_assert()で利用する
+    set(CMAKE_CXX_FLAGS_MINSIZEREL "/O1 /MD /DNDEBUG")
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/Od /MDd /Zi /RTC1")
+
+    if(BUILD_OPENMP)
+        set(CMAKE_CXX_FFAGS "${CMAKE_CXX_FFAGS} /openmp")
+    endif()
+
+    # ソースコードでUTF-8を使う(MSVC++)
+    add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/utf-8>)
+    # C++11以降を利用した場合にマクロ変数__cplusplusの値を利用中のC++バージョンに合わせる(つけないとC++98相当の値になる)
+    add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/Zc:__cplusplus>)
+
     # プリコンパイル済みヘッダーの使用(/Yu)を全体に設定
-	# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Yu")
+    # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Yu")
 
 elseif(APPLE)
 
+message(STATUS "Compiler: Clang in macOS")    
+
+    # Build Options(マルチコンフィギュレーション:visual studio対応)
+    set(CMAKE_CXX_FLAGS "-O1")
+    set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+    set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -DNDEBUG")
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -DNDEBUG")
+
+    # 警告
+    string(APPEND CMAKE_CXX_FLAGS " -Wall")
+    # string(APPEND CMAKE_CXX_FLAGS " -Werror")
+    # string(APPEND CMAKE_CXX_FLAGS " -Weverything")
+    # string(APPEND CMAKE_CXX_FLAGS " -Wno-c++98-compat")
+    # string(APPEND CMAKE_CXX_FLAGS " -Wno-c++98-compat-pedanti")
+
+    # ソースコードでUTF-8を使う(GCC++)
+    add_compile_options($<$<CXX_COMPILER_ID:Clang>:/utf-8>)
+    # C++11以降を利用した場合にマクロ変数__cplusplusの値を利用中のC++バージョンに合わせる(つけないとC++98相当の値になる)
+    add_compile_options($<$<CXX_COMPILER_ID:Clang>:/Zc:__cplusplus>) 
 
 else()
-    # Linux GCC
+    message(STATUS "Compiler: GCC in Linux")
+
+    # Build Options(マルチコンフィギュレーション:visual studio対応)
+    set(CMAKE_CXX_FLAGS "-O1")
+    set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+    set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -DNDEBUG")
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -DNDEBUG")
 
     # C++標準に準拠しない拡張機能を無効化
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --pedantic-errors")
 
-    # Build Options
-	set(CMAKE_CXX_FLAGS "-O1 -Wall")
-	set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
-	set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
-	set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -DNDEBUG")
-    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -DNDEBUG")
-    
+    # https://stackoverflow.com/questions/5088460/flags-to-enable-thorough-and-verbose-g-warnings/9862800#9862800
+    string(APPEND CMAKE_CXX_FLAGS " -pedantic")
+    string(APPEND CMAKE_CXX_FLAGS " -Wall")
+    # string(APPEND CMAKE_CXX_FLAGS " -Wextra")
+    # string(APPEND CMAKE_CXX_FLAGS " -Wcast-align")
+    # string(APPEND CMAKE_CXX_FLAGS " -Wcast-qual")
+    # string(APPEND CMAKE_CXX_FLAGS " -Wctor-dtor-privacy")
+    # string(APPEND CMAKE_CXX_FLAGS " -Wdisabled-optimization")
+    # string(APPEND CMAKE_CXX_FLAGS " -Wformat=2 ")
+    # string(APPEND CMAKE_CXX_FLAGS " -Winit-self")
+    # string(APPEND CMAKE_CXX_FLAGS " -Wlogical-op")
+    # string(APPEND CMAKE_CXX_FLAGS " -Wmissing-declarations")
+    # string(APPEND CMAKE_CXX_FLAGS " -Wmissing-include-dirs")
+    # string(APPEND CMAKE_CXX_FLAGS " -Wnoexcept")
+    # string(APPEND CMAKE_CXX_FLAGS " -Wold-style-cast")
+    # string(APPEND CMAKE_CXX_FLAGS " -Woverloaded-virtual")
+    # string(APPEND CMAKE_CXX_FLAGS " -Wredundant-decls")
+    # string(APPEND CMAKE_CXX_FLAGS " -Wshadow")
+    # string(APPEND CMAKE_CXX_FLAGS " -Wsign-conversion")
+    # string(APPEND CMAKE_CXX_FLAGS " -Wsign-promo")
+    # string(APPEND CMAKE_CXX_FLAGS " -Wstrict-null-sentinel")
+    # string(APPEND CMAKE_CXX_FLAGS " -Wstrict-overflow=5")
+    # string(APPEND CMAKE_CXX_FLAGS " -Wswitch-default")
+    # string(APPEND CMAKE_CXX_FLAGS " -Wundef")
+    # string(APPEND CMAKE_CXX_FLAGS " -Werror")
+    # string(APPEND CMAKE_CXX_FLAGS " -Wno-unused")
+
+    # ソースコードでUTF-8を使う(GCC++)
+    add_compile_options($<$<CXX_COMPILER_ID:GCC>:/utf-8>)
     # C++11以降を利用した場合にマクロ変数__cplusplusの値を利用中のC++バージョンに合わせる(つけないとC++98相当の値になる)
-    add_compile_options("$<$<CXX_COMPILER_ID:UNIX>:/Zc:__cplusplus>")
+    add_compile_options($<$<CXX_COMPILER_ID:GCC>:/Zc:__cplusplus>)
 
 endif()
 
-
-
-message("-------------------- Compiler Options in Multi Configuration --------------------")
+message("---------- Compiler Options for Multi Configuration ----------")
 message("CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 message("CMAKE_CXX_FLAGS_DEBUG: ${CMAKE_CXX_FLAGS_DEBUG}")
 message("CMAKE_CXX_FLAGS_RELEASE: ${CMAKE_CXX_FLAGS_RELEASE}")
 message("CMAKE_CXX_FLAGS_MINSIZEREL: ${CMAKE_CXX_FLAGS_MINSIZEREL}")
 message("CMAKE_CXX_FLAGS_RELWITHDEBINFO: ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
 
-message("-------------------- Qt Configuration --------------------")
-# set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
+message(STATUS "========== [END] C++ All Target Options ==========")
 
-# find_package: Configモード
-set(QT5_DIR "C:/Qt/5.15.1/msvc2019_64")
-set(QT5_QPA_PLATFORM_PLUGIN_PATH "${QT5_DIR}/plugins/platforms")
-set(QT5_CMAKE_DIR "${QT5_DIR}/lib/cmake")
-list(APPEND CMAKE_PREFIX_PATH "${QT5_CMAKE_DIR}")
-find_package(QT NAMES Qt6 Qt5)
-message("Qt Version Major : ${QT_VERSION_MAJOR}")
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS
-	Core
-	Gui
-	Widgets
-	LinguistTools
-	REQUIRED
-)
+###############################################################################
+# Qt Configuration
+###############################################################################
+message(STATUS "========== [START] Qt Configuration ==========")
 
-# 多言語サポート
-file(GLOB TS_FILES "*.ts")
-
-# mocで生成されたファイルをインクルードするはずなので，有効にしておくが吉
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-# *.uiのサーチパスを設定
-# set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_AUTOUIC_SEARCH_PATHS} "${CMAKE_CURRENT_SOURCE_DIR}/ui")
-# message("Auto Uic Searched Paths : ${CMAKE_AUTOUIC_SEARCH_PATHS}")
-
-# # *.uiファイルのコンパイル結果の出力先を指定
-# set(AUTOGEN_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ui")
-# message("Auto Gen Output Path: ${AUTOGEN_BUILD_DIR}")
-
-# *.uiファイルをコンパイル
-file(GLOB UI_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/*.ui")
-# qt_wrap_ui(UI_HEADER_FILES ${UI_FILES}) # UIC compile
-message("Ui Files: ${UI_FILES}")
-# message("Ui Header Files: ${UI_HEADER_FILES}")
-
-# ui_**.hppファイルを回収
-file(GLOB UI_HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/*.hpp")
-
-# Qt Resource Files
-file(GLOB_RECURSE RC_FILES ".qrc")
-message("Gui Rc Files: ${RC_FILES}")
+ # Qt uic, moc, rcc
+ set(CMAKE_AUTOUIC ON)
+ set(CMAKE_AUTOMOC ON)
+ set(CMAKE_AUTORCC ON)
 
 
-message("-------------------- Collect *.hpp, *.cpp --------------------")
+# CMakeのバージョンが3.7.0以下の場合、カレントディレクトリをインクルードパスに追加
+# mocで生成されたファイルをインクルードする
+if(CMAKE_VERSION VERSION_LESS "3.7.0")
+    set(CMAKE_INCLUDE_CURRENT_DIR ON)
+endif()
 
-# Header Files
-file(GLOB INCLUDES 
-            "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp" 
-            "${CMAKE_CURRENT_SOURCE_DIR}/windows/*.hpp"
+# Qt Root Dir (環境変数から取得) for find_package cofig mode.
+message(STATUS "Qt env path: $ENV{QT5_DIR}")
+set(QT_QPA_PLATFORM_PLUGIN_DIR $ENV{QT5_DIR}/plugins/platforms)
+list(APPEND CMAKE_PREFIX_PATH $ENV{QT5_DIR})
+message(STATUS "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
+set(Qt5_DIR $ENV{QT5_DIR}/lib/cmake CACHE PATH "Qt5 cmake script path")
+message(STATUS "Qt cmake script path: $CACHE{Qt5_DIR}")
+
+find_package(QT NAMES Qt5 CONFIG)
+
+if(QT_FOUND)
+
+    message(STATUS "Found Qt Library.")
+    message(STATUS "Qt Version Major : ${QT_VERSION_MAJOR}")
+    message(STATUS "Qt Config File Path: ${QT_CONFIG}")
+
+    find_package(Qt${QT_VERSION_MAJOR} CONFIG REQUIRED COMPONENTS
+        Core
+        Gui
+        Widgets
+        Charts
+        LinguistTools        
     )
-message("Header Files: ${INCLUDES}")
+
+   
+    # 多言語サポート
+    file(GLOB TS_FILES "*.ts")
+    qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
+
+    # UIファイル
+    # list(APPEND AUTOUIC_SEARCH_PATHS ${CMAKE_CURRENT_SOURCE_DIR}/ui)
+    # message(STATUS "Auto Search Path List for AUTOUIC of Qt: ${AUTOUIC_SEARCH_PATHS}")
+    # file(GLOB QT_UI_FILES ${AUTOUIC_SEARCH_PATHS}/*.ui)
+    message(STATUS "Qt Ui Files: ${QT_UI_FILES}")
+    # 下記のヘッダーパスは自動でINCLUDE_DIRECTORIES変数に追加されるようだ.
+    # https://cmake.org/cmake/help/latest/prop_tgt/AUTOUIC.html#prop_tgt:AUTOUIC
+    if (MSVC OR APPLE) # for Multi-Configuration Generator (MSVC, XCode)
+        set(QT_UI_INCLUDE_DIR ${AUTOGEN_BUILD_DIR}/include_${CMAKE_BUILD_TYPE})
+    else() # for Single-Configuration Generator (Make)
+        set(QT_UI_INCLUDE_DIR ${AUTOGEN_BUILD_DIR}/include)
+    endif()
+
+    # RCCファイル
+    file(GLOB QT_RCC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/rcc/*.qrc)
+    message(STATUS "Qt Rcc Files: ${QT_RCC_FILES}")
+
+else()
+    message(FATAL_ERROR "Qt ${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH} is not found.")
+endif()
+
+message(STATUS "========== [END] Qt Configuration ==========")
+
+###############################################################################
+# C++ core
+###############################################################################
+message(STATUS "========== [START] C++ Build Core ==========")
+
+# ========== Library File ==========
+
+
+# ========== Executable File ==========
+# Header Files
+file(GLOB EXE_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
+message("Header Files: ${EXE_INCLUDES}")
 
 # Source Files
-file(GLOB SOURCES 
-            "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp" 
-            "${CMAKE_CURRENT_SOURCE_DIR}/windows/*.cpp"
-    )
-message("Source Files: ${SOURCES}")
+file(GLOB EXE_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+message("Source Files: ${EXE_SOURCES}")
 
+# Executable
+# add_executable(${PROJECT_NAME}
+#             ${EXE_INCLUDES}      # Exe用ヘッダーファイル
+#             ${EXE_SOURCES}       # Exe用ソースファイル
+#             ${RC_FILES}          # Qt-RCCリソースファイル
+#             ${TS_FILES}          # Qt-TSファイル
+# )
+add_executable(${PROJECT_NAME}
+            main.cpp
+            main_window.h
+            main_window.cpp
+            defs.h
+            common.h
+)
 
-include(CTest)
-enable_testing()
+# QtのAUTOUICで生成されたUIヘッダーファイルは自動でINCLUDE_DIRECTORIESに格納されるが、一応明記.
+target_include_directories(${PROJECT_NAME} PRIVATE
+                        ${QT_UI_INCLUDE_DIR}
+)
 
-# # Windows My Lib
-# add_subdirectory("${PROJECT_SOURCE_DIR}/windows")
-
-add_executable(${PROJECT_NAME} 
-            ${TS_FILES}
-            ${INCLUDES}
-            ${SOURCES}
-            ${UI_HEADER_FILES}
-            # ${UI_FILES}
-            ${RC_FILES}
-            )
-
-
-# message("-------------------- Link Windows library --------------------")
-# target_link_libraries(QtCMakeApp PRIVATE mywinlib)
-
-
-message("-------------------- Link Qt library --------------------")
 target_link_libraries(${PROJECT_NAME} PRIVATE 
                     Qt${QT_VERSION_MAJOR}::Widgets
                     Qt${QT_VERSION_MAJOR}::Core
                     Qt${QT_VERSION_MAJOR}::Gui)
 
-qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
-
-
-
-# Qt5 dllファイルを実行ファイル.exeと同じフォルダにコピーする
+# Qt dllファイルを実行ファイル.exeと同じフォルダにコピーする
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt${QT_VERSION_MAJOR}::Widgets> $<TARGET_FILE_DIR:${PROJECT_NAME}>
 	COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt${QT_VERSION_MAJOR}::Core> $<TARGET_FILE_DIR:${PROJECT_NAME}>
@@ -164,13 +246,25 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 )
 
 # Qt5 pluginファイルを実行ファイル.exeと同じフォルダにコピーする
-if(WIN32)
+if(MSVC)
 	add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt${QT_VERSION_MAJOR}::QWindowsIntegrationPlugin> $<TARGET_FILE_DIR:${PROJECT_NAME}>
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt${QT_VERSION_MAJOR}::QWindowsDirect2DIntegrationPlugin> $<TARGET_FILE_DIR:${PROJECT_NAME}>
-	)
+    )
+elseif(UNIX)
+
+
+
 endif()
 
+message(STATUS "========== [END] C++ Build Core ==========")
+
+###############################################################################
+# C++ Testing
+###############################################################################
+
+include(CTest)
+enable_testing()
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

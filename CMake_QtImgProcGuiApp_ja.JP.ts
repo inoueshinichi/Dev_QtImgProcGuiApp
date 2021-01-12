@@ -492,10 +492,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>XLSX</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Harris Corner</source>
         <translation type="unfinished"></translation>
     </message>
