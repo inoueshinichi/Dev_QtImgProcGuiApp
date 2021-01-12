@@ -174,10 +174,12 @@ if(QT_FOUND)
     qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 
     # UIファイル
-    # list(APPEND AUTOUIC_SEARCH_PATHS ${CMAKE_CURRENT_SOURCE_DIR}/ui)
-    # message(STATUS "Auto Search Path List for AUTOUIC of Qt: ${AUTOUIC_SEARCH_PATHS}")
-    # file(GLOB QT_UI_FILES ${AUTOUIC_SEARCH_PATHS}/*.ui)
-    message(STATUS "Qt Ui Files: ${QT_UI_FILES}")
+    list(APPEND CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_CURRENT_SOURCE_DIR}/ui)
+    message(STATUS "Auto Search Path List for AUTOUIC of Qt: ${CMAKE_AUTOUIC_SEARCH_PATHS}")
+    # file(GLOB QT_UI_FORMS ${AUTOUIC_SEARCH_PATHS}/*.ui)
+    message(STATUS "Qt Ui Files: ${QT_UI_FORMS}")
+    # qt5_wrap_ui(QT_UI_INCLUDES ${QT_UI_FORMS})
+
     # 下記のヘッダーパスは自動でINCLUDE_DIRECTORIES変数に追加されるようだ.
     # https://cmake.org/cmake/help/latest/prop_tgt/AUTOUIC.html#prop_tgt:AUTOUIC
     if (MSVC OR APPLE) # for Multi-Configuration Generator (MSVC, XCode)
@@ -185,6 +187,9 @@ if(QT_FOUND)
     else() # for Single-Configuration Generator (Make)
         set(QT_UI_INCLUDE_DIR ${AUTOGEN_BUILD_DIR}/include)
     endif()
+
+    # AUTOUICで作成されたUI-Formのヘッダー内に自作の格上げしたクラスのヘッダーを入れることになるので、必要
+    set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
     # RCCファイル
     file(GLOB QT_RCC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/rcc/*.qrc)
@@ -226,6 +231,9 @@ add_executable(${PROJECT_NAME}
             main_window.cpp
             defs.h
             common.h
+            image_table_view.h
+            image_table_view.cpp
+            ${QT_UI_INCLUDES}
 )
 
 # QtのAUTOUICで生成されたUIヘッダーファイルは自動でINCLUDE_DIRECTORIESに格納されるが、一応明記.

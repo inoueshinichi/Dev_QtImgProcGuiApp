@@ -214,6 +214,7 @@
      <addaction name="actionPNG"/>
      <addaction name="separator"/>
      <addaction name="actionCSV"/>
+     <addaction name="actionXLSX"/>
     </widget>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
@@ -997,6 +998,11 @@
   <action name="actionJPG">
    <property name="text">
     <string>JPG</string>
+   </property>
+  </action>
+  <action name="actionXLSX">
+   <property name="text">
+    <string>XLSX</string>
    </property>
   </action>
   <action name="actionHarris_Corner">

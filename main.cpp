@@ -12,7 +12,7 @@ int main(int argc, char** argv)
 
     QApplication app(argc, argv);
 
-    Is::MainWindow main_win;
+    MainWindow main_win;
     main_win.show();
 
     return app.exec();
