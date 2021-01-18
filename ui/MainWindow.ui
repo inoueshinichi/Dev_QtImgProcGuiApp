@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>811</width>
-    <height>257</height>
+    <width>943</width>
+    <height>327</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -196,8 +196,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>811</width>
-     <height>22</height>
+     <width>943</width>
+     <height>28</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -373,54 +373,14 @@
       <addaction name="actionAdaBoost"/>
       <addaction name="actionGradient_Boost"/>
      </widget>
-     <widget class="QMenu" name="menuRegressor">
-      <property name="title">
-       <string>Regressor</string>
-      </property>
-      <addaction name="actionLinear_Regression"/>
-      <addaction name="actionPolinominal_Linear_Regression"/>
-      <addaction name="separator"/>
-      <addaction name="actionRidge_Regression"/>
-      <addaction name="actionLasso_Regression"/>
-      <addaction name="actionElastic_Net_Regression"/>
-      <addaction name="separator"/>
-      <addaction name="actionDecision_Tree_Regression"/>
-      <addaction name="actionRandom_Foreset_Regression"/>
-      <addaction name="separator"/>
-      <addaction name="actionSVM_Regression"/>
-      <addaction name="separator"/>
-      <addaction name="actionGradient_Boost_Regression"/>
-     </widget>
-     <widget class="QMenu" name="menuClustering">
-      <property name="title">
-       <string>Clustering</string>
-      </property>
-      <addaction name="actionK_Means"/>
-      <addaction name="actionHierarchical_Clustering"/>
-      <addaction name="actionDBSCAN"/>
-     </widget>
      <addaction name="menuClassification"/>
-     <addaction name="menuRegressor"/>
-     <addaction name="menuClustering"/>
     </widget>
     <widget class="QMenu" name="menuDL">
      <property name="title">
       <string>DL</string>
      </property>
-     <widget class="QMenu" name="menuClassification_2">
-      <property name="title">
-       <string>Classification</string>
-      </property>
-      <addaction name="actionFeature_Vector"/>
-      <addaction name="actionImage"/>
-      <addaction name="separator"/>
-      <addaction name="actionObject_Detection"/>
-      <addaction name="separator"/>
-      <addaction name="actionLanguage"/>
-     </widget>
-     <addaction name="menuClassification_2"/>
-     <addaction name="actionRegressior"/>
-     <addaction name="actionGenerative"/>
+     <addaction name="actionImage_Classification"/>
+     <addaction name="actionObject_Detection"/>
     </widget>
     <addaction name="menu"/>
     <addaction name="separator"/>
@@ -457,8 +417,8 @@
     <property name="title">
      <string>Video</string>
     </property>
-    <addaction name="actionVideo_Make"/>
-    <addaction name="actionVideo_Open"/>
+    <addaction name="actionVideo_Generate"/>
+    <addaction name="actionVideo_Show"/>
    </widget>
    <widget class="QMenu" name="menuLocal_Feature">
     <property name="title">
@@ -473,10 +433,6 @@
      <addaction name="actionFAST_Corner"/>
      <addaction name="actionAGAST_Corner"/>
      <addaction name="separator"/>
-     <addaction name="actionMSER_Region"/>
-     <addaction name="separator"/>
-     <addaction name="actionStar_Detector"/>
-     <addaction name="actionMSD_Detector"/>
     </widget>
     <widget class="QMenu" name="menuDescriptor">
      <property name="title">
@@ -484,9 +440,6 @@
      </property>
      <addaction name="actionBRIEF_Descriptor"/>
      <addaction name="actionFREAK_Descriptor"/>
-     <addaction name="actionLATCH_Descriptor"/>
-     <addaction name="actionLUCID_Descriptor"/>
-     <addaction name="actionDAISY_Descriptor"/>
      <addaction name="separator"/>
      <addaction name="actionHOG_Descriptor"/>
      <addaction name="actionHarrLike_Descriptor"/>
@@ -534,17 +487,8 @@
      <addaction name="actionTM_CCOEFF"/>
      <addaction name="actionTM_NCCOEFF"/>
     </widget>
-    <widget class="QMenu" name="menuFitting">
-     <property name="title">
-      <string>Fitting</string>
-     </property>
-     <addaction name="actionFitting_Line"/>
-     <addaction name="actionFitting_Curve"/>
-     <addaction name="actionFitting_Ellipse"/>
-    </widget>
     <addaction name="menuHough"/>
     <addaction name="menuTemplate_Matching"/>
-    <addaction name="menuFitting"/>
    </widget>
    <widget class="QMenu" name="menuMition">
     <property name="title">
@@ -565,6 +509,14 @@
     <addaction name="menuKalman_Filter"/>
     <addaction name="actionParticle_Filter"/>
    </widget>
+   <widget class="QMenu" name="menuFitting">
+    <property name="title">
+     <string>Fitting</string>
+    </property>
+    <addaction name="actionFitting_Line"/>
+    <addaction name="actionFitting_Curve"/>
+    <addaction name="actionFitting_Ellipse"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuImage"/>
@@ -574,6 +526,7 @@
    <addaction name="menuAnalyze"/>
    <addaction name="menuLocal_Feature"/>
    <addaction name="menuDetector"/>
+   <addaction name="menuFitting"/>
    <addaction name="menuMition"/>
    <addaction name="menuML_DL"/>
    <addaction name="menuWindow"/>
@@ -926,34 +879,6 @@
     <string>Angle Measure</string>
    </property>
   </action>
-  <action name="actionTime_Squence">
-   <property name="text">
-    <string>Time Squence</string>
-   </property>
-  </action>
-  <action name="actionFeatures">
-   <property name="text">
-    <string>Features</string>
-   </property>
-  </action>
-  <action name="actionSimple_Classifier_Model">
-   <property name="text">
-    <string>Simple Classifier Model</string>
-   </property>
-  </action>
-  <action name="actionObject_Detection_Model">
-   <property name="text">
-    <string>Object Detection Model</string>
-   </property>
-  </action>
-  <action name="actionGAN">
-   <property name="text">
-    <string>GAN</string>
-   </property>
-   <property name="toolTip">
-    <string>Generate Model</string>
-   </property>
-  </action>
   <action name="actionDataset">
    <property name="text">
     <string>Dataset</string>
@@ -1023,19 +948,6 @@
     <string>AGAST Corner</string>
    </property>
   </action>
-  <action name="actionMSER_Region">
-   <property name="text">
-    <string>MSER Region</string>
-   </property>
-   <property name="toolTip">
-    <string>MSER Region</string>
-   </property>
-  </action>
-  <action name="actionStar_Detector">
-   <property name="text">
-    <string>Star Detector</string>
-   </property>
-  </action>
   <action name="actionBRIEF_Descriptor">
    <property name="text">
     <string>BRIEF Descriptor</string>
@@ -1044,26 +956,6 @@
   <action name="actionFREAK_Descriptor">
    <property name="text">
     <string>FREAK Descriptor</string>
-   </property>
-  </action>
-  <action name="actionLATCH_Descriptor">
-   <property name="text">
-    <string>LATCH Descriptor</string>
-   </property>
-  </action>
-  <action name="actionLUCID_Descriptor">
-   <property name="text">
-    <string>LUCID Descriptor</string>
-   </property>
-  </action>
-  <action name="actionDAISY_Descriptor">
-   <property name="text">
-    <string>DAISY Descriptor</string>
-   </property>
-  </action>
-  <action name="actionMSD_Detector">
-   <property name="text">
-    <string>MSD Detector</string>
    </property>
   </action>
   <action name="actionORB">
@@ -1201,51 +1093,6 @@
     <string>kNN</string>
    </property>
   </action>
-  <action name="actionLinear_Regression">
-   <property name="text">
-    <string>Linear Regression</string>
-   </property>
-  </action>
-  <action name="actionRidge_Regression">
-   <property name="text">
-    <string>Ridge Regression</string>
-   </property>
-  </action>
-  <action name="actionLasso_Regression">
-   <property name="text">
-    <string>Lasso Regression</string>
-   </property>
-  </action>
-  <action name="actionElastic_Net_Regression">
-   <property name="text">
-    <string>Elastic Net Regression</string>
-   </property>
-  </action>
-  <action name="actionPolinominal_Linear_Regression">
-   <property name="text">
-    <string>Polinominal Linear Regression</string>
-   </property>
-  </action>
-  <action name="actionDecision_Tree_Regression">
-   <property name="text">
-    <string>Decision Tree Regression</string>
-   </property>
-  </action>
-  <action name="actionRandom_Foreset_Regression">
-   <property name="text">
-    <string>Random Foreset Regression</string>
-   </property>
-  </action>
-  <action name="actionSVM_Regression">
-   <property name="text">
-    <string>SVM Regression</string>
-   </property>
-  </action>
-  <action name="actionGradient_Boost_Regression">
-   <property name="text">
-    <string>Gradient Boost Regression</string>
-   </property>
-  </action>
   <action name="actionGradient_Boost">
    <property name="text">
     <string>Gradient Boost</string>
@@ -1264,21 +1111,6 @@
   <action name="actionAdaBoost">
    <property name="text">
     <string>AdaBoost</string>
-   </property>
-  </action>
-  <action name="actionK_Means">
-   <property name="text">
-    <string>K Means</string>
-   </property>
-  </action>
-  <action name="actionHierarchical_Clustering">
-   <property name="text">
-    <string>Hierarchical Clustering</string>
-   </property>
-  </action>
-  <action name="actionDBSCAN">
-   <property name="text">
-    <string>DBSCAN</string>
    </property>
   </action>
   <action name="actionPCA">
@@ -1485,47 +1317,20 @@
     <string>ROI Annotation</string>
    </property>
   </action>
-  <action name="actionRegressior">
+  <action name="actionVideo_Generate">
    <property name="text">
-    <string>Regressior</string>
-   </property>
-  </action>
-  <action name="actionFeature_Vector">
-   <property name="text">
-    <string>Feature Vector</string>
-   </property>
-  </action>
-  <action name="actionImage">
-   <property name="text">
-    <string>Image</string>
-   </property>
-  </action>
-  <action name="actionObject_Detection">
-   <property name="text">
-    <string>Object Detection</string>
-   </property>
-  </action>
-  <action name="actionLanguage">
-   <property name="text">
-    <string>Language</string>
+    <string>Video Generate</string>
    </property>
    <property name="toolTip">
-    <string>Language</string>
+    <string>Generate Video</string>
    </property>
   </action>
-  <action name="actionGenerative">
+  <action name="actionVideo_Show">
    <property name="text">
-    <string>Generative</string>
+    <string>Video Show</string>
    </property>
-  </action>
-  <action name="actionVideo_Make">
-   <property name="text">
-    <string>Video Make</string>
-   </property>
-  </action>
-  <action name="actionVideo_Open">
-   <property name="text">
-    <string>Video Open</string>
+   <property name="toolTip">
+    <string>Show Video</string>
    </property>
   </action>
   <action name="actionFitting_Line">
@@ -1541,6 +1346,16 @@
   <action name="actionFitting_Ellipse">
    <property name="text">
     <string>Fitting Ellipse</string>
+   </property>
+  </action>
+  <action name="actionImage_Classification">
+   <property name="text">
+    <string>Image Classification</string>
+   </property>
+  </action>
+  <action name="actionObject_Detection">
+   <property name="text">
+    <string>Object Detection</string>
    </property>
   </action>
  </widget>
