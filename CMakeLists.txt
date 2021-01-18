@@ -44,6 +44,7 @@ if (MSVC)
     add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/utf-8>)
     # C++11以降を利用した場合にマクロ変数__cplusplusの値を利用中のC++バージョンに合わせる(つけないとC++98相当の値になる)
     add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/Zc:__cplusplus>)
+    string(APPEND CMAKE_CXX_FLAGS " /Zc:__cplusplus")
 
     # プリコンパイル済みヘッダーの使用(/Yu)を全体に設定
     # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Yu")
@@ -270,10 +271,12 @@ message(STATUS "========== [END] C++ Build Core ==========")
 ###############################################################################
 # C++ Testing
 ###############################################################################
-
+message(STATUS "========== [START] C++ Build Test ==========")
 include(CTest)
 enable_testing()
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
+
+message(STATUS "========== [END] C++ Build Test ==========")
