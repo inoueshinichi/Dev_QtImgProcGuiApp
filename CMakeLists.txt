@@ -184,7 +184,7 @@ if(QT_FOUND)
     # 下記のヘッダーパスは自動でINCLUDE_DIRECTORIES変数に追加されるようだ.
     # https://cmake.org/cmake/help/latest/prop_tgt/AUTOUIC.html#prop_tgt:AUTOUIC
     if (MSVC OR APPLE) # for Multi-Configuration Generator (MSVC, XCode)
-        set(QT_UI_INCLUDE_DIR ${AUTOGEN_BUILD_DIR}/include_${CMAKE_BUILD_TYPE})
+        set(QT_UI_INCLUDE_DIR ${AUTOGEN_BUILD_DIR}/include_${CMAKE_CONFIGURATION_TYPES})
     else() # for Single-Configuration Generator (Make)
         set(QT_UI_INCLUDE_DIR ${AUTOGEN_BUILD_DIR}/include)
     endif()
