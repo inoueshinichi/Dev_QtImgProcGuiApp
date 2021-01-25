@@ -1,5 +1,6 @@
 
 // 自作
+#include "ui_MainWindow.h"
 #include "main_window.h"
 
 // Standard
@@ -89,7 +90,7 @@ void MainWindow::_menubar_connection()
     connect(ui_->action24_bit, SIGNAL(triggered()), this, SLOT(_slot_act_menubar_image_type()));
     connect(ui_->actionRGB_Color, SIGNAL(triggered()), this, SLOT(_slot_act_menubar_image_type()));
     // Show Info
-    connect(ui_->actionShow_Info, SIGNAL(triggered()), this, SLOT(_act_menubar_image_show_info()));
+    connect(ui_->actionShow_Info, SIGNAL(triggered()), this, SLOT(_slot_act_menubar_image_show_info()));
     // Color
     connect(ui_->actionRGB2Gray, SIGNAL(triggered()), this, SLOT(_slot_act_menubar_image_color()));
     connect(ui_->actionGray2RGB, SIGNAL(triggered()), this, SLOT(_slot_act_menubar_image_color()));
@@ -105,7 +106,7 @@ void MainWindow::_menubar_connection()
     // Crop
     connect(ui_->actionCrop, SIGNAL(triggered()), this, SLOT(_slot_act_menubar_image_crop()));
     // Dupulicate
-    connect(ui_->actionDupulicate, SIGNAL(triggered()), this, SLOT(_slot_act_menubar_image_duplicate()));
+    connect(ui_->actionDuplicate, SIGNAL(triggered()), this, SLOT(_slot_act_menubar_image_duplicate()));
     // Rename
     connect(ui_->actionRename, SIGNAL(triggered()), this, SLOT(_slot_act_menubar_image_rename()));
     // Scale
@@ -119,10 +120,10 @@ void MainWindow::_menubar_connection()
     connect(ui_->actionTranslate, SIGNAL(triggered()), this, SLOT(_slot_act_menubar_image_transform()));
     connect(ui_->actionBin, SIGNAL(triggered()), this, SLOT(_slot_act_menubar_image_transform()));
     // Zoom
-    connect(ui_->actionZoomIn, SIGNAL(triggered()), this, SLOT(_slot_act_menubar_image_zoom())));
-    connect(ui_->actionZoomOut, SIGNAL(triggered()), this, SLOT(_slot_act_menubar_image_zoom())));
-    connect(ui_->actionOriginal_Scale, SIGNAL(triggered()), this, SLOT(_slot_act_menubar_image_zoom())));
-    connect(ui_->actionFit_View, SIGNAL(triggered()), this, SLOT(_slot_act_menubar_image_zoom())));
+    connect(ui_->actionZoomIn, SIGNAL(triggered()), this, SLOT(_slot_act_menubar_image_zoom()));
+    connect(ui_->actionZoomOut, SIGNAL(triggered()), this, SLOT(_slot_act_menubar_image_zoom()));
+    connect(ui_->actionOriginal_Scale, SIGNAL(triggered()), this, SLOT(_slot_act_menubar_image_zoom()));
+    connect(ui_->actionFit_View, SIGNAL(triggered()), this, SLOT(_slot_act_menubar_image_zoom()));
 
     /* Camera */
     connect(ui_->actionUSB_Camera, SIGNAL(triggered()), this, SLOT(_slot_act_menubar_camera())); // USB
@@ -312,7 +313,7 @@ void MainWindow::_slot_act_menubar_image_type()
  * @brief Menu -> Image -> Show Info
  * 
  */
-void MainWindow::_slot_act_menubar_image_type()
+void MainWindow::_slot_act_menubar_image_show_info()
 {
 
 }
@@ -410,7 +411,7 @@ void MainWindow::_slot_act_menubar_camera()
 /**
  * Menu -> Video -> Make
  * */
-void MainWindow::_slot_act_slot_menubar_video()
+void MainWindow::_slot_act_menubar_video()
 {
 
 }
@@ -418,7 +419,7 @@ void MainWindow::_slot_act_slot_menubar_video()
 /**
  * Menu -> Image Process
  * */
-void MainWindow::_slot_act_menubar_process_blur()
+void MainWindow::_slot_act_menubar_image_process()
 {
     // Blur
     // Unsharp Masking

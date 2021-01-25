@@ -3,7 +3,7 @@
 
 // 自作
 // #include "image_window.h"
-#include "ui_MainWindow.h"
+
 
 // Standard
 #include <deque>
@@ -47,6 +47,10 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     virtual ~MainWindow();
+
+signals:
+
+public slots:
 
 private slots:
     /* Menu -> File */
@@ -116,6 +120,8 @@ private slots:
     void _slot_act_menubar_dl_object_detection();
 
     /* Menu -> Window */
+
+
     
 };
 #endif // __MAIN_WINDOW_H__
