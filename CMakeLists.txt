@@ -24,14 +24,21 @@ message(STATUS "========== [END] Version Management ==========")
 message(STATUS "========== [START] Preprocessing ==========")
 
 # pythonコマンドをCMakeで使えるようにする
-set(PYTHON_COMMAND_NAME "python3") # どのインタープリタが選ばれるかはPCの設定次第. もっと詳細設定をコマンドライン引数から与えても良いと思う.
 find_program(PYTHON_INTERPRETER ${PYTHON_COMMAND_NAME})
 if(NOT EXISTS ${PYTHON_INTERPRETER})
-    message(FATAL_ERROR "python [${PYTHON_INTERPRETER}] not found.")
-    error() # Place Unknown command to stop cmake process here.
+    find_program(PYTHON_INTERPRETER "python3")
+    if(NOT EXISTS ${PYTHON_INTERPRETER})
+        find_program(PYTHON_INTERPRETER "python")
+        if(NOT EXISTS ${PYTHON_INTERPRETER})
+            message(FATAL_ERROR "python [${PYTHON_INTERPRETER}] not found.")
+            error() # Place Unknown command to stop cmake process here.
+        endif()
+    endif()
 endif()
 set(PYTHON_COMMAND "${PYTHON_INTERPRETER}")
 message(STATUS "python interpreter: ${PYTHON_INTERPRETER}")
+
+
 
 message(STATUS "========== [END] Preprocessing ==========")
 
@@ -182,12 +189,22 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 # Qt Root Dir (環境変数から取得) for find_package cofig mode.
+if($ENV{QT5_DIR} STREQUAL "")
+    message(FATAL_ERROR "Not found QT5_DIR env path.")
+endif()
 message(STATUS "Qt env path: $ENV{QT5_DIR}")
-set(QT_QPA_PLATFORM_PLUGIN_DIR $ENV{QT5_DIR}/plugins/platforms)
-list(APPEND CMAKE_PREFIX_PATH $ENV{QT5_DIR})
+
+if(MSVC)
+    string(REPLACE "\\" "/" QT_DIR $ENV{QT5_DIR})
+endif()
+message(STATUS "Qt path: ${QT_DIR}")
+
+
+set(QT_QPA_PLATFORM_PLUGIN_DIR ${QT_DIR}/plugins/platforms)
+list(APPEND CMAKE_PREFIX_PATH ${QT_DIR})
 message(STATUS "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
-set(Qt5_DIR $ENV{QT5_DIR}/lib/cmake CACHE PATH "Qt5 cmake script path")
-message(STATUS "Qt cmake script path: $CACHE{Qt5_DIR}")
+# set(Qt5_DIR ${QT_DIR}/lib/cmake CACHE PATH "Qt5 cmake script path")
+# message(STATUS "Qt cmake script path: $CACHE{Qt5_DIR}")
 
 find_package(QT NAMES Qt5 CONFIG)
 
@@ -205,6 +222,13 @@ if(QT_FOUND)
         LinguistTools        
     )
 
+    # Windows 拡張ライブラリ
+    if(WIN32)
+        find_package(Qt${QT_VERSION_MAJOR} CONFIG REQUIRED COMPONENTS
+            WinExtras
+        )
+    endif()
+
    
     # 多言語サポート
     file(GLOB QT_TS_FILES "*.ts")
@@ -215,14 +239,6 @@ if(QT_FOUND)
     message(STATUS "Auto Search Path List for AUTOUIC of Qt: ${CMAKE_AUTOUIC_SEARCH_PATHS}")
     file(GLOB QT_UI_FORMS ${CMAKE_SOURCE_DIR}/ui/*.ui)
     message(STATUS "Qt Ui Files: ${QT_UI_FORMS}")
-
-    # 下記のヘッダーパスは自動でINCLUDE_DIRECTORIES変数に追加されるようだ.
-    # https://cmake.org/cmake/help/latest/prop_tgt/AUTOUIC.html#prop_tgt:AUTOUIC
-    if (MSVC OR APPLE) # for Multi-Configuration Generator (MSVC, XCode)
-        set(QT_UI_INCLUDE_DIR ${AUTOGEN_BUILD_DIR}/include_${CMAKE_CONFIGURATION_TYPES})
-    else() # for Single-Configuration Generator (Make)
-        set(QT_UI_INCLUDE_DIR ${AUTOGEN_BUILD_DIR}/include)
-    endif()
 
     # AUTOUICで作成されたUI-Formのヘッダー内に自作の格上げしたクラスのヘッダーを入れることになるので、必要
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -253,6 +269,26 @@ message("Header Files: ${EXE_INCLUDES}")
 # Source Files
 file(GLOB EXE_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 message("Source Files: ${EXE_SOURCES}")
+
+
+# Bug fix: Force MOC to generate moc_<basename>.cpp.
+# AUTOMOC in msvc2019 @ windows10 does NOT generate moc_<basename>.cpp.
+if(MSVC)
+    message(STATUS "Generate Qt moc files...")
+    message(STATUS "Because AUTOMOC in ${CMAKE_GENERATOR}, ${CMAKE_GENERATOR_PLATFORM} @ Windows10 does NOT generate moc_<basename>.cpp.")
+    file(GLOB QT_HEADER_FOR_MOC RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} 
+        ./*.h
+    )
+    message(STATUS  "QT_HEADER_FOR_MOC: ${QT_HEADER_FOR_MOC}")
+    if(${QT_VERSION_MAJOR} EQUAL 5)
+        qt5_wrap_cpp(QT_MOC_FILES ${QT_HEADER_FOR_MOC} TARGET ${PROJECT_NAME})
+    else()
+        qt_wrap_cpp(QT_MOC_FILES ${QT_HEADER_FOR_MOC} TARGET ${PROJECT_NAME})
+    endif()
+    message(STATUS "QT_MOC_FILES")
+    list(APPEND EXE_SOURCES ${QT_MOC_FILES})
+    message(STATUS "EXE_SOURCES: ${EXE_SOURCES}")
+endif()
 
 # Executable
 # add_executable(${PROJECT_NAME}
@@ -293,8 +329,13 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt${QT_VERSION_MAJOR}::Gui> $<TARGET_FILE_DIR:${PROJECT_NAME}>
 )
 
-# Qt5 pluginファイルを実行ファイル.exeと同じフォルダにコピーする
+# Windows OS 依存のライブラリ
 if(MSVC)
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt${QT_VERSION_MAJOR}::WinExtras> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    )
+
+    # Qt5 pluginファイルを実行ファイル.exeと同じフォルダにコピーする
 	add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt${QT_VERSION_MAJOR}::QWindowsIntegrationPlugin> $<TARGET_FILE_DIR:${PROJECT_NAME}>
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt${QT_VERSION_MAJOR}::QWindowsDirect2DIntegrationPlugin> $<TARGET_FILE_DIR:${PROJECT_NAME}>
