@@ -108,14 +108,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Regressor</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Clustering</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>DL</source>
         <translation type="unfinished"></translation>
     </message>
@@ -436,30 +428,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Time Squence</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Features</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Simple Classifier Model</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Object Detection Model</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GAN</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Generate Model</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Dataset</source>
         <translation type="unfinished"></translation>
     </message>
@@ -504,35 +472,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>MSER Region</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Star Detector</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>BRIEF Descriptor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>FREAK Descriptor</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>LATCH Descriptor</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>LUCID Descriptor</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>DAISY Descriptor</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>MSD Detector</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -644,42 +588,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Linear Regression</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ridge Regression</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Lasso Regression</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Elastic Net Regression</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Polinominal Linear Regression</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Decision Tree Regression</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Random Foreset Regression</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>SVM Regression</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Gradient Boost Regression</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Gradient Boost</source>
         <translation type="unfinished"></translation>
     </message>
@@ -693,18 +601,6 @@
     </message>
     <message>
         <source>AdaBoost</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>K Means</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Hierarchical Clustering</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>DBSCAN</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -872,31 +768,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Regressior</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Feature Vector</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Object Detection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Language</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Generative</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Video Make</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Video Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -909,6 +781,30 @@
     </message>
     <message>
         <source>Fitting Ellipse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>XLSX</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Video Generate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generate Video</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Video Show</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Video</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Image Classification</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
