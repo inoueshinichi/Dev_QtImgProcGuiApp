@@ -2,22 +2,64 @@ cmake_minimum_required(VERSION 3.14.0)
 
 project(QtImgProcGuiApp LANGUAGES CXX VERSION 0.1.0)
 
+###############################################################################
+# Version
+###############################################################################
+message(STATUS "========== [START] Version Management ==========")
 # CMake Version
-message("CMake Version: ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}.${CMAKE_TWEAK_VERSION}")
+message(STATUS "CMake Version: ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}.${CMAKE_TWEAK_VERSION}")
 
-# 詳細情報の表示
-set(CMAKE_VERBOSE_MAKEFILE ON)
+# プロジェクト Version
+file(STRINGS ${CMAKE_SOURCE_DIR}/VERSION.txt versions NEWLINE_CONSUME)
+string(REGEX REPLACE [[^([A-z0-9.\-_]+).*$]] [[\1]] version ${versions})
+string(REGEX REPLACE [[^([0-9]+)\.([0-9]+)\.(.*)$]] [[\1]] version_major ${version})
+string(REGEX REPLACE [[^([0-9]+)\.([0-9]+)\.(.*)$]] [[\2]] version_minor ${version})
+string(REGEX REPLACE [[^([0-9]+)\.([0-9]+)\.(.*)$]] [[\3]] version_patch ${version})
+
+message(STATUS "========== [END] Version Management ==========")
+
+###############################################################################
+# 前処理
+###############################################################################
+message(STATUS "========== [START] Preprocessing ==========")
+
+# pythonコマンドをCMakeで使えるようにする
+set(PYTHON_COMMAND_NAME "python3") # どのインタープリタが選ばれるかはPCの設定次第. もっと詳細設定をコマンドライン引数から与えても良いと思う.
+find_program(PYTHON_INTERPRETER ${PYTHON_COMMAND_NAME})
+if(NOT EXISTS ${PYTHON_INTERPRETER})
+    message(FATAL_ERROR "python [${PYTHON_INTERPRETER}] not found.")
+    error() # Place Unknown command to stop cmake process here.
+endif()
+set(PYTHON_COMMAND "${PYTHON_INTERPRETER}")
+message(STATUS "python interpreter: ${PYTHON_INTERPRETER}")
+
+message(STATUS "========== [END] Preprocessing ==========")
 
 ###############################################################################
 # 全ターゲットに影響を与えるオプション
 ###############################################################################
 message(STATUS "========== [START] C++ All Target Options ==========")
 
-# ========== Options ==========
+# Switching Option
 option(BUILD_OPENMP "Enable/Disable OpenMP" ON)
-option(BUILD_CPP_TEST "Enable/Disable Test" ON)
-option(BUILD_SHARED_LIB "Enable/Disable DLL Libs" ON)
-# set(BUILD_SHARED_LIBS ON)
+option(BUILD_CPP_TEST "Building test" OFF)
+option(BUILD_CPP_SHARED_LIBS "Enable/Disable shared libraries" ON)
+option(BUILD_CPP_COMPILE_PCH "Enable/Disable compile pre-compile header" OFF)
+option(BUILD_CPP_USE_PCH "Enable/Disable use pre-compile header" OFF)
+
+# Global Test flag
+if(BUILD_CPP_TEST)
+    set(BUILD_TESTING ON)
+else()
+    set(BUILD_TESTING OFF)
+endif()
+
+# Global Shared lib flag
+if(BUILD_CPP_SHARED_LIBS)
+    set(BUILD_CPP_SHARED_LIBS ON)
+else()
+    set(BUILD_CPP_SHARED_LIBS OFF)
+endif()
 
 # C++20
 set(CMAKE_CXX_STANDARD 20)
@@ -37,45 +79,42 @@ if (MSVC)
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/Od /MDd /Zi /RTC1")
 
     if(BUILD_OPENMP)
-        set(CMAKE_CXX_FFAGS "${CMAKE_CXX_FFAGS} /openmp")
+        add_compile_options("$<$<C_COMPILER_ID:MSVC>:/openmp>")
+        add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/openmp>")
     endif()
 
-    # ソースコードでUTF-8を使う(MSVC++)
-    add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/utf-8>)
-    # C++11以降を利用した場合にマクロ変数__cplusplusの値を利用中のC++バージョンに合わせる(つけないとC++98相当の値になる)
-    add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/Zc:__cplusplus>)
-    string(APPEND CMAKE_CXX_FLAGS " /Zc:__cplusplus")
+    # ソースコードでUTF-8を使う(MSVC)
+    add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
+    add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 
-    # プリコンパイル済みヘッダーの使用(/Yu)を全体に設定
-    # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Yu")
+    # C++11以降を利用した場合にマクロ変数__cplusplusの値を利用中のC++バージョンに合わせる(つけないとC++98相当の値になる)
+    add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/Zc:__cplusplus>")
+
+    # オブジェクトファイル(*.obj)のサイズ制限を解放
+    add_compile_options("$<$<C_COMPILER_ID:MSVC>:/bigobj>")
+    add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/bigobj>")
+
+    # プリコンパイル済みヘッダーの生成と利用
+    if(BUILD_CPP_COMPILE_PCH)
+
+    endif()
+
+    if(BUILD_CPP_USE_PCH)
+
+    endif()
 
 elseif(APPLE)
+    message(STATUS "Compiler: Clang in macOS")    
 
-message(STATUS "Compiler: Clang in macOS")    
-
-    # Build Options(マルチコンフィギュレーション:visual studio対応)
-    set(CMAKE_CXX_FLAGS "-O1")
-    set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
-    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
-    set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -DNDEBUG")
-    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -DNDEBUG")
-
-    # 警告
-    string(APPEND CMAKE_CXX_FLAGS " -Wall")
-    # string(APPEND CMAKE_CXX_FLAGS " -Werror")
-    # string(APPEND CMAKE_CXX_FLAGS " -Weverything")
-    # string(APPEND CMAKE_CXX_FLAGS " -Wno-c++98-compat")
-    # string(APPEND CMAKE_CXX_FLAGS " -Wno-c++98-compat-pedanti")
-
-    # ソースコードでUTF-8を使う(GCC++)
-    add_compile_options($<$<CXX_COMPILER_ID:Clang>:/utf-8>)
-    # C++11以降を利用した場合にマクロ変数__cplusplusの値を利用中のC++バージョンに合わせる(つけないとC++98相当の値になる)
-    add_compile_options($<$<CXX_COMPILER_ID:Clang>:/Zc:__cplusplus>) 
+    message(FATAL_ERROR "No Implimentation of LLVM with Clang(++) in macOS.")
 
 else()
     message(STATUS "Compiler: GCC in Linux")
 
-    # Build Options(マルチコンフィギュレーション:visual studio対応)
+    # 詳細情報の表示
+    set(CMAKE_VERBOSE_MAKEFILE ON)
+
+    # Build Options(マルチコンフィギュレーション対応)
     set(CMAKE_CXX_FLAGS "-O1")
     set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
     set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
@@ -83,7 +122,7 @@ else()
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -DNDEBUG")
 
     # C++標準に準拠しない拡張機能を無効化
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --pedantic-errors")
+    string(APPEND CMAKE_CXX_FLAGS " --pedantic-errors")
 
     # https://stackoverflow.com/questions/5088460/flags-to-enable-thorough-and-verbose-g-warnings/9862800#9862800
     string(APPEND CMAKE_CXX_FLAGS " -pedantic")
@@ -112,19 +151,23 @@ else()
     # string(APPEND CMAKE_CXX_FLAGS " -Werror")
     # string(APPEND CMAKE_CXX_FLAGS " -Wno-unused")
 
-    # ソースコードでUTF-8を使う(GCC++)
-    add_compile_options($<$<CXX_COMPILER_ID:GCC>:/utf-8>)
-    # C++11以降を利用した場合にマクロ変数__cplusplusの値を利用中のC++バージョンに合わせる(つけないとC++98相当の値になる)
-    add_compile_options($<$<CXX_COMPILER_ID:GCC>:/Zc:__cplusplus>)
+    # プリコンパイル済みヘッダーの生成と利用
+    if(BUILD_CPP_COMPILE_PCH)
+
+    endif()
+
+    if(BUILD_CPP_USE_PCH)
+
+    endif()
 
 endif()
 
-message("---------- Compiler Options for Multi Configuration ----------")
-message("CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
-message("CMAKE_CXX_FLAGS_DEBUG: ${CMAKE_CXX_FLAGS_DEBUG}")
-message("CMAKE_CXX_FLAGS_RELEASE: ${CMAKE_CXX_FLAGS_RELEASE}")
-message("CMAKE_CXX_FLAGS_MINSIZEREL: ${CMAKE_CXX_FLAGS_MINSIZEREL}")
-message("CMAKE_CXX_FLAGS_RELWITHDEBINFO: ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
+message(STATUS "---------- Compiler Options for Multi Configuration such as XCode, Visual Studio ----------")
+message(STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
+message(STATUS "CMAKE_CXX_FLAGS_DEBUG: ${CMAKE_CXX_FLAGS_DEBUG}")
+message(STATUS "CMAKE_CXX_FLAGS_RELEASE: ${CMAKE_CXX_FLAGS_RELEASE}")
+message(STATUS "CMAKE_CXX_FLAGS_MINSIZEREL: ${CMAKE_CXX_FLAGS_MINSIZEREL}")
+message(STATUS "CMAKE_CXX_FLAGS_RELWITHDEBINFO: ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
 
 message(STATUS "========== [END] C++ All Target Options ==========")
 
@@ -133,17 +176,10 @@ message(STATUS "========== [END] C++ All Target Options ==========")
 ###############################################################################
 message(STATUS "========== [START] Qt Configuration ==========")
 
- # Qt uic, moc, rcc
- set(CMAKE_AUTOUIC ON)
- set(CMAKE_AUTOMOC ON)
- set(CMAKE_AUTORCC ON)
-
-
-# CMakeのバージョンが3.7.0以下の場合、カレントディレクトリをインクルードパスに追加
-# mocで生成されたファイルをインクルードする
-if(CMAKE_VERSION VERSION_LESS "3.7.0")
-    set(CMAKE_INCLUDE_CURRENT_DIR ON)
-endif()
+# Qt uic, moc, rcc
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
 # Qt Root Dir (環境変数から取得) for find_package cofig mode.
 message(STATUS "Qt env path: $ENV{QT5_DIR}")
@@ -171,15 +207,14 @@ if(QT_FOUND)
 
    
     # 多言語サポート
-    file(GLOB TS_FILES "*.ts")
-    qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
+    file(GLOB QT_TS_FILES "*.ts")
+    qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${QT_TS_FILES})
 
     # UIファイル
-    list(APPEND CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_CURRENT_SOURCE_DIR}/ui)
+    list(APPEND CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_SOURCE_DIR}/ui)
     message(STATUS "Auto Search Path List for AUTOUIC of Qt: ${CMAKE_AUTOUIC_SEARCH_PATHS}")
-    # file(GLOB QT_UI_FORMS ${AUTOUIC_SEARCH_PATHS}/*.ui)
+    file(GLOB QT_UI_FORMS ${CMAKE_SOURCE_DIR}/ui/*.ui)
     message(STATUS "Qt Ui Files: ${QT_UI_FORMS}")
-    # qt5_wrap_ui(QT_UI_INCLUDES ${QT_UI_FORMS})
 
     # 下記のヘッダーパスは自動でINCLUDE_DIRECTORIES変数に追加されるようだ.
     # https://cmake.org/cmake/help/latest/prop_tgt/AUTOUIC.html#prop_tgt:AUTOUIC
@@ -193,8 +228,8 @@ if(QT_FOUND)
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
     # RCCファイル
-    file(GLOB QT_RCC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/rcc/*.qrc)
-    message(STATUS "Qt Rcc Files: ${QT_RCC_FILES}")
+    file(GLOB QT_RC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/rcc/*.qrc)
+    message(STATUS "Qt Rcc Files: ${QT_RC_FILES}")
 
 else()
     message(FATAL_ERROR "Qt ${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH} is not found.")
@@ -234,7 +269,11 @@ add_executable(${PROJECT_NAME}
             common.h
             image_table_view.h
             image_table_view.cpp
-            ${QT_UI_INCLUDES}
+)
+
+target_sources(${PROJECT_NAME} PRIVATE
+    ${QT_TS_FILES}
+    ${QT_RC_FILES}
 )
 
 # QtのAUTOUICで生成されたUIヘッダーファイルは自動でINCLUDE_DIRECTORIESに格納されるが、一応明記.
@@ -260,14 +299,9 @@ if(MSVC)
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt${QT_VERSION_MAJOR}::QWindowsIntegrationPlugin> $<TARGET_FILE_DIR:${PROJECT_NAME}>
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt${QT_VERSION_MAJOR}::QWindowsDirect2DIntegrationPlugin> $<TARGET_FILE_DIR:${PROJECT_NAME}>
     )
-elseif(UNIX)
-
-
-
 endif()
 
 message(STATUS "========== [END] C++ Build Core ==========")
-
 ###############################################################################
 # C++ Testing
 ###############################################################################
