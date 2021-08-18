@@ -36,6 +36,6 @@ protected:
     bool isAcceptDragDrop {false};
 
 public:
-    ImageView(QWidget *parent=nullptr);
+    explicit ImageView(QWidget *parent=nullptr);
     virtual ~ImageView();
 };

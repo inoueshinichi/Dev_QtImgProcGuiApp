@@ -1,12 +1,10 @@
 
-// 自作
+
 #include "ui_MainWindow.h"
 #include "main_window.h"
 
-// Standard
-
-// Qt
-
+#include <iostream>
+#include <cstdio>
 
 /**
  * @brief Construct a new Main Window:: Main Window object
@@ -16,6 +14,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow())
+    , permanentStatusBar(new QLabel())
 {
     // UI
     ui->setupUi(this);
@@ -38,6 +37,18 @@ MainWindow::ImgWinRegistory_t& MainWindow::getImgWinRegistory()
 {
     static ImgWinRegistory_t imgWindowBacket;
     return imgWindowBacket;
+}
+
+
+/*public slot*/
+void MainWindow::slotEraseImageWindow(ImageWindow *ptr)
+{
+    /*指定のImageWindowの登録を解除*/
+    getImgWinRegistory().erase(reinterpret_cast<uintptr_t>(ptr));
+    size_t count = getImgWinRegistory().size();
+    permanentStatusBar->setText(QString::number(count));
+    ui->statusBar->addPermanentWidget(permanentStatusBar);
+    std::printf("Erase a image window. Given is %p.\n", ptr);
 }
 
 
@@ -82,6 +93,9 @@ void MainWindow::slotActMenubarFileNew()
     getImgWinRegistory()[reinterpret_cast<uintptr_t>(tmpImgWin)] =  tmpImgWin;
     tmpImgWin->show();
     tmpImgWin->activateWindow();
+
+    permanentStatusBar->setText(QString::number(getImgWinRegistory().size()));
+    ui->statusBar->addPermanentWidget(permanentStatusBar);
 }
 
 /**

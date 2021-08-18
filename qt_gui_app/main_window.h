@@ -6,6 +6,7 @@
 #include <QMainWindow>
 #include <QImage>
 #include <QString>
+#include <QLabel>
 
 #include <map>
 
@@ -17,7 +18,9 @@ QT_END_NAMESPACE
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+    Q_DISABLE_COPY(MainWindow)
     Ui::MainWindow *ui;
+    QLabel* permanentStatusBar;
 
 private:
     
@@ -27,7 +30,7 @@ private:
     // void customConnection();
     
 public:
-    MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
     virtual ~MainWindow();
 
     /*ImageWindow*/
@@ -37,6 +40,7 @@ public:
 signals:
 
 public slots:
+    void slotEraseImageWindow(ImageWindow *ptr);
 
 private slots:
 
