@@ -21,6 +21,7 @@ class MainWindow : public QMainWindow
     Q_DISABLE_COPY(MainWindow)
     Ui::MainWindow *ui;
     QLabel* permanentStatusBar;
+    ImageWindow* lastActiveImgWin;
 
 private:
     
@@ -41,6 +42,7 @@ signals:
 
 public slots:
     void slotEraseImageWindow(ImageWindow *ptr);
+    void slotActiveImageWindow(ImageWindow *ptr);
 
 private slots:
 

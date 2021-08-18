@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow())
     , permanentStatusBar(new QLabel())
+    , lastActiveImgWin(nullptr)
 {
     // UI
     ui->setupUi(this);
@@ -44,11 +45,23 @@ MainWindow::ImgWinRegistory_t& MainWindow::getImgWinRegistory()
 void MainWindow::slotEraseImageWindow(ImageWindow *ptr)
 {
     /*指定のImageWindowの登録を解除*/
+
     getImgWinRegistory().erase(reinterpret_cast<uintptr_t>(ptr));
     size_t count = getImgWinRegistory().size();
     permanentStatusBar->setText(QString::number(count));
     ui->statusBar->addPermanentWidget(permanentStatusBar);
     std::printf("Erase a image window. Given is %p.\n", ptr);
+
+    if (lastActiveImgWin == ptr)
+    {
+        lastActiveImgWin = nullptr;
+    }
+}
+
+/*public slot*/
+void MainWindow::slotActiveImageWindow(ImageWindow *ptr)
+{
+    lastActiveImgWin = ptr;
 }
 
 
@@ -60,25 +73,37 @@ void MainWindow::menubarConnection()
 {
     /* File */
     // New
-    connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(slotActMenubarFileNew()));  
+    connect(ui->actionNew, SIGNAL(triggered()), 
+        this, SLOT(slotActMenubarFileNew()));  
     // Open   
-    connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(slotActMenubarFileOpen()));   
+    connect(ui->actionOpen, SIGNAL(triggered()), 
+        this, SLOT(slotActMenubarFileOpen()));   
     // Close
-    connect(ui->actionClose, SIGNAL(triggered()), this, SLOT(slotActMenubarFileClose())); 
+    connect(ui->actionClose, SIGNAL(triggered()), 
+        this, SLOT(slotActMenubarFileClose())); 
     // Close All
-    connect(ui->actionClose_All, SIGNAL(triggered()), this, SLOT(slotActMenubarFileCloseAll())); 
+    connect(ui->actionClose_All, SIGNAL(triggered()), 
+        this, SLOT(slotActMenubarFileCloseAll())); 
     // Save
-    connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(slotActMenubarFileSave()));
+    connect(ui->actionSave, SIGNAL(triggered()), 
+        this, SLOT(slotActMenubarFileSave()));
     // SaveAs
-    connect(ui->actionBMP, SIGNAL(triggered()), this, SLOT(slotActMenubarFileSaveAs()));
-    connect(ui->actionJPEG, SIGNAL(triggered()), this, SLOT(slotActMenubarFileSaveAs()));
-    connect(ui->actionJPG, SIGNAL(triggered()), this, SLOT(slotActMenubarFileSaveAs()));
-    connect(ui->actionPNG, SIGNAL(triggered()), this, SLOT(slotActMenubarFileSaveAs()));
-    connect(ui->actionCSV, SIGNAL(triggered()), this, SLOT(slotActMenubarFileSaveAs()));
+    connect(ui->actionBMP, SIGNAL(triggered()), 
+        this, SLOT(slotActMenubarFileSaveAs()));
+    connect(ui->actionJPEG, SIGNAL(triggered()), 
+        this, SLOT(slotActMenubarFileSaveAs()));
+    connect(ui->actionJPG, SIGNAL(triggered()), 
+        this, SLOT(slotActMenubarFileSaveAs()));
+    connect(ui->actionPNG, SIGNAL(triggered()), 
+        this, SLOT(slotActMenubarFileSaveAs()));
+    connect(ui->actionCSV, SIGNAL(triggered()), 
+        this, SLOT(slotActMenubarFileSaveAs()));
     // Print
-    connect(ui->actionPrint, SIGNAL(triggered()), this, SLOT(slotActMenubarFilePrint())); 
+    connect(ui->actionPrint, SIGNAL(triggered()), 
+        this, SLOT(slotActMenubarFilePrint())); 
     // Quit
-    connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(slotActMenubarFileQuit())); 
+    connect(ui->actionQuit, SIGNAL(triggered()), 
+        this, SLOT(slotActMenubarFileQuit())); 
 
 }
 

@@ -30,10 +30,11 @@ public:
     virtual ~ImageWindow();
 
 protected:
-    // virtual bool event(QEvent *event) override;
+    virtual bool event(QEvent *event) override;
     virtual void closeEvent(QCloseEvent *event) override;
 
 signals:
     void eraseImageWindow(ImageWindow *ptr);
+    void activeImageWindow(ImageWindow *ptr);
 
 };

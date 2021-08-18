@@ -36,11 +36,28 @@ ImageWindow::~ImageWindow()
 void ImageWindow::customConnection()
 {
     /* ImageWindow -> MainWindow */
-    connect(this, &ImageWindow::eraseImageWindow, (MainWindow *)(this->parent()), &MainWindow::slotEraseImageWindow);
+    connect(this, &ImageWindow::eraseImageWindow, 
+        (MainWindow *)(this->parent()), &MainWindow::slotEraseImageWindow);
+    connect(this, &ImageWindow::activeImageWindow, 
+        (MainWindow *)(this->parent()), &MainWindow::slotActiveImageWindow);
 }
 
 void ImageWindow::closeEvent(QCloseEvent *event)
 {
     /*登録解除*/
     emit eraseImageWindow(this);
+}
+
+
+bool ImageWindow::event(QEvent *event)
+{
+    /*イベントの基底*/
+    // 各イベントが到達する前にフックする.
+
+    if (event->type() == QEvent::WindowActivate)
+    {
+        emit activeImageWindow(this);
+    }
+
+    return this->event(event);
 }
