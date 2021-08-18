@@ -23,20 +23,15 @@ message(STATUS "========== [END] Version Management ==========")
 ###############################################################################
 message(STATUS "========== [START] Preprocessing ==========")
 
-# pythonコマンドをCMakeで使えるようにする
+# # pythonコマンドをCMakeで使えるようにする
+# set(PYTHON_COMMAND_NAME "python3") # どのインタープリタが選ばれるかはPCの設定次第. もっと詳細設定をコマンドライン引数から与えても良いと思う.
 # find_program(PYTHON_INTERPRETER ${PYTHON_COMMAND_NAME})
-if(NOT EXISTS ${PYTHON_INTERPRETER})
-    find_program(PYTHON_INTERPRETER "python3")
-    if(NOT EXISTS ${PYTHON_INTERPRETER})
-        find_program(PYTHON_INTERPRETER "python")
-        if(NOT EXISTS ${PYTHON_INTERPRETER})
-            message(FATAL_ERROR "python [${PYTHON_INTERPRETER}] not found.")
-            error() # Place Unknown command to stop cmake process here.
-        endif()
-    endif()
-endif()
-set(PYTHON_COMMAND "${PYTHON_INTERPRETER}")
-message(STATUS "python interpreter: ${PYTHON_INTERPRETER}")
+# if(NOT EXISTS ${PYTHON_INTERPRETER})
+#     message(FATAL_ERROR "Python [${PYTHON_INTERPRETER}] not found.")
+#     error() # Place Unknown command to stop cmake process here.
+# endif()
+# set(PYTHON_COMMAND "${PYTHON_INTERPRETER}")
+# message(STATUS "Python3 Interpreter: ${PYTHON_INTERPRETER}")
 
 message(STATUS "========== [END] Preprocessing ==========")
 
@@ -87,25 +82,54 @@ if (MSVC)
 
     # C++11以降を利用した場合にマクロ変数__cplusplusの値を利用中のC++バージョンに合わせる(つけないとC++98相当の値になる)
     add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/Zc:__cplusplus>")
-    string(APPEND CMAKE_CXX_FLAGS " /Zc:__cplusplus")
 
     # オブジェクトファイル(*.obj)のサイズ制限を解放
     add_compile_options("$<$<C_COMPILER_ID:MSVC>:/bigobj>")
     add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/bigobj>")
 
+    # プリプロセッサ準拠モードを有効にする
+    # https://docs.microsoft.com/ja-jp/cpp/preprocessor/preprocessor-experimental-overview?view=msvc-160
+    # https://docs.microsoft.com/ja-jp/cpp/build/reference/zc-preprocessor?view=msvc-160
+    add_compile_options("$<$<C_COMPILER_ID:MSVC>:/Zc:preprocessor>")
+    add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/Zc:preprocessor>")
+
+
+    # MSVCの標準逸脱のコンパイラ仕様を回避する
+    add_compile_definitions(_CRT_NONSTDC_NO_DEPRECATE) # mkdir, closeなどPOSIX関数でコンパイル時に警告発生（unsafe）を抑制.
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS) # strcpy、sprinitfなどでコンパイル時に警告発生（unsafe）を抑制.
+    add_compile_definitions(_USE_MATH_DEFINES) # math.hに定義されている円周率等の物理定数を有効化する.
+
     # プリコンパイル済みヘッダーの生成と利用
     if(BUILD_CPP_COMPILE_PCH)
 
     endif()
-
     if(BUILD_CPP_USE_PCH)
-
+        # add_compile_options("$<$<C_COMPILER_ID:MSVC>:/Yu>")
+        # add_compile_options("$<$<CXX_CPMPILER_ID:MSVC>:/Yu>")
     endif()
 
 elseif(APPLE)
     message(STATUS "Compiler: Clang in macOS")    
 
-    message(FATAL_ERROR "No Implimentation of LLVM with Clang(++) in macOS.")
+    # message(FATAL_ERROR "No Implimentation of LLVM with Clang(++) in macOS.")
+
+    # Build Options(マルチコンフィギュレーション対応)
+    set(CMAKE_CXX_FLAGS "-O1")
+    set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+    set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -DNDEBUG")
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
+
+    if(BUILD_OPENMP)
+        add_compile_options("$<$<C_COMPILER_ID:GCC>:-fopenmp>")
+        add_compile_options("$<$<CXX_COMPILER_ID:GCC>:-fopenmp>")
+    endif()
+
+    # C++標準に準拠しない拡張機能を無効化
+    # string(APPEND CMAKE_CXX_FLAGS " --pedantic-errors")
+
+    string(APPEND CMAKE_CXX_FLAGS " -pedantic")
+    string(APPEND CMAKE_CXX_FLAGS " -Wall")
 
 else()
     message(STATUS "Compiler: GCC in Linux")
@@ -119,6 +143,11 @@ else()
     set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
     set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -DNDEBUG")
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -DNDEBUG")
+
+    if(BUILD_OPENMP)
+        add_compile_options("$<$<C_COMPILER_ID:GCC>:-fopenmp>")
+        add_compile_options("$<$<CXX_COMPILER_ID:GCC>:-fopenmp>")
+    endif()
 
     # C++標準に準拠しない拡張機能を無効化
     string(APPEND CMAKE_CXX_FLAGS " --pedantic-errors")
@@ -171,81 +200,6 @@ message(STATUS "CMAKE_CXX_FLAGS_RELWITHDEBINFO: ${CMAKE_CXX_FLAGS_RELWITHDEBINFO
 message(STATUS "========== [END] C++ All Target Options ==========")
 
 ###############################################################################
-# Qt Configuration
-###############################################################################
-message(STATUS "========== [START] Qt Configuration ==========")
-
-# Qt uic, moc, rcc
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-
-# Qt Root Dir (環境変数から取得) for find_package cofig mode.
-if($ENV{QT5_DIR} STREQUAL "")
-    message(FATAL_ERROR "Not found QT5_DIR env path.")
-endif()
-message(STATUS "Qt env path: $ENV{QT5_DIR}")
-
-if(MSVC)
-    string(REPLACE "\\" "/" QT_DIR $ENV{QT5_DIR})
-endif()
-message(STATUS "Qt path: ${QT_DIR}")
-
-
-set(QT_QPA_PLATFORM_PLUGIN_DIR ${QT_DIR}/plugins/platforms)
-list(APPEND CMAKE_PREFIX_PATH ${QT_DIR})
-message(STATUS "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
-# set(Qt5_DIR ${QT_DIR}/lib/cmake CACHE PATH "Qt5 cmake script path")
-# message(STATUS "Qt cmake script path: $CACHE{Qt5_DIR}")
-
-find_package(QT NAMES Qt5 CONFIG)
-
-if(QT_FOUND)
-
-    message(STATUS "Found Qt Library.")
-    message(STATUS "Qt Version Major : ${QT_VERSION_MAJOR}")
-    message(STATUS "Qt Config File Path: ${QT_CONFIG}")
-
-    find_package(Qt${QT_VERSION_MAJOR} CONFIG REQUIRED COMPONENTS
-        Core
-        Gui
-        Widgets
-        Charts
-        LinguistTools        
-    )
-
-    # Windows 拡張ライブラリ
-    if(WIN32)
-        find_package(Qt${QT_VERSION_MAJOR} CONFIG REQUIRED COMPONENTS
-            WinExtras
-        )
-    endif()
-
-   
-    # 多言語サポート
-    file(GLOB QT_TS_FILES "*.ts")
-    qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${QT_TS_FILES})
-
-    # UIファイル
-    list(APPEND CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_SOURCE_DIR}/ui)
-    message(STATUS "Auto Search Path List for AUTOUIC of Qt: ${CMAKE_AUTOUIC_SEARCH_PATHS}")
-    file(GLOB QT_UI_FORMS ${CMAKE_SOURCE_DIR}/ui/*.ui)
-    message(STATUS "Qt Ui Files: ${QT_UI_FORMS}")
-
-    # AUTOUICで作成されたUI-Formのヘッダー内に自作の格上げしたクラスのヘッダーを入れることになるので、必要
-    set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-    # RCCファイル
-    file(GLOB QT_RC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/rcc/*.qrc)
-    message(STATUS "Qt Rcc Files: ${QT_RC_FILES}")
-
-else()
-    message(FATAL_ERROR "Qt ${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH} is not found.")
-endif()
-
-message(STATUS "========== [END] Qt Configuration ==========")
-
-###############################################################################
 # C++ core
 ###############################################################################
 message(STATUS "========== [START] C++ Build Core ==========")
@@ -254,85 +208,8 @@ message(STATUS "========== [START] C++ Build Core ==========")
 
 
 # ========== Executable File ==========
-# Header Files
-file(GLOB EXE_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
-message("Header Files: ${EXE_INCLUDES}")
+add_subdirectory(qt_gui_app)
 
-# Source Files
-file(GLOB EXE_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
-message("Source Files: ${EXE_SOURCES}")
-
-
-# Bug fix: Force MOC to generate moc_<basename>.cpp.
-# AUTOMOC in msvc2019 @ windows10 does NOT generate moc_<basename>.cpp.
-if(MSVC)
-    message(STATUS "Generate Qt moc files...")
-    message(STATUS "Because AUTOMOC in ${CMAKE_GENERATOR}, ${CMAKE_GENERATOR_PLATFORM} @ Windows10 does NOT generate moc_<basename>.cpp.")
-    file(GLOB QT_HEADER_FOR_MOC RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} 
-        ./*.h
-    )
-    message(STATUS  "QT_HEADER_FOR_MOC: ${QT_HEADER_FOR_MOC}")
-    if(${QT_VERSION_MAJOR} EQUAL 5)
-        qt5_wrap_cpp(QT_MOC_FILES ${QT_HEADER_FOR_MOC} TARGET ${PROJECT_NAME})
-    else()
-        qt_wrap_cpp(QT_MOC_FILES ${QT_HEADER_FOR_MOC} TARGET ${PROJECT_NAME})
-    endif()
-    message(STATUS "QT_MOC_FILES")
-    list(APPEND EXE_SOURCES ${QT_MOC_FILES})
-    message(STATUS "EXE_SOURCES: ${EXE_SOURCES}")
-endif()
-
-# Executable
-# add_executable(${PROJECT_NAME}
-#             ${EXE_INCLUDES}      # Exe用ヘッダーファイル
-#             ${EXE_SOURCES}       # Exe用ソースファイル
-#             ${RC_FILES}          # Qt-RCCリソースファイル
-#             ${TS_FILES}          # Qt-TSファイル
-# )
-add_executable(${PROJECT_NAME}
-            main.cpp
-            main_window.h
-            main_window.cpp
-            defs.h
-            common.h
-            image_table_view.h
-            image_table_view.cpp
-)
-
-target_sources(${PROJECT_NAME} PRIVATE
-    ${QT_TS_FILES}
-    ${QT_RC_FILES}
-)
-
-# QtのAUTOUICで生成されたUIヘッダーファイルは自動でINCLUDE_DIRECTORIESに格納されるが、一応明記.
-target_include_directories(${PROJECT_NAME} PRIVATE
-                        ${QT_UI_INCLUDE_DIR}
-)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE 
-                    Qt${QT_VERSION_MAJOR}::Widgets
-                    Qt${QT_VERSION_MAJOR}::Core
-                    Qt${QT_VERSION_MAJOR}::Gui)
-
-# Qt dllファイルを実行ファイル.exeと同じフォルダにコピーする
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt${QT_VERSION_MAJOR}::Widgets> $<TARGET_FILE_DIR:${PROJECT_NAME}>
-	COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt${QT_VERSION_MAJOR}::Core> $<TARGET_FILE_DIR:${PROJECT_NAME}>
-	COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt${QT_VERSION_MAJOR}::Gui> $<TARGET_FILE_DIR:${PROJECT_NAME}>
-)
-
-# Windows OS 依存のライブラリ
-if(MSVC)
-    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt${QT_VERSION_MAJOR}::WinExtras> $<TARGET_FILE_DIR:${PROJECT_NAME}>
-    )
-
-    # Qt5 pluginファイルを実行ファイル.exeと同じフォルダにコピーする
-	add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-		COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt${QT_VERSION_MAJOR}::QWindowsIntegrationPlugin> $<TARGET_FILE_DIR:${PROJECT_NAME}>
-		COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt${QT_VERSION_MAJOR}::QWindowsDirect2DIntegrationPlugin> $<TARGET_FILE_DIR:${PROJECT_NAME}>
-    )
-endif()
 
 message(STATUS "========== [END] C++ Build Core ==========")
 ###############################################################################

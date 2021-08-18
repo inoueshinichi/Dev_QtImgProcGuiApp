@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>943</width>
-    <height>327</height>
+    <width>864</width>
+    <height>129</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -36,44 +36,6 @@
     <enum>Qt::DefaultContextMenu</enum>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QRadioButton" name="rBtn_View_Mode">
-          <property name="text">
-           <string>View</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QRadioButton" name="rBtn_File_Mode">
-          <property name="text">
-           <string>File</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </item>
-    <item row="2" column="0" colspan="2">
-     <widget class="ImageTableView" name="tView_ImageTable">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="acceptDrops">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
     <item row="0" column="1">
      <layout class="QGridLayout" name="gridLayout">
       <property name="horizontalSpacing">
@@ -124,64 +86,24 @@
       </item>
      </layout>
     </item>
-    <item row="1" column="0" colspan="2">
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <item row="0" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QPushButton" name="pBtn_ImageTable_Review">
-        <property name="text">
-         <string>Review</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pBtn_ImageTable_All_Check">
-        <property name="text">
-         <string>All Check</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pBtn_ImageTable_All_Uncheck">
-        <property name="text">
-         <string>All Uncheck</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="lEdit_ImageTable_Search_Recode">
-        <property name="placeholderText">
-         <string>Search Name</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QLabel" name="lbl_ImageTable_Target_Count">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
+         <widget class="QRadioButton" name="rBtn_View_Mode">
           <property name="text">
-           <string>Target Count</string>
+           <string>View</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lEdit_ImageTable_Target_Count">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>50</width>
-            <height>16777215</height>
-           </size>
+         <widget class="QRadioButton" name="rBtn_File_Mode">
+          <property name="text">
+           <string>File</string>
           </property>
          </widget>
         </item>
@@ -196,8 +118,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>943</width>
-     <height>28</height>
+     <width>864</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1360,13 +1282,6 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>ImageTableView</class>
-   <extends>QTableView</extends>
-   <header>image_table_view.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>
