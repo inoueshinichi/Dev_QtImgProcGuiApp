@@ -79,6 +79,16 @@ endif()
 # ライブラリターゲット設定(注意: AUTO_UIC以降で設定しないと、AUTO_UICが起動しない)
 add_executable(${APP_TARGET_NAME})
 
+# 警告の抑制
+if(MSVC)
+    # Warning 抑制 C5054 (演算子の異なる列挙間では非推奨を無視)
+    # https://docs.microsoft.com/ja-jp/cpp/error-messages/compiler-warnings/compiler-warnings-c4800-through-c4999?view=msvc-160
+    target_compile_options(${APP_TARGET_NAME} PRIVATE /wd5054)
+elseif(APPLE)
+
+else()
+
+endif()
 
 ###############################################################################
 # AUTOUIC, AUTOMOC と qt_wrap_ui, qt_wrap_cpp の切り替え
