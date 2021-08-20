@@ -8,7 +8,7 @@
 #include <QString>
 #include <QLabel>
 
-#include <map>
+#include <set>
 
 
 QT_BEGIN_NAMESPACE
@@ -19,9 +19,9 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
     Q_DISABLE_COPY(MainWindow)
-    Ui::MainWindow *ui;
-    QLabel* permanentStatusBar;
-    ImageWindow* lastActiveImgWin;
+    Ui::MainWindow *m_pUi;
+    QLabel* m_pStatusBarLabel;
+    ImageWindow* m_pLastActiveImgWin;
 
 private:
     
@@ -35,14 +35,14 @@ public:
     virtual ~MainWindow();
 
     /*ImageWindow*/
-    using ImgWinRegistory_t = std::map<uintptr_t, ImageWindow*>;
+    using ImgWinRegistory_t = std::set<ImageWindow*>;
     static ImgWinRegistory_t& getImgWinRegistory();
 
 signals:
-
+    
 public slots:
-    void slotEraseImageWindow(ImageWindow *ptr);
-    void slotActiveImageWindow(ImageWindow *ptr);
+    void slotRmImgWin(ImageWindow *ptr);
+    // void slotActiveImgWin(ImageWindow *ptr);
 
 private slots:
 

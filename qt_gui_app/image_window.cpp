@@ -7,20 +7,21 @@
 
 ImageWindow::ImageWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::ImageWindow())
-    , permanentStatusBar(new QLabel())
+    , m_pUi(new Ui::ImageWindow())
+    , m_pStatusBarLabel(new QLabel())
 {
     // ui
-    ui->setupUi(this);
+    m_pUi->setupUi(this);
     this->setAttribute(Qt::WA_DeleteOnClose);
 
     // view
-    scene = new ImageScene(this);
-    ui->graphicsViewImage->setScene(scene);
+    m_pScene = new ImageScene(this);
+    m_pUi->graphicsViewImage->setScene(m_pScene);
 
     // statusbar
-    permanentStatusBar->setText("SceneRect (0, 0, 0, 0)");
-    ui->statusbar->addPermanentWidget(permanentStatusBar);
+
+    m_pStatusBarLabel->setText(tr("SceneRect (0, 0, 0, 0)"));
+    m_pUi->statusbar->addPermanentWidget(m_pStatusBarLabel);
 
     /*Singal/Slot*/
     customConnection();
@@ -29,23 +30,23 @@ ImageWindow::ImageWindow(QWidget *parent)
 
 ImageWindow::~ImageWindow()
 {
-    if (ui) delete ui;
-    if (scene) delete scene;
+    if (m_pUi) delete m_pUi;
+    if (m_pScene) delete m_pScene;
 }
 
 void ImageWindow::customConnection()
 {
     /* ImageWindow -> MainWindow */
-    connect(this, &ImageWindow::eraseImageWindow, 
-        (MainWindow *)(this->parent()), &MainWindow::slotEraseImageWindow);
-    connect(this, &ImageWindow::activeImageWindow, 
-        (MainWindow *)(this->parent()), &MainWindow::slotActiveImageWindow);
+    connect(this, &ImageWindow::rmImgWin, 
+        (MainWindow *)(this->parent()), &MainWindow::slotRmImgWin);
+    // connect(this, &ImageWindow::activeImgWin, 
+    //     (MainWindow *)(this->parent()), &MainWindow::slotActiveImgWin);
 }
 
 void ImageWindow::closeEvent(QCloseEvent *event)
 {
     /*登録解除*/
-    emit eraseImageWindow(this);
+    emit rmImgWin(this);
 }
 
 
@@ -56,8 +57,8 @@ bool ImageWindow::event(QEvent *event)
 
     if (event->type() == QEvent::WindowActivate)
     {
-        emit activeImageWindow(this);
+        // emit activeImgWin(this);
     }
 
-    return this->event(event);
+    return QMainWindow::event(event);
 }

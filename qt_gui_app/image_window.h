@@ -18,10 +18,10 @@ class ImageWindow : public QMainWindow
 {
     Q_OBJECT
 
-    Ui::ImageWindow *ui;
-    ImageScene* scene;
-    QLabel *permanentStatusBar;
-    QString filename;
+    Ui::ImageWindow *m_pUi;
+    ImageScene *m_pScene;
+    QLabel *m_pStatusBarLabel;
+    QString m_filename;
 
     void customConnection();
 
@@ -34,7 +34,8 @@ protected:
     virtual void closeEvent(QCloseEvent *event) override;
 
 signals:
-    void eraseImageWindow(ImageWindow *ptr);
-    void activeImageWindow(ImageWindow *ptr);
+    void rmImgWin(ImageWindow* ptr);
+    void activeImgWin(ImageWindow* ptr);
+
 
 };

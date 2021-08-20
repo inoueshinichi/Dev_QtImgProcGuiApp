@@ -13,12 +13,12 @@
  */
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow())
-    , permanentStatusBar(new QLabel())
-    , lastActiveImgWin(nullptr)
+    , m_pUi(new Ui::MainWindow())
+    , m_pStatusBarLabel(new QLabel())
+    , m_pLastActiveImgWin(nullptr)
 {
     // UI
-    ui->setupUi(this);
+    m_pUi->setupUi(this);
 
     /* Signal & Slot */
     menubarConnection();
@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
  */
 MainWindow::~MainWindow() 
 {
-    if (ui) delete ui;
+    if (m_pUi) delete m_pUi;
 }
 
 
@@ -42,27 +42,27 @@ MainWindow::ImgWinRegistory_t& MainWindow::getImgWinRegistory()
 
 
 /*public slot*/
-void MainWindow::slotEraseImageWindow(ImageWindow *ptr)
+void MainWindow::slotRmImgWin(ImageWindow *ptr)
 {
     /*指定のImageWindowの登録を解除*/
 
-    getImgWinRegistory().erase(reinterpret_cast<uintptr_t>(ptr));
+    getImgWinRegistory().erase(ptr);
     size_t count = getImgWinRegistory().size();
-    permanentStatusBar->setText(QString::number(count));
-    ui->statusBar->addPermanentWidget(permanentStatusBar);
+    m_pStatusBarLabel->setText(QString::number(count));
+    m_pUi->statusBar->addPermanentWidget(m_pStatusBarLabel);
     std::printf("Erase a image window. Given is %p.\n", ptr);
 
-    if (lastActiveImgWin == ptr)
+    if (m_pLastActiveImgWin == ptr)
     {
-        lastActiveImgWin = nullptr;
+        m_pLastActiveImgWin = nullptr;
     }
 }
 
-/*public slot*/
-void MainWindow::slotActiveImageWindow(ImageWindow *ptr)
-{
-    lastActiveImgWin = ptr;
-}
+// /*public slot*/
+// void MainWindow::slotActiveImgWin(ImageWindow *ptr)
+// {
+//     m_pLastActiveImgWin = ptr;
+// }
 
 
 /**
@@ -73,36 +73,36 @@ void MainWindow::menubarConnection()
 {
     /* File */
     // New
-    connect(ui->actionNew, SIGNAL(triggered()), 
+    connect(m_pUi->actionNew, SIGNAL(triggered()), 
         this, SLOT(slotActMenubarFileNew()));  
     // Open   
-    connect(ui->actionOpen, SIGNAL(triggered()), 
+    connect(m_pUi->actionOpen, SIGNAL(triggered()), 
         this, SLOT(slotActMenubarFileOpen()));   
     // Close
-    connect(ui->actionClose, SIGNAL(triggered()), 
+    connect(m_pUi->actionClose, SIGNAL(triggered()), 
         this, SLOT(slotActMenubarFileClose())); 
     // Close All
-    connect(ui->actionClose_All, SIGNAL(triggered()), 
+    connect(m_pUi->actionClose_All, SIGNAL(triggered()), 
         this, SLOT(slotActMenubarFileCloseAll())); 
     // Save
-    connect(ui->actionSave, SIGNAL(triggered()), 
+    connect(m_pUi->actionSave, SIGNAL(triggered()), 
         this, SLOT(slotActMenubarFileSave()));
     // SaveAs
-    connect(ui->actionBMP, SIGNAL(triggered()), 
+    connect(m_pUi->actionBMP, SIGNAL(triggered()), 
         this, SLOT(slotActMenubarFileSaveAs()));
-    connect(ui->actionJPEG, SIGNAL(triggered()), 
+    connect(m_pUi->actionJPEG, SIGNAL(triggered()), 
         this, SLOT(slotActMenubarFileSaveAs()));
-    connect(ui->actionJPG, SIGNAL(triggered()), 
+    connect(m_pUi->actionJPG, SIGNAL(triggered()), 
         this, SLOT(slotActMenubarFileSaveAs()));
-    connect(ui->actionPNG, SIGNAL(triggered()), 
+    connect(m_pUi->actionPNG, SIGNAL(triggered()), 
         this, SLOT(slotActMenubarFileSaveAs()));
-    connect(ui->actionCSV, SIGNAL(triggered()), 
+    connect(m_pUi->actionCSV, SIGNAL(triggered()), 
         this, SLOT(slotActMenubarFileSaveAs()));
     // Print
-    connect(ui->actionPrint, SIGNAL(triggered()), 
+    connect(m_pUi->actionPrint, SIGNAL(triggered()), 
         this, SLOT(slotActMenubarFilePrint())); 
     // Quit
-    connect(ui->actionQuit, SIGNAL(triggered()), 
+    connect(m_pUi->actionQuit, SIGNAL(triggered()), 
         this, SLOT(slotActMenubarFileQuit())); 
 
 }
@@ -114,13 +114,13 @@ void MainWindow::menubarConnection()
 void MainWindow::slotActMenubarFileNew()
 {
     // テスト ImageWindowの生成
-    ImageWindow* tmpImgWin = new ImageWindow(this);
-    getImgWinRegistory()[reinterpret_cast<uintptr_t>(tmpImgWin)] =  tmpImgWin;
-    tmpImgWin->show();
-    tmpImgWin->activateWindow();
+    ImageWindow* pImgWin = new ImageWindow(this);
+    getImgWinRegistory().insert(pImgWin);
+    pImgWin->show();
+    pImgWin->activateWindow();
 
-    permanentStatusBar->setText(QString::number(getImgWinRegistory().size()));
-    ui->statusBar->addPermanentWidget(permanentStatusBar);
+    m_pStatusBarLabel->setText(QString::number(getImgWinRegistory().size()));
+    m_pUi->statusBar->addPermanentWidget(m_pStatusBarLabel);
 }
 
 /**
