@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.14.0)
 message(STATUS "---> Qt Application")
 
 
-project(qt_gui_app LANGUAGES CXX VERSION 0.1.0)
+project(QtGuiApp LANGUAGES CXX VERSION 0.1.0)
 
 set(APP_TARGET_NAME ${PROJECT_NAME})
 

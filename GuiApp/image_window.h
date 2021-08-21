@@ -31,6 +31,7 @@ public:
 
     void setFilename(const QString& filename);
     QString filename() const;
+    ImageScene* scene() const;
 
     // void toggleCrossLine(bool isShow);
     // void toggleProfile(bool isShow);

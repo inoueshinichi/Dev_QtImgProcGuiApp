@@ -7,6 +7,10 @@
 #include <string>
 #include <iostream>
 
+//////////////////////////////////////////////////////////
+// ctor/dtor
+//////////////////////////////////////////////////////////
+
 ImageWindow::ImageWindow(QWidget *p_parent)
     : QMainWindow(p_parent)
     , m_pUi(new Ui::ImageWindow())
@@ -32,9 +36,22 @@ ImageWindow::ImageWindow(QWidget *p_parent)
 
 ImageWindow::~ImageWindow()
 {
-    if (m_pUi) delete m_pUi;
-    if (m_pScene) delete m_pScene;
+    if (m_pUi) 
+    {
+        delete m_pUi;
+        m_pUi = nullptr;
+    }
+
+    if (m_pScene)
+    {
+        delete m_pScene;
+        m_pScene = nullptr;
+    }
 }
+
+//////////////////////////////////////////////////////////
+// private method
+//////////////////////////////////////////////////////////
 
 void ImageWindow::customConnection()
 {
@@ -44,6 +61,32 @@ void ImageWindow::customConnection()
     // connect(this, &ImageWindow::activeImgWin, 
     //     (MainWindow *)(this->parent()), &MainWindow::slotActiveImgWin);
 }
+
+bool ImageWindow::event(QEvent *event)
+{
+    /*イベントの基底*/
+    // 各イベントが到達する前にフックする.
+
+    if (event->type() == QEvent::WindowActivate)
+    {
+        // emit activeImgWin(this);
+    }
+
+    return QMainWindow::event(event);
+}
+
+//////////////////////////////////////////////////////////
+// protected method
+//////////////////////////////////////////////////////////
+void ImageWindow::closeEvent(QCloseEvent *event)
+{
+    /*登録解除*/
+    emit rmImgWin(this);
+}
+
+//////////////////////////////////////////////////////////
+// public method
+//////////////////////////////////////////////////////////
 
 void ImageWindow::setFilename(const QString& filename)
 {
@@ -69,6 +112,7 @@ void ImageWindow::setFilename(const QString& filename)
 
 QString ImageWindow::filename() const { return m_filename; }
 
+ImageScene* ImageWindow::scene() const { return m_pScene; }
 
 // void ImageWindow::toggleCrossLine(bool isShow)
 // {
@@ -76,23 +120,10 @@ QString ImageWindow::filename() const { return m_filename; }
 //     m_pScene->> toggleCrossLine(isShow);
 // }
 
+//////////////////////////////////////////////////////////
+// public slot method
+//////////////////////////////////////////////////////////
 
-void ImageWindow::closeEvent(QCloseEvent *event)
-{
-    /*登録解除*/
-    emit rmImgWin(this);
-}
-
-
-bool ImageWindow::event(QEvent *event)
-{
-    /*イベントの基底*/
-    // 各イベントが到達する前にフックする.
-
-    if (event->type() == QEvent::WindowActivate)
-    {
-        // emit activeImgWin(this);
-    }
-
-    return QMainWindow::event(event);
-}
+//////////////////////////////////////////////////////////
+// private slot method
+//////////////////////////////////////////////////////////

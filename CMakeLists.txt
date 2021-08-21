@@ -208,7 +208,7 @@ message(STATUS "========== [START] C++ Build Core ==========")
 
 
 # ========== Executable File ==========
-add_subdirectory(qt_gui_app)
+add_subdirectory(GuiApp)
 
 
 message(STATUS "========== [END] C++ Build Core ==========")
