@@ -26,8 +26,18 @@ class ImageWindow : public QMainWindow
     void customConnection();
 
 public:
-    explicit ImageWindow(QWidget *parent = nullptr);
+    explicit ImageWindow(QWidget *p_parent = nullptr);
     virtual ~ImageWindow();
+
+    void setFilename(const QString& filename);
+    QString filename() const;
+
+    void toggleCrossLine(bool isShow);
+    void toggleProfile(bool isShow);
+    void toggleRoi(bool isShow);
+    void toggleLine(bool isShow);
+    void toggleEllipse(bool isShow);
+    void toggleMask(bool isShow);
 
 protected:
     virtual bool event(QEvent *event) override;
