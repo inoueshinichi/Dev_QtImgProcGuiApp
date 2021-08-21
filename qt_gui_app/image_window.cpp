@@ -2,6 +2,7 @@
 #include "image_window.h"
 #include "main_window.h"
 
+#include <cstring>
 #include <ctime>
 #include <string>
 #include <iostream>
@@ -69,11 +70,11 @@ void ImageWindow::setFilename(const QString& filename)
 QString ImageWindow::filename() const { return m_filename; }
 
 
-void ImageWindow::toggleCrossLine(bool isShow)
-{
-    /*マウスの十字線の表示切り替え*/
-    m_pScene->toggleCrossLine(isShow);
-}
+// void ImageWindow::toggleCrossLine(bool isShow)
+// {
+//     /*マウスの十字線の表示切り替え*/
+//     m_pScene->> toggleCrossLine(isShow);
+// }
 
 
 void ImageWindow::closeEvent(QCloseEvent *event)

@@ -10,7 +10,7 @@
 #include <Qt>
 #include <QPointF>
 #include <QRectF>
-#include <qDebug>
+// #include <qDebug>
 #include <QLineF>
 #include <QObject>
 #include <QImage>
