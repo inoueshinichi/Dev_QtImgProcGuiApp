@@ -11,8 +11,8 @@
  * 
  * @param parent 
  */
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+MainWindow::MainWindow(QWidget *p_parent)
+    : QMainWindow(p_parent)
     , m_pUi(new Ui::MainWindow())
     , m_pStatusBarLabel(new QLabel())
     , m_pLastActiveImgWin(nullptr)
@@ -58,11 +58,11 @@ void MainWindow::slotRmImgWin(ImageWindow *ptr)
     }
 }
 
-// /*public slot*/
-// void MainWindow::slotActiveImgWin(ImageWindow *ptr)
-// {
-//     m_pLastActiveImgWin = ptr;
-// }
+/*public slot*/
+void MainWindow::slotActiveImgWin(ImageWindow *ptr)
+{
+    m_pLastActiveImgWin = ptr;
+}
 
 
 /**
@@ -118,6 +118,7 @@ void MainWindow::slotActMenubarFileNew()
     getImgWinRegistory().insert(pImgWin);
     pImgWin->show();
     pImgWin->activateWindow();
+    pImgWin->setFilename(tr("TEST Image"));
 
     m_pStatusBarLabel->setText(QString::number(getImgWinRegistory().size()));
     m_pUi->statusBar->addPermanentWidget(m_pStatusBarLabel);
