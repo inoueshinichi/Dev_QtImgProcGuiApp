@@ -42,7 +42,7 @@ signals:
     
 public slots:
     void slotRmImgWin(ImageWindow *ptr);
-    // void slotActiveImgWin(ImageWindow *ptr);
+    void slotActiveImgWin(ImageWindow *ptr);
 
 private slots:
 
