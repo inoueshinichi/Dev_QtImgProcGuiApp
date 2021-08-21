@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>864</width>
-    <height>129</height>
+    <height>274</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -35,81 +35,98 @@
    <property name="contextMenuPolicy">
     <enum>Qt::DefaultContextMenu</enum>
    </property>
-   <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="1">
-     <layout class="QGridLayout" name="gridLayout">
-      <property name="horizontalSpacing">
-       <number>0</number>
-      </property>
-      <item row="0" column="0">
-       <widget class="QLineEdit" name="lEdit_Input_Dir">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="placeholderText">
-         <string>Input Directory</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QToolButton" name="tBtn_Input_Dir">
-        <property name="text">
-         <string>...</string>
-        </property>
-        <property name="popupMode">
-         <enum>QToolButton::DelayedPopup</enum>
-        </property>
-        <property name="autoRaise">
-         <bool>false</bool>
-        </property>
-        <property name="arrowType">
-         <enum>Qt::NoArrow</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLineEdit" name="lEdit_Output_Dir">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="placeholderText">
-         <string>Output Directory</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QToolButton" name="tBtn_Output_Dir">
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="0" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout">
+       <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QRadioButton" name="rBtn_View_Mode">
-          <property name="text">
-           <string>View</string>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QRadioButton" name="radioButtonViewMode">
+            <property name="text">
+             <string>View</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radioButtonFileMode">
+            <property name="text">
+             <string>File</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QGridLayout" name="gridLayout">
+        <property name="horizontalSpacing">
+         <number>0</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QLineEdit" name="lineEditInputDir">
+          <property name="enabled">
+           <bool>false</bool>
           </property>
-          <property name="checked">
-           <bool>true</bool>
+          <property name="placeholderText">
+           <string>Input Directory</string>
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QRadioButton" name="rBtn_File_Mode">
+        <item row="0" column="1">
+         <widget class="QToolButton" name="toolButtonSelectInputDir">
           <property name="text">
-           <string>File</string>
+           <string>...</string>
+          </property>
+          <property name="popupMode">
+           <enum>QToolButton::DelayedPopup</enum>
+          </property>
+          <property name="autoRaise">
+           <bool>false</bool>
+          </property>
+          <property name="arrowType">
+           <enum>Qt::NoArrow</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLineEdit" name="lineEditOutputDir">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="placeholderText">
+           <string>Output Directory</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QToolButton" name="toolButtonSelectOutputDir">
+          <property name="text">
+           <string>...</string>
           </property>
          </widget>
         </item>
        </layout>
       </item>
      </layout>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBoxFileOperation">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="title">
+       <string>File Operation</string>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -119,32 +136,31 @@
      <x>0</x>
      <y>0</y>
      <width>864</width>
-     <height>21</height>
+     <height>28</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>File</string>
     </property>
-    <widget class="QMenu" name="menuSave_As">
+    <widget class="QMenu" name="menuSaveAs">
      <property name="title">
       <string>Save As</string>
      </property>
-     <addaction name="actionBMP"/>
-     <addaction name="actionJPG"/>
-     <addaction name="actionJPEG"/>
-     <addaction name="actionPNG"/>
+     <addaction name="actionSaveAsBmp"/>
+     <addaction name="actionSaveAsJpg"/>
+     <addaction name="actionSaveAsJpeg"/>
+     <addaction name="actionSaveAsPng"/>
      <addaction name="separator"/>
-     <addaction name="actionCSV"/>
-     <addaction name="actionXLSX"/>
+     <addaction name="actionSaveAsCsv"/>
     </widget>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
-    <addaction name="actionClose_All"/>
+    <addaction name="actionCloseAll"/>
     <addaction name="actionSave"/>
-    <addaction name="menuSave_As"/>
+    <addaction name="menuSaveAs"/>
     <addaction name="separator"/>
     <addaction name="actionPrint"/>
     <addaction name="separator"/>
@@ -161,7 +177,7 @@
     <addaction name="actionPaste"/>
     <addaction name="separator"/>
     <addaction name="actionClear"/>
-    <addaction name="actionClear_Outside"/>
+    <addaction name="actionClearOutside"/>
     <addaction name="actionFill"/>
     <addaction name="actionInvert"/>
    </widget>
@@ -173,33 +189,33 @@
      <property name="title">
       <string>Type</string>
      </property>
-     <addaction name="action8_bit"/>
-     <addaction name="action24_bit"/>
-     <addaction name="actionRGB_Color"/>
+     <addaction name="action8Bit"/>
+     <addaction name="action24Bit"/>
+     <addaction name="actionRgbColor"/>
     </widget>
     <widget class="QMenu" name="menuColor">
      <property name="title">
       <string>Color</string>
      </property>
-     <addaction name="actionRGB2Gray"/>
-     <addaction name="actionGray2RGB"/>
-     <addaction name="actionRGB2HSV"/>
-     <addaction name="actionHSV2RGB"/>
+     <addaction name="actionRgbToGray"/>
+     <addaction name="actionGrayToRgb"/>
+     <addaction name="actionRgbToHsv"/>
+     <addaction name="actionHsvToRgb"/>
      <addaction name="separator"/>
-     <addaction name="actionSplit_Channels"/>
-     <addaction name="actionMerge_Channels"/>
+     <addaction name="actionSplitChannels"/>
+     <addaction name="actionMergeChannels"/>
     </widget>
     <widget class="QMenu" name="menuTransform">
      <property name="title">
       <string>Transform</string>
      </property>
-     <addaction name="actionVertical_Flip"/>
-     <addaction name="actionHorizontal_Flip"/>
-     <addaction name="actionRotate_90_Degree_Right"/>
-     <addaction name="actionRotate_90_Degree_Left"/>
+     <addaction name="actionVerticalFlip"/>
+     <addaction name="actionHorizontalFlip"/>
+     <addaction name="actionRotate90DegreeRight"/>
+     <addaction name="actionRotate90DegreeLeft"/>
      <addaction name="actionRotate"/>
      <addaction name="actionTranslate"/>
-     <addaction name="actionBin"/>
+     <addaction name="actionDownSampling"/>
     </widget>
     <widget class="QMenu" name="menuZoom">
      <property name="title">
@@ -207,19 +223,19 @@
      </property>
      <addaction name="actionZoomIn"/>
      <addaction name="actionZoomOut"/>
-     <addaction name="actionOriginal_Scale"/>
-     <addaction name="actionFit_View"/>
+     <addaction name="actionOriginalScale"/>
+     <addaction name="actionFitView"/>
     </widget>
     <widget class="QMenu" name="menuMask">
      <property name="title">
       <string>Mask</string>
      </property>
-     <addaction name="actionMask_Import"/>
-     <addaction name="actionMask_Export"/>
+     <addaction name="actionMaskImport"/>
+     <addaction name="actionMaskExport"/>
     </widget>
     <addaction name="menuType"/>
     <addaction name="separator"/>
-    <addaction name="actionShow_Info"/>
+    <addaction name="actionShowInfo"/>
     <addaction name="menuColor"/>
     <addaction name="menuMask"/>
     <addaction name="separator"/>
@@ -237,27 +253,47 @@
      <string>Process</string>
     </property>
     <addaction name="actionBlur"/>
-    <addaction name="actionUnsharp_Masking"/>
-    <addaction name="actionEdge_Detector"/>
-    <addaction name="actionMapping"/>
+    <addaction name="actionShading"/>
+    <addaction name="actionUnsharpMasking"/>
+    <addaction name="actionEdgeDetector"/>
+    <addaction name="actionLut"/>
     <addaction name="actionBinarize"/>
     <addaction name="actionMorphology"/>
-    <addaction name="actionNoise_Denoise"/>
+    <addaction name="actionNoise"/>
     <addaction name="actionHistogram"/>
    </widget>
    <widget class="QMenu" name="menuAnalyze">
     <property name="title">
      <string>Analyze</string>
     </property>
-    <addaction name="actionLabeling"/>
+    <widget class="QMenu" name="menuLuminance">
+     <property name="title">
+      <string>Luminance</string>
+     </property>
+     <addaction name="actionShowHistogram"/>
+     <addaction name="actionSurfacePlot"/>
+    </widget>
+    <widget class="QMenu" name="menuBlob">
+     <property name="title">
+      <string>Blob</string>
+     </property>
+     <addaction name="actionLabeling"/>
+    </widget>
+    <widget class="QMenu" name="menuFrequency">
+     <property name="title">
+      <string>Frequency</string>
+     </property>
+     <addaction name="actionFft"/>
+     <addaction name="actionWavelet"/>
+    </widget>
     <addaction name="separator"/>
-    <addaction name="actionShow_Histogram"/>
-    <addaction name="actionSurface_Plot"/>
+    <addaction name="menuFrequency"/>
+    <addaction name="menuLuminance"/>
+    <addaction name="menuBlob"/>
     <addaction name="separator"/>
-    <addaction name="actionFFT"/>
-    <addaction name="actionWavelet"/>
+    <addaction name="separator"/>
    </widget>
-   <widget class="QMenu" name="menuML_DL">
+   <widget class="QMenu" name="menuMlDl">
     <property name="title">
      <string>ML/DL</string>
     </property>
@@ -265,19 +301,19 @@
      <property name="title">
       <string>Annotation</string>
      </property>
-     <addaction name="actionSimple_Annotation"/>
+     <addaction name="actionFileAnnotation"/>
      <addaction name="separator"/>
-     <addaction name="actionROI_Annotation"/>
+     <addaction name="actionRoiAnnotation"/>
     </widget>
-    <widget class="QMenu" name="menuFeature_Extraction">
+    <widget class="QMenu" name="menuFeatureExtraction">
      <property name="title">
       <string>Feature Extraction</string>
      </property>
-     <addaction name="actionPCA"/>
-     <addaction name="actionLDA"/>
-     <addaction name="actionSBS"/>
+     <addaction name="actionFxPca"/>
+     <addaction name="actionFxLda"/>
+     <addaction name="actionFxSbs"/>
     </widget>
-    <widget class="QMenu" name="menuML">
+    <widget class="QMenu" name="menuMl">
      <property name="title">
       <string>ML</string>
      </property>
@@ -285,33 +321,33 @@
       <property name="title">
        <string>Classification</string>
       </property>
-      <addaction name="actionSVM"/>
-      <addaction name="actionLogistic_Regression"/>
-      <addaction name="actionkNN"/>
+      <addaction name="actionSvm"/>
+      <addaction name="actionLogisticRegression"/>
+      <addaction name="actionKnn"/>
       <addaction name="separator"/>
-      <addaction name="actionDecision_Tree"/>
-      <addaction name="actionRandom_Forest"/>
+      <addaction name="actionDecisionTree"/>
+      <addaction name="actionRandomForest"/>
       <addaction name="separator"/>
       <addaction name="actionAdaBoost"/>
-      <addaction name="actionGradient_Boost"/>
+      <addaction name="actionGradientBoost"/>
      </widget>
      <addaction name="menuClassification"/>
     </widget>
-    <widget class="QMenu" name="menuDL">
+    <widget class="QMenu" name="menuDl">
      <property name="title">
       <string>DL</string>
      </property>
-     <addaction name="actionImage_Classification"/>
-     <addaction name="actionObject_Detection"/>
+     <addaction name="actionImageClassification"/>
+     <addaction name="actionObjectDetection"/>
     </widget>
     <addaction name="menu"/>
     <addaction name="separator"/>
     <addaction name="actionDataset"/>
     <addaction name="separator"/>
-    <addaction name="menuDL"/>
-    <addaction name="menuML"/>
+    <addaction name="menuDl"/>
+    <addaction name="menuMl"/>
     <addaction name="separator"/>
-    <addaction name="menuFeature_Extraction"/>
+    <addaction name="menuFeatureExtraction"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
@@ -327,22 +363,21 @@
     <property name="title">
      <string>Camera</string>
     </property>
-    <addaction name="actionUSB_Camera"/>
-    <addaction name="actionIP_Address_Camera"/>
+    <addaction name="actionCamUsb"/>
+    <addaction name="actionCamEthr"/>
     <addaction name="separator"/>
-    <addaction name="actionIDS_Camera"/>
-    <addaction name="actionOMRON_Camera"/>
-    <addaction name="actionBASLER_Camera"/>
-    <addaction name="actionCOGNEX_Camera"/>
+    <addaction name="actionCamIds"/>
+    <addaction name="actionCamOmron"/>
+    <addaction name="actionCamBaslar"/>
+    <addaction name="actionCamCognex"/>
    </widget>
    <widget class="QMenu" name="menuVideo">
     <property name="title">
      <string>Video</string>
     </property>
-    <addaction name="actionVideo_Generate"/>
-    <addaction name="actionVideo_Show"/>
+    <addaction name="actionVideo"/>
    </widget>
-   <widget class="QMenu" name="menuLocal_Feature">
+   <widget class="QMenu" name="menuLocalFeature">
     <property name="title">
      <string>Local Feature</string>
     </property>
@@ -350,36 +385,36 @@
      <property name="title">
       <string>KeyPoint</string>
      </property>
-     <addaction name="actionKLT_Corner"/>
-     <addaction name="actionHarris_Corner"/>
-     <addaction name="actionFAST_Corner"/>
-     <addaction name="actionAGAST_Corner"/>
+     <addaction name="actionCornerKtl"/>
+     <addaction name="actionCornerHarris"/>
+     <addaction name="actionCornerFast"/>
+     <addaction name="actionCornerAgast"/>
      <addaction name="separator"/>
     </widget>
     <widget class="QMenu" name="menuDescriptor">
      <property name="title">
       <string>Descriptor</string>
      </property>
-     <addaction name="actionBRIEF_Descriptor"/>
-     <addaction name="actionFREAK_Descriptor"/>
+     <addaction name="actionDescriptorBrief"/>
+     <addaction name="actionDescriptorFreak"/>
      <addaction name="separator"/>
-     <addaction name="actionHOG_Descriptor"/>
-     <addaction name="actionHarrLike_Descriptor"/>
-     <addaction name="actionLBP_Descriptor"/>
+     <addaction name="actionDescriptorHog"/>
+     <addaction name="actionDescriptorHarrLike"/>
+     <addaction name="actionDescriptorLbp"/>
     </widget>
-    <widget class="QMenu" name="menuKeyPoint_Descriptor">
+    <widget class="QMenu" name="menuKeyPointDescriptor">
      <property name="title">
       <string>KeyPoint&amp;Descriptor</string>
      </property>
-     <addaction name="actionORB"/>
-     <addaction name="actionBRISK"/>
-     <addaction name="actionKAZE"/>
-     <addaction name="actionAKAZE"/>
+     <addaction name="actionOrb"/>
+     <addaction name="actionBrisk"/>
+     <addaction name="actionKaze"/>
+     <addaction name="actionAkaze"/>
      <addaction name="separator"/>
-     <addaction name="actionSIFT"/>
-     <addaction name="actionSURF"/>
+     <addaction name="actionSift"/>
+     <addaction name="actionSurf"/>
     </widget>
-    <addaction name="menuKeyPoint_Descriptor"/>
+    <addaction name="menuKeyPointDescriptor"/>
     <addaction name="menuKeyPoint"/>
     <addaction name="menuDescriptor"/>
     <addaction name="separator"/>
@@ -393,51 +428,51 @@
      <property name="title">
       <string>Hough</string>
      </property>
-     <addaction name="actionHough_Line"/>
-     <addaction name="actionHough_Circle"/>
+     <addaction name="actionHoughLine"/>
+     <addaction name="actionHoughCircle"/>
     </widget>
-    <widget class="QMenu" name="menuTemplate_Matching">
+    <widget class="QMenu" name="menuTemplateMatching">
      <property name="title">
       <string>Template Matching</string>
      </property>
-     <addaction name="actionTM_SSD"/>
-     <addaction name="actionTM_NSSD"/>
+     <addaction name="actionTmSsd"/>
+     <addaction name="actionTmNssd"/>
      <addaction name="separator"/>
-     <addaction name="action_TM_CCORR"/>
-     <addaction name="actionTM_NCCORR"/>
+     <addaction name="actionTmCcorr"/>
+     <addaction name="actionTmNCcorr"/>
      <addaction name="separator"/>
-     <addaction name="actionTM_CCOEFF"/>
-     <addaction name="actionTM_NCCOEFF"/>
+     <addaction name="actionTmCcoeff"/>
+     <addaction name="actionTmNccoeff"/>
     </widget>
     <addaction name="menuHough"/>
-    <addaction name="menuTemplate_Matching"/>
+    <addaction name="menuTemplateMatching"/>
    </widget>
    <widget class="QMenu" name="menuMition">
     <property name="title">
      <string>Motion Tracking</string>
     </property>
-    <widget class="QMenu" name="menuKalman_Filter">
+    <widget class="QMenu" name="menuKalmanFilter">
      <property name="title">
       <string>Kalman Filter</string>
      </property>
-     <addaction name="actionLinear_Kalman_Filter"/>
+     <addaction name="actionLinearKalmanFilter"/>
      <addaction name="separator"/>
-     <addaction name="actionNonLinear_Kalman_Filter"/>
-     <addaction name="actionUnscented_Kalman_Filter"/>
+     <addaction name="actionNonLinearKalmanFilter"/>
+     <addaction name="actionUnscentedKalmanFilter"/>
     </widget>
-    <addaction name="actionOptical_Flow"/>
+    <addaction name="actionOpticalFlow"/>
     <addaction name="actionMeanshift"/>
     <addaction name="actionCAMshift"/>
-    <addaction name="menuKalman_Filter"/>
-    <addaction name="actionParticle_Filter"/>
+    <addaction name="menuKalmanFilter"/>
+    <addaction name="actionParticleFilter"/>
    </widget>
    <widget class="QMenu" name="menuFitting">
     <property name="title">
      <string>Fitting</string>
     </property>
-    <addaction name="actionFitting_Line"/>
-    <addaction name="actionFitting_Curve"/>
-    <addaction name="actionFitting_Ellipse"/>
+    <addaction name="actionFittingLine"/>
+    <addaction name="actionFittingCurve"/>
+    <addaction name="actionFittingEllipse"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -446,37 +481,13 @@
    <addaction name="menuVideo"/>
    <addaction name="menuProcess"/>
    <addaction name="menuAnalyze"/>
-   <addaction name="menuLocal_Feature"/>
+   <addaction name="menuLocalFeature"/>
    <addaction name="menuDetector"/>
    <addaction name="menuFitting"/>
    <addaction name="menuMition"/>
-   <addaction name="menuML_DL"/>
+   <addaction name="menuMlDl"/>
    <addaction name="menuWindow"/>
    <addaction name="menuHelp"/>
-  </widget>
-  <widget class="QToolBar" name="toolBar">
-   <property name="windowTitle">
-    <string>toolBar</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="actionReset_Image"/>
-   <addaction name="separator"/>
-   <addaction name="actionIndicator"/>
-   <addaction name="actionMask"/>
-   <addaction name="actionCross Line"/>
-   <addaction name="actionProfile"/>
-   <addaction name="separator"/>
-   <addaction name="actionROI"/>
-   <addaction name="actionLine"/>
-   <addaction name="actionEllipse"/>
-   <addaction name="separator"/>
-   <addaction name="actionLine_Measure"/>
-   <addaction name="actionAngle_Measure"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionCross Line">
@@ -533,7 +544,7 @@
     <string>Ctrl+W</string>
    </property>
   </action>
-  <action name="actionClose_All">
+  <action name="actionCloseAll">
    <property name="text">
     <string>Close All</string>
    </property>
@@ -549,22 +560,22 @@
     <string>Ctrl+S</string>
    </property>
   </action>
-  <action name="actionBMP">
+  <action name="actionSaveAsBmp">
    <property name="text">
     <string>BMP</string>
    </property>
   </action>
-  <action name="actionJPEG">
+  <action name="actionSaveAsJpeg">
    <property name="text">
     <string>JPEG</string>
    </property>
   </action>
-  <action name="actionPNG">
+  <action name="actionSaveAsPng">
    <property name="text">
     <string>PNG</string>
    </property>
   </action>
-  <action name="actionCSV">
+  <action name="actionSaveAsCsv">
    <property name="text">
     <string>CSV</string>
    </property>
@@ -622,7 +633,7 @@
     <string>Clear</string>
    </property>
   </action>
-  <action name="actionClear_Outside">
+  <action name="actionClearOutside">
    <property name="text">
     <string>Clear outside</string>
    </property>
@@ -640,7 +651,7 @@
     <string>Invert</string>
    </property>
   </action>
-  <action name="action8_bit">
+  <action name="action8Bit">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -648,7 +659,7 @@
     <string>8-bit</string>
    </property>
   </action>
-  <action name="actionRGB_Color">
+  <action name="actionRgbColor">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -656,12 +667,12 @@
     <string>RGB Color</string>
    </property>
   </action>
-  <action name="actionShow_Info">
+  <action name="actionShowInfo">
    <property name="text">
     <string>Show Info</string>
    </property>
   </action>
-  <action name="actionSplit_Channels">
+  <action name="actionSplitChannels">
    <property name="text">
     <string>Split Channels</string>
    </property>
@@ -695,22 +706,22 @@
     <string>Ctrl+E</string>
    </property>
   </action>
-  <action name="actionVertical_Flip">
+  <action name="actionVerticalFlip">
    <property name="text">
     <string>Vertical Flip</string>
    </property>
   </action>
-  <action name="actionHorizontal_Flip">
+  <action name="actionHorizontalFlip">
    <property name="text">
     <string>Horizontal Flip</string>
    </property>
   </action>
-  <action name="actionRotate_90_Degree_Right">
+  <action name="actionRotate90DegreeRight">
    <property name="text">
     <string>Rotate 90 Degree Right</string>
    </property>
   </action>
-  <action name="actionRotate_90_Degree_Left">
+  <action name="actionRotate90DegreeLeft">
    <property name="text">
     <string>Rotate 90 Degree Left</string>
    </property>
@@ -725,12 +736,12 @@
     <string>Translate</string>
    </property>
   </action>
-  <action name="actionBin">
+  <action name="actionDownSampling">
    <property name="text">
     <string>Bin</string>
    </property>
   </action>
-  <action name="actionHSV2RGB">
+  <action name="actionHsvToRgb">
    <property name="text">
     <string>HSV -&gt; RGB</string>
    </property>
@@ -738,7 +749,7 @@
     <string>HSV -&gt; RGB</string>
    </property>
   </action>
-  <action name="actionRGB2HSV">
+  <action name="actionRgbToHsv">
    <property name="text">
     <string>RGB -&gt; HSV</string>
    </property>
@@ -746,7 +757,7 @@
     <string>RGB -&gt; HSV</string>
    </property>
   </action>
-  <action name="actionRGB2Gray">
+  <action name="actionRgbToGray">
    <property name="text">
     <string>RGB -&gt; Gray</string>
    </property>
@@ -754,12 +765,12 @@
     <string>RGB -&gt; Gray</string>
    </property>
   </action>
-  <action name="actionMerge_Channels">
+  <action name="actionMergeChannels">
    <property name="text">
     <string>Merge Channels</string>
    </property>
   </action>
-  <action name="actionEdge_Detector">
+  <action name="actionEdgeDetector">
    <property name="text">
     <string>Edge Detector</string>
    </property>
@@ -775,7 +786,7 @@
     <string>Blur Filter</string>
    </property>
   </action>
-  <action name="actionFFT">
+  <action name="actionFft">
    <property name="text">
     <string>FFT</string>
    </property>
@@ -806,7 +817,7 @@
     <string>Dataset</string>
    </property>
   </action>
-  <action name="actionUSB_Camera">
+  <action name="actionCamUsb">
    <property name="text">
     <string>USB</string>
    </property>
@@ -824,12 +835,12 @@
     <string>Out [-]</string>
    </property>
   </action>
-  <action name="actionOriginal_Scale">
+  <action name="actionOriginalScale">
    <property name="text">
     <string>Original Scale</string>
    </property>
   </action>
-  <action name="actionFit_View">
+  <action name="actionFitView">
    <property name="text">
     <string>Fit View</string>
    </property>
@@ -842,17 +853,12 @@
     <string>Indicator</string>
    </property>
   </action>
-  <action name="actionJPG">
+  <action name="actionSaveAsJpg">
    <property name="text">
     <string>JPG</string>
    </property>
   </action>
-  <action name="actionXLSX">
-   <property name="text">
-    <string>XLSX</string>
-   </property>
-  </action>
-  <action name="actionHarris_Corner">
+  <action name="actionCornerHarris">
    <property name="text">
     <string>Harris Corner</string>
    </property>
@@ -860,67 +866,67 @@
     <string>Harris Corner</string>
    </property>
   </action>
-  <action name="actionFAST_Corner">
+  <action name="actionCornerFast">
    <property name="text">
     <string>FAST Corner</string>
    </property>
   </action>
-  <action name="actionAGAST_Corner">
+  <action name="actionCornerAgast">
    <property name="text">
     <string>AGAST Corner</string>
    </property>
   </action>
-  <action name="actionBRIEF_Descriptor">
+  <action name="actionDescriptorBrief">
    <property name="text">
     <string>BRIEF Descriptor</string>
    </property>
   </action>
-  <action name="actionFREAK_Descriptor">
+  <action name="actionDescriptorFreak">
    <property name="text">
     <string>FREAK Descriptor</string>
    </property>
   </action>
-  <action name="actionORB">
+  <action name="actionOrb">
    <property name="text">
     <string>ORB</string>
    </property>
   </action>
-  <action name="actionKAZE">
+  <action name="actionKaze">
    <property name="text">
     <string>KAZE</string>
    </property>
   </action>
-  <action name="actionAKAZE">
+  <action name="actionAkaze">
    <property name="text">
     <string>AKAZE</string>
    </property>
   </action>
-  <action name="actionBRISK">
+  <action name="actionBrisk">
    <property name="text">
     <string>BRISK</string>
    </property>
   </action>
-  <action name="actionSIFT">
+  <action name="actionSift">
    <property name="text">
     <string>SIFT</string>
    </property>
   </action>
-  <action name="actionSURF">
+  <action name="actionSurf">
    <property name="text">
     <string>SURF</string>
    </property>
   </action>
-  <action name="actionHOG_Descriptor">
+  <action name="actionDescriptorHog">
    <property name="text">
     <string>HOG Descriptor</string>
    </property>
   </action>
-  <action name="actionHarrLike_Descriptor">
+  <action name="actionDescriptorHarrLike">
    <property name="text">
     <string>HarrLike Descriptor</string>
    </property>
   </action>
-  <action name="actionLBP_Descriptor">
+  <action name="actionDescriptorLbp">
    <property name="text">
     <string>LBP Descriptor</string>
    </property>
@@ -930,22 +936,22 @@
     <string>Matching</string>
    </property>
   </action>
-  <action name="actionKLT_Corner">
+  <action name="actionCornerKtl">
    <property name="text">
     <string>KLT Corner</string>
    </property>
   </action>
-  <action name="actionHough_Line">
+  <action name="actionHoughLine">
    <property name="text">
     <string>Hough Line</string>
    </property>
   </action>
-  <action name="actionHough_Circle">
+  <action name="actionHoughCircle">
    <property name="text">
     <string>Hough Circle</string>
    </property>
   </action>
-  <action name="actionOptical_Flow">
+  <action name="actionOpticalFlow">
    <property name="text">
     <string>Optical Flow</string>
    </property>
@@ -960,27 +966,27 @@
     <string>CAMshift</string>
    </property>
   </action>
-  <action name="actionLinear_Kalman_Filter">
+  <action name="actionLinearKalmanFilter">
    <property name="text">
     <string>Linear Kalman Filter</string>
    </property>
   </action>
-  <action name="actionNonLinear_Kalman_Filter">
+  <action name="actionNonLinearKalmanFilter">
    <property name="text">
     <string>NonLinear Kalman Filter</string>
    </property>
   </action>
-  <action name="actionUnscented_Kalman_Filter">
+  <action name="actionUnscentedKalmanFilter">
    <property name="text">
     <string>Unscented Kalman Filter</string>
    </property>
   </action>
-  <action name="actionParticle_Filter">
+  <action name="actionParticleFilter">
    <property name="text">
     <string>Particle Filter</string>
    </property>
   </action>
-  <action name="actionSurface_Plot">
+  <action name="actionSurfacePlot">
    <property name="text">
     <string>Surface Plot</string>
    </property>
@@ -1005,27 +1011,27 @@
     <string>Morphology</string>
    </property>
   </action>
-  <action name="actionLogistic_Regression">
+  <action name="actionLogisticRegression">
    <property name="text">
     <string>Logistic Regression</string>
    </property>
   </action>
-  <action name="actionkNN">
+  <action name="actionKnn">
    <property name="text">
     <string>kNN</string>
    </property>
   </action>
-  <action name="actionGradient_Boost">
+  <action name="actionGradientBoost">
    <property name="text">
     <string>Gradient Boost</string>
    </property>
   </action>
-  <action name="actionDecision_Tree">
+  <action name="actionDecisionTree">
    <property name="text">
     <string>Decision Tree</string>
    </property>
   </action>
-  <action name="actionRandom_Forest">
+  <action name="actionRandomForest">
    <property name="text">
     <string>Random Forest</string>
    </property>
@@ -1035,27 +1041,27 @@
     <string>AdaBoost</string>
    </property>
   </action>
-  <action name="actionPCA">
+  <action name="actionFxPca">
    <property name="text">
     <string>PCA</string>
    </property>
   </action>
-  <action name="actionLDA">
+  <action name="actionFxLda">
    <property name="text">
     <string>LDA</string>
    </property>
   </action>
-  <action name="actionSBS">
+  <action name="actionFxSbs">
    <property name="text">
     <string>SBS</string>
    </property>
   </action>
-  <action name="actionIP_Address_Camera">
+  <action name="actionCamEthr">
    <property name="text">
     <string>IP Address</string>
    </property>
   </action>
-  <action name="action24_bit">
+  <action name="action24Bit">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -1063,7 +1069,7 @@
     <string>24-bit</string>
    </property>
   </action>
-  <action name="actionGray2RGB">
+  <action name="actionGrayToRgb">
    <property name="text">
     <string>Gray -&gt; RGB</string>
    </property>
@@ -1071,7 +1077,7 @@
     <string>Gray -&gt; RGB</string>
    </property>
   </action>
-  <action name="actionIDS_Camera">
+  <action name="actionCamIds">
    <property name="text">
     <string>IDS</string>
    </property>
@@ -1079,7 +1085,7 @@
     <string>IDS Camera USB or GigE Interface</string>
    </property>
   </action>
-  <action name="actionOMRON_Camera">
+  <action name="actionCamOmron">
    <property name="text">
     <string>OMRON</string>
    </property>
@@ -1087,7 +1093,7 @@
     <string>Omron sentech camera USB or GigE Interface</string>
    </property>
   </action>
-  <action name="actionBASLER_Camera">
+  <action name="actionCamBaslar">
    <property name="text">
     <string>BASLER</string>
    </property>
@@ -1095,7 +1101,7 @@
     <string>BALSER Camera USB or GigE Interface</string>
    </property>
   </action>
-  <action name="actionCOGNEX_Camera">
+  <action name="actionCamCognex">
    <property name="text">
     <string>COGNEX</string>
    </property>
@@ -1114,17 +1120,17 @@
     <string>Show or Hide Mask</string>
    </property>
   </action>
-  <action name="actionMask_Import">
+  <action name="actionMaskImport">
    <property name="text">
     <string>Import Mask</string>
    </property>
   </action>
-  <action name="actionMask_Export">
+  <action name="actionMaskExport">
    <property name="text">
     <string>Export Mask</string>
    </property>
   </action>
-  <action name="actionMapping">
+  <action name="actionLut">
    <property name="text">
     <string>Mapping</string>
    </property>
@@ -1132,7 +1138,7 @@
     <string>Mapping image color</string>
    </property>
   </action>
-  <action name="actionNoise_Denoise">
+  <action name="actionNoise">
    <property name="text">
     <string>Noise/Denoise</string>
    </property>
@@ -1142,12 +1148,12 @@
     <string>Histogram</string>
    </property>
   </action>
-  <action name="actionUnsharp_Masking">
+  <action name="actionUnsharpMasking">
    <property name="text">
     <string>Unsharp Masking</string>
    </property>
   </action>
-  <action name="actionShow_Histogram">
+  <action name="actionShowHistogram">
    <property name="text">
     <string>Show Histogram</string>
    </property>
@@ -1168,7 +1174,7 @@
     <string>Ellipse</string>
    </property>
   </action>
-  <action name="actionTM_SSD">
+  <action name="actionTmSsd">
    <property name="text">
     <string>SSD</string>
    </property>
@@ -1176,7 +1182,7 @@
     <string>Sum of Square Difference</string>
    </property>
   </action>
-  <action name="actionTM_NSSD">
+  <action name="actionTmNssd">
    <property name="text">
     <string>NSSD</string>
    </property>
@@ -1184,7 +1190,7 @@
     <string>Normalized Sum of Square Difference</string>
    </property>
   </action>
-  <action name="action_TM_CCORR">
+  <action name="actionTmCcorr">
    <property name="text">
     <string>CCORR</string>
    </property>
@@ -1192,7 +1198,7 @@
     <string>Cross Correlation</string>
    </property>
   </action>
-  <action name="actionTM_NCCORR">
+  <action name="actionTmNCcorr">
    <property name="text">
     <string>NCCORR</string>
    </property>
@@ -1200,7 +1206,7 @@
     <string>Normalized Cross Correlation</string>
    </property>
   </action>
-  <action name="actionTM_CCOEFF">
+  <action name="actionTmCcoeff">
    <property name="text">
     <string>CCOEFF</string>
    </property>
@@ -1208,7 +1214,7 @@
     <string>Cross Coefficient</string>
    </property>
   </action>
-  <action name="actionTM_NCCOEFF">
+  <action name="actionTmNccoeff">
    <property name="text">
     <string>NCCOEFF</string>
    </property>
@@ -1224,22 +1230,22 @@
     <string>Line</string>
    </property>
   </action>
-  <action name="actionSVM">
+  <action name="actionSvm">
    <property name="text">
     <string>SVM</string>
    </property>
   </action>
-  <action name="actionSimple_Annotation">
+  <action name="actionFileAnnotation">
    <property name="text">
     <string>Simple Annotation</string>
    </property>
   </action>
-  <action name="actionROI_Annotation">
+  <action name="actionRoiAnnotation">
    <property name="text">
     <string>ROI Annotation</string>
    </property>
   </action>
-  <action name="actionVideo_Generate">
+  <action name="actionVideo">
    <property name="text">
     <string>Video Generate</string>
    </property>
@@ -1247,37 +1253,34 @@
     <string>Generate Video</string>
    </property>
   </action>
-  <action name="actionVideo_Show">
-   <property name="text">
-    <string>Video Show</string>
-   </property>
-   <property name="toolTip">
-    <string>Show Video</string>
-   </property>
-  </action>
-  <action name="actionFitting_Line">
+  <action name="actionFittingLine">
    <property name="text">
     <string>Fitting Line</string>
    </property>
   </action>
-  <action name="actionFitting_Curve">
+  <action name="actionFittingCurve">
    <property name="text">
     <string>Fitting Curve</string>
    </property>
   </action>
-  <action name="actionFitting_Ellipse">
+  <action name="actionFittingEllipse">
    <property name="text">
     <string>Fitting Ellipse</string>
    </property>
   </action>
-  <action name="actionImage_Classification">
+  <action name="actionImageClassification">
    <property name="text">
     <string>Image Classification</string>
    </property>
   </action>
-  <action name="actionObject_Detection">
+  <action name="actionObjectDetection">
    <property name="text">
     <string>Object Detection</string>
+   </property>
+  </action>
+  <action name="actionShading">
+   <property name="text">
+    <string>Shading</string>
    </property>
   </action>
  </widget>
