@@ -1,3 +1,14 @@
+/**
+ * @file image_window.cpp
+ * @author inoue shinichi (inoue.shinichi.1800@gmail.com)
+ * @brief Qt 自作ImageWindowのSourceファイル
+ * @version 0.1
+ * @date 2021-08-22
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+
 
 #include "image_window.h"
 #include "main_window.h"

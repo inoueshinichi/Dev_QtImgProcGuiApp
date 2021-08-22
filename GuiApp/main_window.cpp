@@ -1,9 +1,18 @@
+/**
+ * @file main_window.cpp
+ * @author your name (you@domain.com)
+ * @brief Qt 自作MainWindowのSourceファイル
+ * @version 0.1
+ * @date 2021-08-22
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
 
+#include "utility.h"
 
 #include "ui_MainWindow.h"
 #include "main_window.h"
-
-#include "utils.h"
 
 #include <algorithm>
 #include <vector>
@@ -11,9 +20,6 @@
 #include <cstdio>
 #include <filesystem>
 namespace fs = std::filesystem;
-
-
-
 
 
 //////////////////////////////////////////////////////////
@@ -175,8 +181,7 @@ MainWindow::ImgWinRegistory_t &MainWindow::getImgWinRegistory() {
     return imgWindowBacket;
 }
 
-ImageWindow* MainWindow::genImgWin(const QString &filename)
-{
+ImageWindow* MainWindow::genImgWin(const QString &filename) {
     /* 新規でImageWindowを生成
     */
     ImageWindow *p_imgWin = new ImageWindow(this);
@@ -204,7 +209,8 @@ void MainWindow::slotRmImgWin(ImageWindow *ptr) {
     size_t count = getImgWinRegistory().size();
     m_pStatusBarLabel->setText(QString::number(count));
     m_pUi->statusBar->addPermanentWidget(m_pStatusBarLabel);
-    std::printf("Erase a image window. Given is %p.\n", (void *)ptr);
+
+    // DEBUG_STREAM("Erase a image window. Given is %p.\n", (void *)ptr);
 
     if (m_pLastActiveImgWin == ptr) {
         m_pLastActiveImgWin = nullptr;
@@ -255,7 +261,6 @@ void MainWindow::slotActMenuBarFileOpen() {
 
     foreach(QString path, fileList) {
         if (!path.isEmpty()) {
-
             QImage img(path);
             int depth = img.bitPlaneCount();
             bool isGray = img.isGrayscale();
@@ -267,19 +272,19 @@ void MainWindow::slotActMenuBarFileOpen() {
             }
             auto tokens = path.split(tr("/"));
             QString filename = tokens[tokens.size() - 1];
-            std::printf("%s\n", filename.toStdString().c_str());
+            
+            // DEBUG_STREAM("%s\n", filename.toStdString().c_str());
 
             std::string newFilename = getNewSerialNoFilename(filename.toStdString(), currImgWinFilenames);
-
             ImageWindow *p_newImgWin = genImgWin(QString::fromStdString(newFilename));
 
             p_newImgWin->scene()->clear();
-            p_newImgWin->scene()->setDibImgBeforeOnScreen(img);
-            p_newImgWin->scene()->setDibImgAfterOnScreen(img);
+            p_newImgWin->scene()->setDibImgOnScreen(img);
 
-            ImageView* view = new ImageView();
-            view->setScene(p_newImgWin->scene());
-            view->show();
+            // test gen view
+            // ImageView* view = new ImageView();
+            // view->setScene(p_newImgWin->scene());
+            // view->show();
         }
     }
 }

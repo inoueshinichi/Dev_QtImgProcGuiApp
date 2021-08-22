@@ -1,10 +1,20 @@
+/**
+ * @file main_window.cpp
+ * @author inoue shinichi (inoue.shinichi.1800@gmail.com)
+ * @brief Qt 自作MainWindowのHeaderファイル
+ * @version 0.1
+ * @date 2021-08-22
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
 #pragma once
 
+#include "common.h"
 
 #include "image_window.h"
 
 #include <QMainWindow>
-
 #include <Qt>
 #include <QDrag>
 #include <QMessageBox>

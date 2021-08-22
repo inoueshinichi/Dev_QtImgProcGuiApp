@@ -1,8 +1,7 @@
 /**
  * @file image_scene.h
- * @author your name (you@domain.com)
- * @brief モデル・ビュー アーキテクチャ （モデル：QGraphicsScene、ビュー：QGraphicsView）における
- * 　　　 モデルクラス.
+ * @author inoue shinichi (inoue.shinichi.1800@gmail.com)
+ * @brief Qt ImageView用SceneクラスのHeaderファイル
  * @version 0.1
  * @date 2021-08-22
  * 
@@ -11,6 +10,8 @@
  */
 
 #pragma once
+
+#include "common.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
@@ -22,7 +23,6 @@
 #include <Qt>
 #include <QPointF>
 #include <QRectF>
-// #include <qDebug>
 #include <QLineF>
 #include <QObject>
 #include <QImage>
@@ -31,11 +31,11 @@
 #include <QPen>
 #include <QBrush>
 #include <QFont>
-// #include <qGray>
 #include <QPainterPath>
 #include <QColor>
 #include <QPainter>
 
+#include <QMouseEvent>
 
 #include <map>
 #include <vector>
@@ -44,21 +44,28 @@
 class ImageScene : public QGraphicsScene
 {
     Q_OBJECT
-
     QImage m_rawDibImg;
-    QImage m_editDibImgBefore;
-    QPixmap m_offScreenDdbImgBefore;
-    QGraphicsPixmapItem *m_pItemOffScreenDdbImgBefore;
-    QImage m_editDibImgAfter;
-    QPixmap m_offScreenDdbImgAfter;
-    QGraphicsPixmapItem *m_pItemOffScreenDdbImgAfter;
+    SceneImage m_editImgIns;
+    CrossLine m_crossLine;
+
+    // マウス
+    bool m_isMousePressLeft{false};
+    bool m_isMousePressRight{false};
+    bool m_isMousePressMiddle{false};
+
+    void calcSceneImgLocalPos(const QPointF &scenePos);
+    void drawCrossLine(const QPointF &scenePos);
+    void drawProfile(const QPointF &scenePos);
 
 public:
-    explicit ImageScene(QObject *p_parent=nullptr);
+    explicit ImageScene(QObject *parent=nullptr);
     virtual ~ImageScene();
 
-    bool setDibImgBeforeOnScreen(const QImage &beforeImg);
-    bool setDibImgAfterOnScreen(const QImage &afterImg);
+    bool setDibImgOnScreen(const QImage &img);
+    void resetRawImg();
 
-    // void resetRawImg();
+protected:
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
+
 };

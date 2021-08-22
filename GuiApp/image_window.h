@@ -1,3 +1,13 @@
+/**
+ * @file image_window.cpp
+ * @author inoue shinichi (inoue.shinichi.1800@gmail.com)
+ * @brief Qt 自作ImageWindowのHeaderファイル
+ * @version 0.1
+ * @date 2021-08-22
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
 #pragma once
 
 #include "ui_ImageWindow.h"
@@ -26,7 +36,7 @@ class ImageWindow : public QMainWindow
     void customConnection();
 
 public:
-    explicit ImageWindow(QWidget *p_parent = nullptr);
+    explicit ImageWindow(QWidget *parent = nullptr);
     virtual ~ImageWindow();
 
     void setFilename(const QString& filename);
