@@ -69,8 +69,8 @@ void ImageWindow::customConnection()
     /* ImageWindow -> MainWindow */
     connect(this, &ImageWindow::rmImgWin, 
         (MainWindow *)(this->parent()), &MainWindow::slotRmImgWin);
-    // connect(this, &ImageWindow::activeImgWin, 
-    //     (MainWindow *)(this->parent()), &MainWindow::slotActiveImgWin);
+    connect(this, &ImageWindow::activeImgWin, 
+        (MainWindow *)(this->parent()), &MainWindow::slotActiveImgWin);
 }
 
 bool ImageWindow::event(QEvent *event)
@@ -80,7 +80,7 @@ bool ImageWindow::event(QEvent *event)
 
     if (event->type() == QEvent::WindowActivate)
     {
-        // emit activeImgWin(this);
+        emit activeImgWin(this);
     }
 
     return QMainWindow::event(event);

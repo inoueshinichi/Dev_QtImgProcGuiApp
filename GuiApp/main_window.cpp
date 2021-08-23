@@ -210,7 +210,7 @@ void MainWindow::slotRmImgWin(ImageWindow *ptr) {
     m_pStatusBarLabel->setText(QString::number(count));
     m_pUi->statusBar->addPermanentWidget(m_pStatusBarLabel);
 
-    // DEBUG_STREAM("Erase a image window. Given is %p.\n", (void *)ptr);
+    DEBUG_STREAM("Erase a image window. Given is %p.\n", (void *)ptr);
 
     if (m_pLastActiveImgWin == ptr) {
         m_pLastActiveImgWin = nullptr;
@@ -273,7 +273,7 @@ void MainWindow::slotActMenuBarFileOpen() {
             auto tokens = path.split(tr("/"));
             QString filename = tokens[tokens.size() - 1];
             
-            // DEBUG_STREAM("%s\n", filename.toStdString().c_str());
+            DEBUG_STREAM("%s\n", filename.toStdString().c_str());
 
             std::string newFilename = getNewSerialNoFilename(filename.toStdString(), currImgWinFilenames);
             ImageWindow *p_newImgWin = genImgWin(QString::fromStdString(newFilename));
@@ -294,14 +294,26 @@ void MainWindow::slotActMenuBarFileOpen() {
  * 
  */
 void MainWindow::slotActMenuBarFileClose()
-{}
+{
+    /* アクティブなImageWindowを閉じる
+    */
+   if (m_pLastActiveImgWin) {
+       m_pLastActiveImgWin->close();
+       m_pLastActiveImgWin = nullptr;
+   }
+}
 
 /**
  * @brief Menu -> File -> Close all
  * 
  */
 void MainWindow::slotActMenuBarFileCloseAll()
-{}
+{
+    /* 開いているすべてのImageWindowを閉じる
+    */
+   
+
+}
 
 /**
  * @brief Menu -> File -> Save

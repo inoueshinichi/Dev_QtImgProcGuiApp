@@ -73,8 +73,8 @@ typedef struct Profile
         }
     } Direction;
 
-    Direction m_DirectX;
-    Direction m_DirectY;
+    Direction m_directX;
+    Direction m_directY;
 };
 
 
