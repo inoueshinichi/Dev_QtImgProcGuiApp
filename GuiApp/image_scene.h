@@ -64,6 +64,9 @@ public:
     bool setDibImgOnScreen(const QImage &img);
     void resetRawImg();
 
+public slots:
+    void slotToggleCrossLine(bool isShow = false);
+
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;

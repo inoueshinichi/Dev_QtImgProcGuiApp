@@ -33,7 +33,11 @@ class ImageWindow : public QMainWindow
     QLabel *m_pStatusBarLabel;
     QString m_filename;
 
+    void uiConnection();
+    void memuBarConnection();
+    void toolBarConnection();
     void customConnection();
+
 
 public:
     explicit ImageWindow(QWidget *parent = nullptr);

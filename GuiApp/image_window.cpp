@@ -41,6 +41,9 @@ ImageWindow::ImageWindow(QWidget *p_parent)
     m_pUi->statusbar->addPermanentWidget(m_pStatusBarLabel);
 
     /*Singal/Slot*/
+    uiConnection();
+    memuBarConnection();
+    toolBarConnection();
     customConnection();
 
 }
@@ -64,6 +67,21 @@ ImageWindow::~ImageWindow()
 // private method
 //////////////////////////////////////////////////////////
 
+void ImageWindow::uiConnection()
+{
+
+}
+
+void ImageWindow::memuBarConnection()
+{
+
+}
+
+void ImageWindow::toolBarConnection()
+{
+    connect(m_pUi->actionCrossLine, &QAction::toggled, m_pScene, &ImageScene::slotToggleCrossLine);
+}
+
 void ImageWindow::customConnection()
 {
     /* ImageWindow -> MainWindow */
@@ -71,6 +89,7 @@ void ImageWindow::customConnection()
         (MainWindow *)(this->parent()), &MainWindow::slotRmImgWin);
     connect(this, &ImageWindow::activeImgWin, 
         (MainWindow *)(this->parent()), &MainWindow::slotActiveImgWin);
+    
 }
 
 bool ImageWindow::event(QEvent *event)
@@ -125,11 +144,6 @@ QString ImageWindow::filename() const { return m_filename; }
 
 ImageScene* ImageWindow::scene() const { return m_pScene; }
 
-// void ImageWindow::toggleCrossLine(bool isShow)
-// {
-//     /*マウスの十字線の表示切り替え*/
-//     m_pScene->> toggleCrossLine(isShow);
-// }
 
 //////////////////////////////////////////////////////////
 // public slot method
