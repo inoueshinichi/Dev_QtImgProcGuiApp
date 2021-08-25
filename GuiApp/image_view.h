@@ -27,12 +27,24 @@ class ImageView : public QGraphicsView
 {
     Q_OBJECT
 
+    void updateStatusBar(QMouseEvent *event);
+
 protected:
     ZoomLevel zoomLevel;
-
     bool isAcceptDragDrop {false};
 
 public:
     explicit ImageView(QWidget *parent=nullptr);
     virtual ~ImageView();
+
+protected:
+    virtual void mousePressEvent(QMouseEvent *event) override;
+    virtual void mouseMoveEvent(QMouseEvent *event) override;
+    virtual void mouseReleaseEvent(QMouseEvent *event) override;
+
+signals:
+    void emitShowPosToStatusBar(
+        const QPointF &imgLocalPos,
+        const QPointF &scenePos,
+        const QPoint &viewPos);
 };
