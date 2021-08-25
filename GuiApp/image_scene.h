@@ -53,7 +53,6 @@ class ImageScene : public QGraphicsScene
     bool m_isMousePressRight{false};
     bool m_isMousePressMiddle{false};
 
-    void calcSceneImgLocalPos(const QPointF &scenePos);
     void drawCrossLine(const QPointF &scenePos);
     void drawProfile(const QPointF &scenePos);
 
@@ -63,12 +62,15 @@ public:
 
     bool setDibImgOnScreen(const QImage &img);
     void resetRawImg();
+    QGraphicsPixmapItem *getEditImgItem(const QPointF &scenePos);
+
+    protected : virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 public slots:
-    void slotToggleCrossLine(bool isShow = false);
+    void slotToggleCrossLine(bool checked);
 
-protected:
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
+signals:
 
 };

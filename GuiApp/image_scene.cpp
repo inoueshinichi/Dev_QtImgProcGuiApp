@@ -11,6 +11,8 @@
 
 #include "image_scene.h"
 
+#include <iostream>
+
 //////////////////////////////////////////////////////////
 // ctor/dtor
 //////////////////////////////////////////////////////////
@@ -18,6 +20,7 @@
 ImageScene::ImageScene(QObject* parent)
     : QGraphicsScene(parent) {
 
+    // m_crossLine.m_isCrossLine = true; // 仮
 }
 
 ImageScene::~ImageScene() {
@@ -28,56 +31,39 @@ ImageScene::~ImageScene() {
 // private method
 //////////////////////////////////////////////////////////
 
-void ImageScene::calcSceneImgLocalPos(const QPointF &scenePos) {
-    /* QGraphicsPixmapItem上のローカル座標を計算
-    */
-}
-
 void ImageScene::drawCrossLine(const QPointF &scenePos) {
     /* マウスを中心とした十字線をSceneに描画
+       戻り値: ImgLocalPos
     */
-   foreach (QGraphicsView *p_view, this->views()) {
-       QGraphicsItem *p_item = this->itemAt(scenePos, QTransform()); // QTransform()以外だとエラー出るのはなぜ？ p_view->viewportTransform());// transform()のQTransformは原点が様々移動できるのでマズイと思うが...
-       if (p_item) {
-            bool isExist = false;
-            // @Note マウス直下のSceneに登録されたItemは複数あり,
-            // 重なっている(Z値で判別)ので, その中から該当するItemを取り出す.
-            if (p_item == m_editImgIns.m_pItemOffScreenDdbImg) {
-                isExist = true;
+    QGraphicsPixmapItem *p_item = getEditImgItem(scenePos);
+    if (p_item)
+    {
+        // DEBUG_STREAM("ScenePos(%.1f, %.1f)\n", scenePos.x(), scenePos.y());
+
+        QPointF localPos = p_item->mapToItem(p_item, scenePos);
+        QRectF localRect = p_item->boundingRect(); // Local座標における矩形サイズ
+
+        if (localRect.contains(localPos.toPoint())) {
+            DEBUG_STREAM("[CrossLine] Detect target item! LocalPos(%.1f, %.1f)\n", localPos.x(), localPos.y());
+
+            // 水平線
+            qreal y = localPos.y();
+            m_crossLine.m_pItemLineX->setLine(0, y, localRect.width(), y);
+
+            if (m_crossLine.m_pItemLineX->contains(scenePos)) {
+                this->removeItem(m_crossLine.m_pItemLineX);
             }
-            else {
-               while ((p_item = p_item->parentItem()) != nullptr) {
-                   if (p_item == m_editImgIns.m_pItemOffScreenDdbImg) {
-                       isExist = true;
-                       break;
-                   }
-               }
+            this->addItem(m_crossLine.m_pItemLineX);
+
+            // 垂直線
+            qreal x = localPos.x(); 
+            m_crossLine.m_pItemLineY->setLine(x, 0, x, localRect.height());
+            if (m_crossLine.m_pItemLineY->contains(scenePos)) {
+                this->removeItem(m_crossLine.m_pItemLineY);
             }
-
-            m_crossLine.m_isCrossLine = true;
-            if (!isExist || !m_crossLine.m_isCrossLine)
-            {
-                return;
-            }
-
-            DEBUG_STREAM("ScenePos(%f, %f)\n", scenePos.x(), scenePos.y());
-
-            QPointF localPos = p_item->mapToItem(p_item, scenePos);
-            QRectF localRect = p_item->boundingRect(); // Local座標における矩形サイズ
-
-            DEBUG_STREAM("Detect target item! LocalPos(%f, %f)\n", localPos.x(), localPos.y());
-
-            if (localRect.contains(localPos.toPoint())) {
-               
-                m_crossLine.m_pItemLineX->setLine(0, localPos.y(), localRect.width(), localPos.y());
-                this->addItem(m_crossLine.m_pItemLineX);
-
-                // for (const auto &item : this->items()) {
-
-                // }
-            }
-       }
-   }
+            this->addItem(m_crossLine.m_pItemLineY);
+        }
+    }
 }
 
 void ImageScene::drawProfile(const QPointF &scenePos) {
@@ -95,17 +81,22 @@ void ImageScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
    auto mouseButton = event->button();
 
    if (mouseButton == Qt::MouseButton::LeftButton) {
-       drawCrossLine(scenePos);
+       m_isMousePressLeft = true;
    }
    else if (mouseButton == Qt::MouseButton::RightButton) {
 
    }
-   else if (Qt::MouseButton::MidButton) {
+   else if (Qt::MouseButton::MiddleButton) {
 
    }
    else {
-       DEBUG_STREAM("Unknown mouse press button...\n");
+       DEBUG_STREAM("Unknown mouse button in mousePressEvent...\n");
    }
+
+    // 十字線@Press
+    if (m_crossLine.m_isCrossLine) {
+       drawCrossLine(scenePos);
+    }
 
    // 描画命令
    this->update();
@@ -113,8 +104,41 @@ void ImageScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
    QGraphicsScene::mousePressEvent(event);
 }
 
-void ImageScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
-{
+void ImageScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
+    /* マウスムーブイベント
+    */
+    auto scenePos = event->scenePos();
+
+    // 十字線@Move
+    if (m_crossLine.m_isCrossLine) {
+        drawCrossLine(scenePos);
+    }
+
+    QGraphicsScene::mouseMoveEvent(event);
+}
+
+void ImageScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+    /* マウスリリースイベント
+    */
+    auto scenePos = event->scenePos();
+    auto mouseButton = event->button();
+
+    if (mouseButton == Qt::MouseButton::LeftButton)
+    {
+        m_isMousePressLeft = false;
+    }
+    else if (mouseButton == Qt::MouseButton::RightButton)
+    {
+    }
+    else if (Qt::MouseButton::MiddleButton)
+    {
+    }
+    else
+    {
+        DEBUG_STREAM("Unknown mouse button in mouseMoveEvent...\n");
+    }
+
+    QGraphicsScene::mouseReleaseEvent(event);
 }
 
 //////////////////////////////////////////////////////////
@@ -163,13 +187,65 @@ void ImageScene::resetRawImg() {
     this->update();
 }
 
+QGraphicsPixmapItem *ImageScene::getEditImgItem(const QPointF &scenePos)
+{
+    /* QGraphicsPixmapItem上のローカル座標を計算
+    */
+    auto p_item = m_editImgIns.m_pItemOffScreenDdbImg;
+    if (p_item->contains(scenePos)) {
+        return p_item;
+    }
+    else {
+        return nullptr;
+    }
+
+    // QGraphicsItem *p_item = this->itemAt(scenePos, QTransform()); // QTransform()以外だとエラー出るのはなぜ？ p_view->viewportTransform());// transform()のQTransformは原点が様々移動できるのでマズイと思うが...
+    // if (p_item)
+    // {
+    //     bool isExist = false;
+    //     // @Note マウス直下のSceneに登録されたItemは複数あり,
+    //     // 重なっている(Z値で判別)ので, その中から該当するItemを取り出す.
+    //     if (p_item == m_editImgIns.m_pItemOffScreenDdbImg)
+    //     {
+    //         isExist = true;
+    //     }
+    //     else
+    //     {
+    //         while ((p_item = p_item->parentItem()) != nullptr)
+    //         {
+    //             if (p_item == m_editImgIns.m_pItemOffScreenDdbImg)
+    //             {
+    //                 isExist = true;
+    //                 break;
+    //             }
+    //         }
+    //     }
+
+    //     if (!isExist)
+    //     {
+    //         return nullptr;
+    //     }
+
+    //     return qobject_cast<QGraphicsPixmapItem *>(p_item);
+    //}
+}
 //////////////////////////////////////////////////////////
 // public slot method
 //////////////////////////////////////////////////////////
 
-void ImageScene::slotToggleCrossLine(bool isShow)
+void ImageScene::slotToggleCrossLine(bool checked)
 {
-    m_crossLine.m_isCrossLine = isShow;
+    /*十字線の(非)表示*/
+    m_crossLine.m_isCrossLine = checked;
+
+    if (!checked) {
+        foreach(QGraphicsItem *p_item, this->items()) {
+            if (p_item == m_crossLine.m_pItemLineX ||
+                p_item == m_crossLine.m_pItemLineY) {
+                this->removeItem(p_item);
+            }
+        }
+    }
 }
 
 //////////////////////////////////////////////////////////
