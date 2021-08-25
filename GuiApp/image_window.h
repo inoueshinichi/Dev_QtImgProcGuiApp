@@ -32,6 +32,7 @@ class ImageWindow : public QMainWindow
     ImageScene *m_pScene;
     QLabel *m_pStatusBarLabel;
     QString m_filename;
+    std::string m_posStatus;
 
     void uiConnection();
     void memuBarConnection();
@@ -62,5 +63,8 @@ signals:
     void rmImgWin(ImageWindow* ptr);
     void activeImgWin(ImageWindow* ptr);
 
-
+public slots:
+    void slotShowPosToStatusBar(const QPointF &imgLocalPos,
+                                const QPointF &scenePos,
+                                const QPoint &viewPos);
 };

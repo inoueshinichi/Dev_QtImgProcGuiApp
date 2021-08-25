@@ -13,6 +13,8 @@
 #include "image_window.h"
 #include "main_window.h"
 
+#include "utility.h"
+
 #include <cstring>
 #include <ctime>
 #include <string>
@@ -36,9 +38,7 @@ ImageWindow::ImageWindow(QWidget *p_parent)
     m_pUi->graphicsViewImage->setScene(m_pScene);
 
     // statusbar
-
-    m_pStatusBarLabel->setText(tr("SceneRect (0, 0, 0, 0)"));
-    m_pUi->statusbar->addPermanentWidget(m_pStatusBarLabel);
+    slotShowPosToStatusBar(QPointF(0, 0), QPointF(0, 0), QPoint(0, 0));
 
     /*Singal/Slot*/
     uiConnection();
@@ -79,7 +79,11 @@ void ImageWindow::memuBarConnection()
 
 void ImageWindow::toolBarConnection()
 {
-    connect(m_pUi->actionCrossLine, &QAction::toggled, m_pScene, &ImageScene::slotToggleCrossLine);
+    // connect(m_pUi->actionCrossLine, &QAction::toggled, m_pScene, &ImageScene::slotToggleCrossLine);
+
+    /* QAction -> ImageScene */
+    connect(m_pUi->actionCrossLine, &QAction::toggled, 
+    qobject_cast<ImageScene *>(this->scene()), &ImageScene::slotToggleCrossLine);
 }
 
 void ImageWindow::customConnection()
@@ -89,7 +93,10 @@ void ImageWindow::customConnection()
         (MainWindow *)(this->parent()), &MainWindow::slotRmImgWin);
     connect(this, &ImageWindow::activeImgWin, 
         (MainWindow *)(this->parent()), &MainWindow::slotActiveImgWin);
-    
+
+    /* ImageView -> ImageWindow */
+    connect(m_pUi->graphicsViewImage, &ImageView::emitShowPosToStatusBar,
+            this, &ImageWindow::slotShowPosToStatusBar);
 }
 
 bool ImageWindow::event(QEvent *event)
@@ -148,6 +155,22 @@ ImageScene* ImageWindow::scene() const { return m_pScene; }
 //////////////////////////////////////////////////////////
 // public slot method
 //////////////////////////////////////////////////////////
+
+void ImageWindow::slotShowPosToStatusBar(
+    const QPointF &imgLocalPos,
+    const QPointF &scenePos,
+    const QPoint &viewPos) {
+    /* 編集画像上のローカル座標, シーン座標, ビュー座標
+       を取得してステータスバーに表示.
+    */
+
+    m_posStatus = formatString("ImageLocalPos(%.1f, %.1f), ScenePos(%.1f, %.1f), ViewPos(%d, %d)",
+                               imgLocalPos.x(), imgLocalPos.y(),
+                               scenePos.x(), scenePos.y(),
+                               viewPos.x(), viewPos.y());
+    m_pStatusBarLabel->setText(QString::fromStdString(m_posStatus));
+    this->statusBar()->addPermanentWidget(m_pStatusBarLabel);
+}
 
 //////////////////////////////////////////////////////////
 // private slot method
