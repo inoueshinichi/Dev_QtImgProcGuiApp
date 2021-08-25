@@ -2,6 +2,7 @@
 
 #include <Qt>
 #include <QColor>
+#include <QPen>
 #include <QImage>
 #include <QPixmap>
 #include <QPainterPath>
@@ -10,18 +11,16 @@
 #include <QGraphicsPixmapItem>
 
 typedef struct CrossLine {
-    QColor m_color;
     QGraphicsLineItem *m_pItemLineX;
     QGraphicsLineItem *m_pItemLineY;
 
     bool m_isCrossLine{false};
 
     CrossLine() {
-        m_color = Qt::green;
         m_pItemLineX = new QGraphicsLineItem();
         m_pItemLineY = new QGraphicsLineItem();
-        // m_pItemLineX->setPen(QPen(m_color));
-        // m_pItemLineY->setPen(QPen(m_color));
+        m_pItemLineX->setPen(QPen(QColor(Qt::green)));
+        m_pItemLineY->setPen(QPen(QColor(Qt::green)));
     }
 
     ~CrossLine() {
