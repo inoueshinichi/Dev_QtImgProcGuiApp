@@ -14,6 +14,8 @@
 #include "ui_MainWindow.h"
 #include "main_window.h"
 
+#include <QApplication>
+
 #include <algorithm>
 #include <vector>
 #include <iostream>
@@ -340,8 +342,10 @@ void MainWindow::slotActMenuBarFilePrint()
  * @brief Menu -> File -> Quit
  * 
  */
-void MainWindow::slotActMenuBarFileQuit()
-{}
+void MainWindow::slotActMenuBarFileQuit() {
+    /*アプリケーションの終了*/
+    QApplication::closeAllWindows();
+}
 
 // /**
 //  * @brief Menu -> Edit -> Undo
