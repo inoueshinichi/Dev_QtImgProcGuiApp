@@ -33,7 +33,6 @@ ImageScene::~ImageScene() {
 
 void ImageScene::drawCrossLine(const QPointF &scenePos) {
     /* マウスを中心とした十字線をSceneに描画
-       戻り値: ImgLocalPos
     */
     QGraphicsPixmapItem *p_item = getEditImgItem(scenePos);
     if (p_item)
@@ -66,8 +65,64 @@ void ImageScene::drawCrossLine(const QPointF &scenePos) {
     }
 }
 
-void ImageScene::drawProfile(const QPointF &scenePos) {
+void ImageScene::drawProfile(const QPointF &scenePos,
+                             bool isXRed, bool isXGreen, bool isXBlue,
+                             bool isYRed, bool isYGreen, bool isYBlue)
+{
+    /* 画像プロファイルの描画
+    */
 
+    QGraphicsPixmapItem *p_item = getEditImgItem(scenePos);
+    if (p_item)
+    {
+        // DEBUG_STREAM("ScenePos(%.1f, %.1f)\n", scenePos.x(), scenePos.y());
+
+        QPointF localPos = p_item->mapToItem(p_item, scenePos);
+        QRectF localRect = p_item->boundingRect(); // Local座標における矩形サイズ
+
+        if (localRect.contains(localPos.toPoint())) {
+            DEBUG_STREAM("[Profile] Detect target item! LocalPos(%.1f, %.1f)\n", localPos.x(), localPos.y());
+
+            // シーンに登録済みのProfileItemを解除
+            foreach(QGraphicsItem *p_item, this->items()) {
+
+                // X
+                if (p_item == m_profile.m_directX.m_pItemPathRed) 
+                   this->removeItem(m_profile.m_directX.m_pItemPathRed);
+                if (p_item == m_profile.m_directX.m_pItemPathGreen)
+                    this->removeItem(m_profile.m_directX.m_pItemPathGreen):
+                if (p_item == m_profile.m_directX.m_pItemPathBlue) 
+                   this->removeItem(m_profile.m_directX.m_pItemPathBlue):
+
+                // Y
+                if (p_item == m_profile.m_directY.m_pItemPathRed)
+                    this->removeItem(m_profile.m_directY.m_pItemPathRed);
+                if (p_item == m_profile.m_directY.m_pItemPathGreen)
+                    this->removeItem(m_profile.m_directY.m_pItemPathGreen):
+                if (p_item == m_profile.m_directY.m_pItemPathBlue)
+                    this->removeItem(m_profile.m_directY.m_pItemPathBlue):
+            }
+
+            if (m_editImgIns.m_memDibImg.isGrayscale()) {
+                /* GRAY */
+                
+                // 水平プロファイル
+                m_profile.m_directX.m_pathRed.clear();
+                m_profile.m_directx.m_pathGreen.clear();
+                m_profile.m_directx.m_pathBlur.clear();
+                
+
+                // 垂直プロファイル
+            }
+            else {
+                /* RGB */
+
+                // 水平プロファイル
+
+                // 垂直プロファイル
+            }
+        }
+    }
 }
 
 //////////////////////////////////////////////////////////

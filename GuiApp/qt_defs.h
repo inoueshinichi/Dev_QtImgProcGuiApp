@@ -74,7 +74,7 @@ typedef struct Profile
 
     Direction m_directX;
     Direction m_directY;
-};
+} Profile;
 
 
 typedef struct SceneImage {

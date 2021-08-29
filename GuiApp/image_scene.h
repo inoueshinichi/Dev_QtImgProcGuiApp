@@ -47,6 +47,7 @@ class ImageScene : public QGraphicsScene
     QImage m_rawDibImg;
     SceneImage m_editImgIns;
     CrossLine m_crossLine;
+    Profile m_profile;
 
     // マウス
     bool m_isMousePressLeft{false};
@@ -54,7 +55,9 @@ class ImageScene : public QGraphicsScene
     bool m_isMousePressMiddle{false};
 
     void drawCrossLine(const QPointF &scenePos);
-    void drawProfile(const QPointF &scenePos);
+    void drawProfile(const QPointF &scenePos, 
+                    bool isXRed, bool isXGreen, bool isXBlue, 
+                    bool isYRed, bool isYGreen, bool isYBlue);
 
 public:
     explicit ImageScene(QObject *parent=nullptr);
