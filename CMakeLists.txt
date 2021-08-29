@@ -6,6 +6,7 @@ project(QtImgProcGuiApp LANGUAGES CXX VERSION 0.1.0)
 # Version
 ###############################################################################
 message(STATUS "========== [START] Version Management ==========")
+
 # CMake Version
 message(STATUS "CMake Version: ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}.${CMAKE_TWEAK_VERSION}")
 
@@ -17,6 +18,12 @@ string(REGEX REPLACE [[^([0-9]+)\.([0-9]+)\.(.*)$]] [[\2]] version_minor ${versi
 string(REGEX REPLACE [[^([0-9]+)\.([0-9]+)\.(.*)$]] [[\3]] version_patch ${version})
 
 message(STATUS "========== [END] Version Management ==========")
+
+###############################################################################
+# Project
+###############################################################################
+project("Is" LANGUAGES C CXX VERSION ${version_major}.${version_minor}.${version_patch})
+
 
 ###############################################################################
 # 前処理
@@ -47,12 +54,16 @@ option(BUILD_CPP_SHARED_LIBS "Enable/Disable shared libraries" ON)
 option(BUILD_CPP_COMPILE_PCH "Enable/Disable compile pre-compile header" OFF)
 option(BUILD_CPP_USE_PCH "Enable/Disable use pre-compile header" OFF)
 
-# Global Shared lib flag
-if(BUILD_CPP_SHARED_LIBS)
-    set(BUILD_CPP_SHARED_LIBS ON)
-else()
-    set(BUILD_CPP_SHARED_LIBS OFF)
-endif()
+# コードページ(ファイルIOなどのエンコードに使われる)
+# 従来のWidowsは,ANSI(システム規定)コードページがCP932(拡張Shift-Jis)だったが, Windows10以降はCP65001(UTF-8)が使われる場合が多い.
+option(BUILD_CPP_MSVC_DEFAULT_LOCALE_UTF8 "Enable/Disable utf-8 default locale" OFF) 
+
+# # Global Shared lib flag
+# if(BUILD_CPP_SHARED_LIBS)
+#     set(BUILD_CPP_SHARED_LIBS ON)
+# else()
+#     set(BUILD_CPP_SHARED_LIBS OFF)
+# endif()
 
 # C++20
 set(CMAKE_CXX_STANDARD 20)
@@ -72,6 +83,10 @@ if (MSVC)
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/Od /MDd /Zi /RTC1")
 
     if(BUILD_OPENMP)
+        message(STATUS "Enable OpenMP")
+        find_package(OpenMP REQUIRED)
+        include_directories(${OpenMP_INCLUDE_DIRS})
+        link_directories(${OpenMP_LIB_DIRS})
         add_compile_options("$<$<C_COMPILER_ID:MSVC>:/openmp>")
         add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/openmp>")
     endif()
@@ -121,6 +136,10 @@ elseif(APPLE)
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
 
     if(BUILD_OPENMP)
+        message(STATUS "Enable OpenMP")
+        find_package(OpenMP REQUIRED)
+        include_directories(${OpenMP_INCLUDE_DIRS})
+        link_directories(${OpenMP_LIB_DIRS})
         add_compile_options("$<$<C_COMPILER_ID:GCC>:-fopenmp>")
         add_compile_options("$<$<CXX_COMPILER_ID:GCC>:-fopenmp>")
     endif()
@@ -145,6 +164,10 @@ else()
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -DNDEBUG")
 
     if(BUILD_OPENMP)
+        message(STATUS "Enable OpenMP")
+        find_package(OpenMP REQUIRED)
+        include_directories(${OpenMP_INCLUDE_DIRS})
+        link_directories(${OpenMP_LIB_DIRS})
         add_compile_options("$<$<C_COMPILER_ID:GCC>:-fopenmp>")
         add_compile_options("$<$<CXX_COMPILER_ID:GCC>:-fopenmp>")
     endif()
@@ -205,7 +228,9 @@ message(STATUS "========== [END] C++ All Target Options ==========")
 message(STATUS "========== [START] C++ Build Core ==========")
 
 # ========== Library File ==========
-
+add_subdirectory(IsCommonLib)
+# add_subdirectory(IsNdArrayLib)
+# add_subdirectory(IsCvLib)
 
 # ========== Executable File ==========
 add_subdirectory(GuiApp)
