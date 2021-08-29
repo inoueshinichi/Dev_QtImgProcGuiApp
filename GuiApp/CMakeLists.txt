@@ -1,11 +1,10 @@
 cmake_minimum_required(VERSION 3.14.0)
 
-message(STATUS "---> Qt Application")
+set(APP_TARGET_NAME QtGuiApp)
 
+project(${APP_TARGET_NAME} LANGUAGES CXX VERSION 0.1.0)
 
-project(QtGuiApp LANGUAGES CXX VERSION 0.1.0)
-
-set(APP_TARGET_NAME ${PROJECT_NAME})
+message(STATUS ">>>>> ${APP_TARGET_NAME}")
 
 #############################################################################
 # ファイルのコーデックをUTF8からUTF16に変換する
@@ -196,19 +195,28 @@ endif()
 # アプリケーションターゲットのビルド
 ###############################################################################
 
-# Include Dir
+# Include
 list(APPEND APP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 message(STATUS "Include dir: ${APP_INCLUDE_DIR}")
 
-# Source Files
+# Sources
 file(GLOB_RECURSE APP_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 message(STATUS "Source files: ${APP_SOURCE_FILES}")
 
-# 追加
+# App Sources
 target_sources(${APP_TARGET_NAME} PRIVATE ${APP_SOURCE_FILES})
-target_include_directories(${APP_TARGET_NAME} PRIVATE ${APP_INCLUDE_DIR})
 
-# リンク
+# App Include
+target_include_directories(${APP_TARGET_NAME} PRIVATE 
+    ${APP_INCLUDE_DIR}
+)
+
+
+###############################################################################
+# Qtライブラリのリンク
+###############################################################################
+
+# Qt-Link
 target_link_libraries(${APP_TARGET_NAME} PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Core
@@ -234,4 +242,31 @@ if (MSVC)
     )
 endif()
 
-message(STATUS "<--- Qt Application")
+
+###############################################################################
+# 自作ライブラリのリンク
+###############################################################################
+
+# Dependency
+add_dependencies(${APP_TARGET_NAME} 
+    ${IS_COMMONLIB_TARGET_NAME}
+)
+
+# Include
+target_include_directories(${APP_TARGET_NAME} PRIVATE 
+    ${CMAKE_SOURCE_DIR}#/IsCommonLib
+)
+
+# Link
+target_link_libraries(${APP_TARGET_NAME} PRIVATE
+    ${IS_COMMONLIB_TARGET_NAME}
+)
+
+# Copy
+add_custom_command(TARGET ${APP_TARGET_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${IS_COMMONLIB_TARGET_NAME}> $<TARGET_FILE_DIR:${APP_TARGET_NAME}>
+    # COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:> $<TARGET_FILE_DIR:${APP_TARGET_NAME}>
+    # COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:> $<TARGET_FILE_DIR:${APP_TARGET_NAME}>
+)
+
+message(STATUS "<<<<< ${APP_TARGET_NAME}")

@@ -10,6 +10,10 @@
  */
 #include "utility.h"
 
+#include <IsCommonLib/include/format_string.hpp>
+
+
+
 std::string getNewSerialNoFilename(const std::string &filename,
                                    const std::set<std::string> &filenameSet)
 {
@@ -56,7 +60,7 @@ std::string getNewSerialNoFilename(const std::string &filename,
         }
 
         // filenameSetにあるファイル名を検索
-        pattern = formatString(R"(^(%s-[0-9]+|(%s-%d-[0-9]+))\.(%s)$)", 
+        pattern = is::common::format_string(R"(^(%s-[0-9]+|(%s-%d-[0-9]+))\.(%s)$)", 
                                 name.c_str(), name.c_str(), no, ext.c_str());
         std::regex re2(pattern);
         int count = 0;
@@ -80,11 +84,11 @@ std::string getNewSerialNoFilename(const std::string &filename,
         std::string newFilename;
         if (isDoubleCount)
         {
-            newFilename = formatString("%s-%d-%d.%s", name.c_str(), no, subCount, ext.c_str());
+            newFilename = is::common::format_string("%s-%d-%d.%s", name.c_str(), no, subCount, ext.c_str());
         }
         else
         {
-            newFilename = formatString("%s-%d.%s", name.c_str(), count - subCount, ext.c_str());
+            newFilename = is::common::format_string("%s-%d.%s", name.c_str(), count - subCount, ext.c_str());
         }
 
         return newFilename;

@@ -15,6 +15,8 @@
 
 #include "utility.h"
 
+#include <IsCommonLib/include/format_string.hpp>
+
 #include <cstring>
 #include <ctime>
 #include <string>
@@ -163,8 +165,9 @@ void ImageWindow::slotShowPosToStatusBar(
     /* 編集画像上のローカル座標, シーン座標, ビュー座標
        を取得してステータスバーに表示.
     */
+   using namespace is::common;
 
-    m_posStatus = formatString("ImageLocalPos(%.1f, %.1f), ScenePos(%.1f, %.1f), ViewPos(%d, %d)",
+    m_posStatus = format_string("ImageLocalPos(%.1f, %.1f), ScenePos(%.1f, %.1f), ViewPos(%d, %d)",
                                imgLocalPos.x(), imgLocalPos.y(),
                                scenePos.x(), scenePos.y(),
                                viewPos.x(), viewPos.y());

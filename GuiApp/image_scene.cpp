@@ -90,17 +90,17 @@ void ImageScene::drawProfile(const QPointF &scenePos,
                 if (p_item == m_profile.m_directX.m_pItemPathRed) 
                    this->removeItem(m_profile.m_directX.m_pItemPathRed);
                 if (p_item == m_profile.m_directX.m_pItemPathGreen)
-                    this->removeItem(m_profile.m_directX.m_pItemPathGreen):
+                    this->removeItem(m_profile.m_directX.m_pItemPathGreen);
                 if (p_item == m_profile.m_directX.m_pItemPathBlue) 
-                   this->removeItem(m_profile.m_directX.m_pItemPathBlue):
+                   this->removeItem(m_profile.m_directX.m_pItemPathBlue);
 
                 // Y
                 if (p_item == m_profile.m_directY.m_pItemPathRed)
                     this->removeItem(m_profile.m_directY.m_pItemPathRed);
                 if (p_item == m_profile.m_directY.m_pItemPathGreen)
-                    this->removeItem(m_profile.m_directY.m_pItemPathGreen):
+                    this->removeItem(m_profile.m_directY.m_pItemPathGreen);
                 if (p_item == m_profile.m_directY.m_pItemPathBlue)
-                    this->removeItem(m_profile.m_directY.m_pItemPathBlue):
+                    this->removeItem(m_profile.m_directY.m_pItemPathBlue);
             }
 
             if (m_editImgIns.m_memDibImg.isGrayscale()) {
@@ -108,8 +108,8 @@ void ImageScene::drawProfile(const QPointF &scenePos,
                 
                 // 水平プロファイル
                 m_profile.m_directX.m_pathRed.clear();
-                m_profile.m_directx.m_pathGreen.clear();
-                m_profile.m_directx.m_pathBlur.clear();
+                m_profile.m_directX.m_pathGreen.clear();
+                m_profile.m_directX.m_pathBlue.clear();
                 
 
                 // 垂直プロファイル
