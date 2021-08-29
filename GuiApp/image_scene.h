@@ -44,10 +44,9 @@
 class ImageScene : public QGraphicsScene
 {
     Q_OBJECT
+
     QImage m_rawDibImg;
     SceneImage m_editImgIns;
-    CrossLine m_crossLine;
-    Profile m_profile;
 
     // マウス
     bool m_isMousePressLeft{false};
@@ -60,6 +59,9 @@ class ImageScene : public QGraphicsScene
                     bool isYRed, bool isYGreen, bool isYBlue);
 
 public:
+    CrossLine m_crossLine;
+    Profile m_profile;
+
     explicit ImageScene(QObject *parent=nullptr);
     virtual ~ImageScene();
 
@@ -67,12 +69,13 @@ public:
     void resetRawImg();
     QGraphicsPixmapItem *getEditImgItem(const QPointF &scenePos);
 
-    protected : virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+protected : 
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 public slots:
-    void slotToggleCrossLine(bool checked);
+    
 
 signals:
 

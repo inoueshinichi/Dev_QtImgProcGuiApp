@@ -87,40 +87,118 @@ void ImageScene::drawProfile(const QPointF &scenePos,
             foreach(QGraphicsItem *p_item, this->items()) {
 
                 // X
-                if (p_item == m_profile.m_directX.m_pItemPathRed) 
-                   this->removeItem(m_profile.m_directX.m_pItemPathRed);
-                if (p_item == m_profile.m_directX.m_pItemPathGreen)
+                if (p_item == m_profile.m_directX.m_pItemPathRed) {
+                    this->removeItem(m_profile.m_directX.m_pItemPathRed);
+                    m_profile.m_directX.m_pathRed.clear();
+                }
+                if (p_item == m_profile.m_directX.m_pItemPathGreen) {
                     this->removeItem(m_profile.m_directX.m_pItemPathGreen);
-                if (p_item == m_profile.m_directX.m_pItemPathBlue) 
-                   this->removeItem(m_profile.m_directX.m_pItemPathBlue);
+                    m_profile.m_directX.m_pathGreen.clear();
+                }
+                if (p_item == m_profile.m_directX.m_pItemPathBlue) {
+                    this->removeItem(m_profile.m_directX.m_pItemPathBlue);
+                    m_profile.m_directX.m_pathBlue.clear();
+                }
 
                 // Y
-                if (p_item == m_profile.m_directY.m_pItemPathRed)
+                if (p_item == m_profile.m_directY.m_pItemPathRed) {
                     this->removeItem(m_profile.m_directY.m_pItemPathRed);
-                if (p_item == m_profile.m_directY.m_pItemPathGreen)
+                    m_profile.m_directY.m_pathRed.clear();
+                }
+                if (p_item == m_profile.m_directY.m_pItemPathGreen) {
                     this->removeItem(m_profile.m_directY.m_pItemPathGreen);
-                if (p_item == m_profile.m_directY.m_pItemPathBlue)
+                    m_profile.m_directY.m_pathGreen.clear();
+                }
+                if (p_item == m_profile.m_directY.m_pItemPathBlue) {
                     this->removeItem(m_profile.m_directY.m_pItemPathBlue);
+                    m_profile.m_directY.m_pathBlue.clear();
+                }
             }
 
-            if (m_editImgIns.m_memDibImg.isGrayscale()) {
+            int profileY = (int)localPos.y();
+            int profileX = (int)localPos.x();
+            int width = (int)localRect.width();
+            int height = (int)localRect.height();
+            QColor color, nextColor;
+            int red, green, blue;
+            int nextRed, nextGreen, nextBlue;
+            DEBUG_STREAM("profileX %d, profileY %d", profileX, profileY);
+
+            // 水平プロファイル
+            for (int x = 1; x < width; ++x)
+            {
+                color = m_editImgIns.m_memDibImg.pixelColor(x - 1, profileY);
+                red = color.red();
+                green = color.green();
+                blue = color.blue();
+                nextColor = m_editImgIns.m_memDibImg.pixelColor(x, profileY);
+                nextRed = nextColor.red();
+                nextGreen = nextColor.green();
+                nextBlue = nextColor.blue();
+                m_profile.m_directX.m_pathRed.moveTo(x - 1, height + 256 - red); // red
+                m_profile.m_directX.m_pathRed.lineTo(x, height + 256 - nextRed);
+                m_profile.m_directX.m_pathGreen.moveTo(x - 1, height + 256 - green); // green
+                m_profile.m_directX.m_pathGreen.lineTo(x, height + 256 - nextGreen);
+                m_profile.m_directX.m_pathBlue.moveTo(x - 1, height + 256 - blue); // blue
+                m_profile.m_directX.m_pathBlue.lineTo(x, height + 256 - nextBlue);
+            }
+            m_profile.m_directX.m_pItemPathRed->setPath(m_profile.m_directX.m_pathRed);
+            m_profile.m_directX.m_pItemPathGreen->setPath(m_profile.m_directX.m_pathGreen);
+            m_profile.m_directX.m_pItemPathBlue->setPath(m_profile.m_directX.m_pathBlue);
+
+            // 垂直プロファイル
+            for (int y = 1; y < height - 1; ++y) {
+                color = m_editImgIns.m_memDibImg.pixelColor(profileX, y - 1);
+                red = color.red();
+                green = color.green();
+                blue = color.blue();
+                nextColor = m_editImgIns.m_memDibImg.pixelColor(profileX, y);
+                nextRed = nextColor.red();
+                nextGreen = nextColor.green();
+                nextBlue = nextColor.blue();
+                m_profile.m_directY.m_pathRed.moveTo(width + 256 - red, y - 1); // red
+                m_profile.m_directY.m_pathRed.lineTo(width + 256 - nextRed, y);
+                m_profile.m_directY.m_pathGreen.moveTo(width + 256 - green, y - 1); // green
+                m_profile.m_directY.m_pathGreen.lineTo(width + 256 - nextGreen, y);
+                m_profile.m_directY.m_pathBlue.moveTo(width + 256 - blue, y - 1); // blue
+                m_profile.m_directY.m_pathBlue.lineTo(width + 256 - nextBlue, y);
+            }
+            m_profile.m_directY.m_pItemPathRed->setPath(m_profile.m_directY.m_pathRed);
+            m_profile.m_directY.m_pItemPathGreen->setPath(m_profile.m_directY.m_pathGreen);
+            m_profile.m_directY.m_pItemPathBlue->setPath(m_profile.m_directY.m_pathBlue);
+
+            if (m_editImgIns.m_memDibImg.isGrayscale())
+            {
                 /* GRAY */
-                
-                // 水平プロファイル
-                m_profile.m_directX.m_pathRed.clear();
-                m_profile.m_directX.m_pathGreen.clear();
-                m_profile.m_directX.m_pathBlue.clear();
-                
-
-                // 垂直プロファイル
+                m_profile.m_directX.m_pItemPathRed->setPen(QPen(QColor(Qt::green)));
+                m_profile.m_directX.m_pItemPathGreen->setPen(QPen(QColor(Qt::green)));
+                m_profile.m_directX.m_pItemPathBlue->setPen(QPen(QColor(Qt::green)));
+                m_profile.m_directY.m_pItemPathRed->setPen(QPen(QColor(Qt::green)));
+                m_profile.m_directY.m_pItemPathGreen->setPen(QPen(QColor(Qt::green)));
+                m_profile.m_directY.m_pItemPathBlue->setPen(QPen(QColor(Qt::green)));
             }
-            else {
-                /* RGB */
-
-                // 水平プロファイル
-
-                // 垂直プロファイル
+            else
+            {
+                m_profile.m_directX.m_pItemPathRed->setPen(QPen(QColor(Qt::red)));
+                m_profile.m_directX.m_pItemPathGreen->setPen(QPen(QColor(Qt::green)));
+                m_profile.m_directX.m_pItemPathBlue->setPen(QPen(QColor(Qt::blue)));
+                m_profile.m_directY.m_pItemPathRed->setPen(QPen(QColor(Qt::red)));
+                m_profile.m_directY.m_pItemPathGreen->setPen(QPen(QColor(Qt::green)));
+                m_profile.m_directY.m_pItemPathBlue->setPen(QPen(QColor(Qt::blue)));
             }
+
+            if (isXRed)
+                this->addItem(m_profile.m_directX.m_pItemPathRed);
+            if (isXGreen)
+                this->addItem(m_profile.m_directX.m_pItemPathGreen);
+            if (isXBlue)
+                this->addItem(m_profile.m_directX.m_pItemPathBlue);
+            if (isYRed)
+                this->addItem(m_profile.m_directY.m_pItemPathRed);
+            if (isYGreen)
+                this->addItem(m_profile.m_directY.m_pItemPathGreen);
+            if (isYBlue)
+                this->addItem(m_profile.m_directY.m_pItemPathBlue);
         }
     }
 }
@@ -153,10 +231,26 @@ void ImageScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
        drawCrossLine(scenePos);
     }
 
-   // 描画命令
-   this->update();
+    // プロファイル@Press
+    if (m_profile.m_directX.m_isPathRed ||
+        m_profile.m_directX.m_isPathGreen ||
+        m_profile.m_directX.m_isPathBlue ||
+        m_profile.m_directY.m_isPathRed ||
+        m_profile.m_directY.m_isPathGreen ||
+        m_profile.m_directY.m_isPathBlue) {
+        drawProfile(scenePos,
+                    m_profile.m_directX.m_isPathRed,
+                    m_profile.m_directX.m_isPathGreen,
+                    m_profile.m_directX.m_isPathBlue,
+                    m_profile.m_directY.m_isPathRed,
+                    m_profile.m_directY.m_isPathGreen, 
+                    m_profile.m_directY.m_isPathBlue);
+    }
 
-   QGraphicsScene::mousePressEvent(event);
+    // 描画命令
+    this->update();
+
+    QGraphicsScene::mousePressEvent(event);
 }
 
 void ImageScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
@@ -167,6 +261,23 @@ void ImageScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     // 十字線@Move
     if (m_crossLine.m_isCrossLine) {
         drawCrossLine(scenePos);
+    }
+
+    // プロファイル@Move
+    if (m_profile.m_directX.m_isPathRed ||
+        m_profile.m_directX.m_isPathGreen ||
+        m_profile.m_directX.m_isPathBlue ||
+        m_profile.m_directY.m_isPathRed ||
+        m_profile.m_directY.m_isPathGreen ||
+        m_profile.m_directY.m_isPathBlue)
+    {
+        drawProfile(scenePos,
+                    m_profile.m_directX.m_isPathRed,
+                    m_profile.m_directX.m_isPathGreen,
+                    m_profile.m_directX.m_isPathBlue,
+                    m_profile.m_directY.m_isPathRed,
+                    m_profile.m_directY.m_isPathGreen,
+                    m_profile.m_directY.m_isPathBlue);
     }
 
     QGraphicsScene::mouseMoveEvent(event);
@@ -287,21 +398,6 @@ QGraphicsPixmapItem *ImageScene::getEditImgItem(const QPointF &scenePos)
 //////////////////////////////////////////////////////////
 // public slot method
 //////////////////////////////////////////////////////////
-
-void ImageScene::slotToggleCrossLine(bool checked)
-{
-    /*十字線の(非)表示*/
-    m_crossLine.m_isCrossLine = checked;
-
-    if (!checked) {
-        foreach(QGraphicsItem *p_item, this->items()) {
-            if (p_item == m_crossLine.m_pItemLineX ||
-                p_item == m_crossLine.m_pItemLineY) {
-                this->removeItem(p_item);
-            }
-        }
-    }
-}
 
 //////////////////////////////////////////////////////////
 // private slot method

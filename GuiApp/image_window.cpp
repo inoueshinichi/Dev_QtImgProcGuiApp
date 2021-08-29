@@ -17,6 +17,10 @@
 
 #include <IsCommonLib/include/format_string.hpp>
 
+// Qt
+#include <QGraphicsItem>
+
+
 #include <cstring>
 #include <ctime>
 #include <string>
@@ -84,8 +88,22 @@ void ImageWindow::toolBarConnection()
     // connect(m_pUi->actionCrossLine, &QAction::toggled, m_pScene, &ImageScene::slotToggleCrossLine);
 
     /* QAction -> ImageScene */
-    connect(m_pUi->actionCrossLine, &QAction::toggled, 
-    qobject_cast<ImageScene *>(this->scene()), &ImageScene::slotToggleCrossLine);
+
+    // CrossLine
+    connect(m_pUi->actionCrossLine, &QAction::toggled, this, &ImageWindow::slotToggleCrossLine);
+
+    // Profile-X(R)
+    connect(m_pUi->actionProfileXRed, &QAction::toggled, this, &ImageWindow::slotToggleProfile);
+    // Profile-X(G)
+    connect(m_pUi->actionProfileXGreen, &QAction::toggled, this, &ImageWindow::slotToggleProfile);
+    // Profile-X(B)
+    connect(m_pUi->actionProfileXBlue, &QAction::toggled, this, &ImageWindow::slotToggleProfile);
+    // Profile-Y(R)
+    connect(m_pUi->actionProfileYRed, &QAction::toggled, this, &ImageWindow::slotToggleProfile);
+    // Profile-Y(G)
+    connect(m_pUi->actionProfileYGreen, &QAction::toggled, this, &ImageWindow::slotToggleProfile);
+    // Profile-Y(B)
+    connect(m_pUi->actionProfileYBlue, &QAction::toggled, this, &ImageWindow::slotToggleProfile);
 }
 
 void ImageWindow::customConnection()
@@ -178,3 +196,51 @@ void ImageWindow::slotShowPosToStatusBar(
 //////////////////////////////////////////////////////////
 // private slot method
 //////////////////////////////////////////////////////////
+
+void ImageWindow::slotToggleCrossLine(bool checked)
+{
+    /*十字線の(非)表示*/
+    m_pScene->m_crossLine.m_isCrossLine = checked;
+
+    if (!checked) {
+        m_pScene->removeItem(m_pScene->m_crossLine.m_pItemLineX);
+        m_pScene->removeItem(m_pScene->m_crossLine.m_pItemLineY);
+    }
+}
+
+void ImageWindow::slotToggleProfile(bool checked)
+{
+    /*プロファイルの(非)表示*/
+    auto p_sender = QObject::sender();
+    if (p_sender == m_pUi->actionProfileXRed) {
+        if (!checked)
+            m_pScene->removeItem(m_pScene->m_profile.m_directX.m_pItemPathRed);
+        m_pScene->m_profile.m_directX.m_isPathRed = checked;
+    }
+    else if (p_sender == m_pUi->actionProfileXGreen) {
+        if (!checked)
+            m_pScene->removeItem(m_pScene->m_profile.m_directX.m_pItemPathGreen);
+        m_pScene->m_profile.m_directX.m_isPathGreen = checked;
+    }
+    else if (p_sender == m_pUi->actionProfileXBlue) {
+        if (!checked)
+            m_pScene->removeItem(m_pScene->m_profile.m_directX.m_pItemPathBlue);
+        m_pScene->m_profile.m_directX.m_isPathBlue = checked;
+    }
+    else if (p_sender == m_pUi->actionProfileYRed) {
+        if (!checked)
+            m_pScene->removeItem(m_pScene->m_profile.m_directY.m_pItemPathRed);
+        m_pScene->m_profile.m_directY.m_isPathRed = checked;
+    }
+    else if (p_sender == m_pUi->actionProfileYGreen) {
+        if (!checked)
+            m_pScene->removeItem(m_pScene->m_profile.m_directY.m_pItemPathGreen);
+        m_pScene->m_profile.m_directY.m_isPathGreen = checked;
+    }
+    else if (p_sender == m_pUi->actionProfileYBlue) {
+        if (!checked)
+            m_pScene->removeItem(m_pScene->m_profile.m_directY.m_pItemPathBlue);
+        m_pScene->m_profile.m_directY.m_isPathBlue = checked;
+    }
+
+}

@@ -63,7 +63,7 @@
      <x>0</x>
      <y>0</y>
      <width>660</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="nativeMenuBar">
@@ -86,7 +86,14 @@
    <addaction name="actionMask"/>
    <addaction name="separator"/>
    <addaction name="actionCrossLine"/>
-   <addaction name="actionProfile"/>
+   <addaction name="separator"/>
+   <addaction name="actionProfileXRed"/>
+   <addaction name="actionProfileXGreen"/>
+   <addaction name="actionProfileXBlue"/>
+   <addaction name="actionProfileYRed"/>
+   <addaction name="actionProfileYGreen"/>
+   <addaction name="actionProfileYBlue"/>
+   <addaction name="separator"/>
    <addaction name="actionRoi"/>
    <addaction name="actionLine"/>
    <addaction name="actionEllipse"/>
@@ -102,14 +109,6 @@
    </property>
    <property name="text">
     <string>十字線</string>
-   </property>
-  </action>
-  <action name="actionProfile">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>プロファイル</string>
    </property>
   </action>
   <action name="actionRoi">
@@ -150,6 +149,66 @@
    </property>
    <property name="text">
     <string>マスク</string>
+   </property>
+  </action>
+  <action name="actionProfileXRed">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Profile X(R)</string>
+   </property>
+   <property name="toolTip">
+    <string>Profile X R</string>
+   </property>
+  </action>
+  <action name="actionProfileXGreen">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Profile X(G)</string>
+   </property>
+   <property name="toolTip">
+    <string>Profile X G</string>
+   </property>
+  </action>
+  <action name="actionProfileXBlue">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Profile X(B)</string>
+   </property>
+   <property name="toolTip">
+    <string>Profile X B</string>
+   </property>
+  </action>
+  <action name="actionProfileYRed">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Profile Y(R)</string>
+   </property>
+   <property name="toolTip">
+    <string>Profile Y R</string>
+   </property>
+  </action>
+  <action name="actionProfileYGreen">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Profile Y(G)</string>
+   </property>
+  </action>
+  <action name="actionProfileYBlue">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Profile Y(B)</string>
    </property>
   </action>
  </widget>

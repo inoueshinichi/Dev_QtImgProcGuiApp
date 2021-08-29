@@ -67,4 +67,8 @@ public slots:
     void slotShowPosToStatusBar(const QPointF &imgLocalPos,
                                 const QPointF &scenePos,
                                 const QPoint &viewPos);
+
+private slots:
+    void slotToggleCrossLine(bool checked);
+    void slotToggleProfile(bool checked);
 };
