@@ -21,11 +21,18 @@
 #include <QPixmap>
 #include <QPainter>
 #include <QColor>
+#include <QString>
 #include <QDrag>
 
 class ImageView : public QGraphicsView
 {
     Q_OBJECT
+
+    // マウス
+    bool m_isMousePressLeft{false};
+    bool m_isMousePressRight{false};
+    bool m_isMousePressMiddle{false};
+    bool m_isMouseDrag{false};
 
     void updateStatusBar(const QPoint &viewPos);
 
@@ -33,6 +40,7 @@ class ImageView : public QGraphicsView
     void drawProfile(const QPoint &viewPos,
                      bool isXRed, bool isXGreen, bool isXBlue,
                      bool isYRed, bool isYGreen, bool isYBlue);
+    void drawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSquareDrag);
 
 protected:
     ZoomLevel zoomLevel;

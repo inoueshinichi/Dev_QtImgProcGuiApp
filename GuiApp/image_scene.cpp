@@ -42,22 +42,7 @@ ImageScene::~ImageScene() {
 void ImageScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     /* マウスプレスイベント
     */
-   auto scenePos = event->scenePos();
-   auto mouseButton = event->button();
-
-   if (mouseButton == Qt::MouseButton::LeftButton) {
-       m_isMousePressLeft = true;
-   }
-   else if (mouseButton == Qt::MouseButton::RightButton) {
-
-   }
-   else if (Qt::MouseButton::MiddleButton) {
-
-   }
-   else {
-       DEBUG_STREAM("Unknown mouse button in mousePressEvent...\n");
-   }
-
+    auto scenePos = event->scenePos();
     QGraphicsScene::mousePressEvent(event);
 }
 
@@ -72,23 +57,6 @@ void ImageScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     /* マウスリリースイベント
     */
     auto scenePos = event->scenePos();
-    auto mouseButton = event->button();
-
-    if (mouseButton == Qt::MouseButton::LeftButton)
-    {
-        m_isMousePressLeft = false;
-    }
-    else if (mouseButton == Qt::MouseButton::RightButton)
-    {
-    }
-    else if (Qt::MouseButton::MiddleButton)
-    {
-    }
-    else
-    {
-        DEBUG_STREAM("Unknown mouse button in mouseMoveEvent...\n");
-    }
-
     QGraphicsScene::mouseReleaseEvent(event);
 }
 
@@ -149,36 +117,6 @@ QGraphicsPixmapItem *ImageScene::getEditImgItem(const QPointF &scenePos)
     else {
         return nullptr;
     }
-
-    // QGraphicsItem *p_item = this->itemAt(scenePos, QTransform()); // QTransform()以外だとエラー出るのはなぜ？ p_view->viewportTransform());// transform()のQTransformは原点が様々移動できるのでマズイと思うが...
-    // if (p_item)
-    // {
-    //     bool isExist = false;
-    //     // @Note マウス直下のSceneに登録されたItemは複数あり,
-    //     // 重なっている(Z値で判別)ので, その中から該当するItemを取り出す.
-    //     if (p_item == m_editImgIns.m_pItemOffScreenDdbImg)
-    //     {
-    //         isExist = true;
-    //     }
-    //     else
-    //     {
-    //         while ((p_item = p_item->parentItem()) != nullptr)
-    //         {
-    //             if (p_item == m_editImgIns.m_pItemOffScreenDdbImg)
-    //             {
-    //                 isExist = true;
-    //                 break;
-    //             }
-    //         }
-    //     }
-
-    //     if (!isExist)
-    //     {
-    //         return nullptr;
-    //     }
-
-    //     return qobject_cast<QGraphicsPixmapItem *>(p_item);
-    //}
 }
 //////////////////////////////////////////////////////////
 // public slot method

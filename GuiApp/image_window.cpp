@@ -104,6 +104,9 @@ void ImageWindow::toolBarConnection()
     connect(m_pUi->actionProfileYGreen, &QAction::toggled, this, &ImageWindow::slotToggleProfile);
     // Profile-Y(B)
     connect(m_pUi->actionProfileYBlue, &QAction::toggled, this, &ImageWindow::slotToggleProfile);
+
+    // Roi
+    connect(m_pUi->actionRoi, &QAction::toggled, this, &ImageWindow::slotToggleRoi);
 }
 
 void ImageWindow::customConnection()
@@ -243,4 +246,19 @@ void ImageWindow::slotToggleProfile(bool checked)
         m_pScene->m_profile.m_directY.m_isPathBlue = checked;
     }
 
+}
+
+
+void ImageWindow::slotToggleRoi(bool checked) 
+{
+    /*矩形領域の(非)表示*/
+    m_pScene->m_roi.m_isRoi = checked;
+
+    if (!checked) {
+        size_t num = m_pScene->m_roi.m_rois.size();
+        for (size_t i = 0; i < num; ++i) {
+            m_pScene->m_roi.removeRect(m_pScene, i);
+        }
+        m_pScene->m_roi.release();
+    }
 }

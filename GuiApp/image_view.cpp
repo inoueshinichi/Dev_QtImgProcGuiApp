@@ -275,13 +275,72 @@ void ImageView::drawProfile(const QPoint &viewPos,
     }
 }
 
+
+void ImageView::drawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSquareDrag)
+{
+    /* 図形(l,t),(r,b)の描画
+    */
+    auto scenePos = this->mapToScene(viewPos);
+    auto p_scene = qobject_cast<ImageScene *>(this->scene());
+    QGraphicsPixmapItem *p_item = p_scene->getEditImgItem(scenePos);
+
+    if (p_item) {
+        QPointF localPos = p_item->mapToItem(p_item, scenePos);
+        QRectF localRect = p_item->boundingRect(); // Local座標における矩形サイズ
+
+        if (m_isMousePressLeft && !m_isMouseDrag) {
+            // アンカーポイント
+            p_scene->m_roi.m_anchor = localPos;
+            
+            // 矩形
+            if (p_scene->m_roi.m_isRoi)
+            {
+                p_scene->m_roi.makeRect(p_scene, localPos); // 新規作成
+            }
+        }
+        else if (m_isMousePressLeft && m_isMouseDrag) {
+            // 矩形
+            if (p_scene->m_roi.m_isRoi)
+            {
+                auto[tl, br] = p_scene->m_roi.calcTlBr(localPos, isCenterDrag, isSquareDrag);
+                p_scene->m_roi.updateRect(p_scene, tl, br); // 描画更新
+            }
+        }
+        else {
+            // 矩形
+            if (p_scene->m_roi.m_isRoi) {
+                auto[tl, br] = p_scene->m_roi.calcTlBr(localPos, isCenterDrag, isSquareDrag);
+                // 後で実装
+            }
+        }
+    }
+}
+
 //////////////////////////////////////////////////////////
 // protected method
 //////////////////////////////////////////////////////////
 void ImageView::mousePressEvent(QMouseEvent *event) {
 
     updateStatusBar(event->pos());
+
     auto p_scene = qobject_cast<ImageScene *>(this->scene());
+    auto mouseButton = event->button();
+    if (mouseButton == Qt::MouseButton::LeftButton)
+    {
+        m_isMousePressLeft = true;
+    }
+    else if (mouseButton == Qt::MouseButton::RightButton)
+    {
+        m_isMousePressRight = true;
+    }
+    else if (Qt::MouseButton::MiddleButton)
+    {
+        m_isMousePressMiddle = true;
+    }
+    else
+    {
+        DEBUG_STREAM("Unknown mouse button in mousePressEvent...\n");
+    }
 
     // 十字線@Press
     if (p_scene->m_crossLine.m_isCrossLine)
@@ -304,6 +363,13 @@ void ImageView::mousePressEvent(QMouseEvent *event) {
                     p_scene->m_profile.m_directY.m_isPathRed,
                     p_scene->m_profile.m_directY.m_isPathGreen,
                     p_scene->m_profile.m_directY.m_isPathBlue);
+    }
+
+    // 図形
+    if (p_scene->m_roi.m_isRoi) {
+        drawFigure(event->pos(),
+                   event->modifiers() & Qt::ControlModifier,
+                   event->modifiers() & Qt::ShiftModifier);
     }
 
     QGraphicsView::mousePressEvent(event);
@@ -312,8 +378,14 @@ void ImageView::mousePressEvent(QMouseEvent *event) {
 void ImageView::mouseMoveEvent(QMouseEvent *event) {
 
     updateStatusBar(event->pos());
-
     auto p_scene = qobject_cast<ImageScene *>(this->scene());
+
+    if (m_isMousePressLeft || m_isMousePressMiddle || m_isMousePressRight) {
+        m_isMouseDrag = true;
+    }
+    else {
+        m_isMouseDrag = false;
+    }
 
     // 十字線@Press
     if (p_scene->m_crossLine.m_isCrossLine)
@@ -336,6 +408,13 @@ void ImageView::mouseMoveEvent(QMouseEvent *event) {
                     p_scene->m_profile.m_directY.m_isPathRed,
                     p_scene->m_profile.m_directY.m_isPathGreen,
                     p_scene->m_profile.m_directY.m_isPathBlue);
+    }
+
+    // 図形
+    if (p_scene->m_roi.m_isRoi) {
+        drawFigure(event->pos(),
+                   event->modifiers() & Qt::ControlModifier,
+                   event->modifiers() & Qt::ShiftModifier);
     }
 
     // DEBUG_STREAM("ImageView::mouseMoveEvent\n");
@@ -345,6 +424,28 @@ void ImageView::mouseMoveEvent(QMouseEvent *event) {
 void ImageView::mouseReleaseEvent(QMouseEvent *event) {
 
     updateStatusBar(event->pos());
+    auto p_scene = qobject_cast<ImageScene *>(this->scene());
+
+    auto mouseButton = event->button();
+    if (mouseButton == Qt::MouseButton::LeftButton) {
+        m_isMousePressLeft = false;
+    }
+    else if (mouseButton == Qt::MouseButton::RightButton) {
+        m_isMousePressRight = false;
+    }
+    else if (Qt::MouseButton::MiddleButton) {
+        m_isMousePressMiddle = false;
+    }
+    else {
+        DEBUG_STREAM("Unknown mouse button in mouseMoveEvent...\n");
+    }
+
+    // 図形
+    if (p_scene->m_roi.m_isRoi) {
+        drawFigure(event->pos(),
+                   event->modifiers() & Qt::ControlModifier,
+                   event->modifiers() & Qt::ShiftModifier);
+    }
 
     QGraphicsView::mouseReleaseEvent(event);
 }

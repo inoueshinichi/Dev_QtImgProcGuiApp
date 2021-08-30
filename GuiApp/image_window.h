@@ -71,4 +71,5 @@ public slots:
 private slots:
     void slotToggleCrossLine(bool checked);
     void slotToggleProfile(bool checked);
+    void slotToggleRoi(bool checked);
 };
