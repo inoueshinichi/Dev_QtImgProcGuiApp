@@ -9,6 +9,7 @@ message(STATUS ">>>>> ${LIB_NAME}")
 # Sources
 file(GLOB LIB_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
     src/*.cpp
+    src/singleton/*.cpp
 )
 
 # Win32

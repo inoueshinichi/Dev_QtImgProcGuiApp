@@ -35,7 +35,7 @@
 #endif
 
 // コピーコンストラクタとコピー代入演算子の外部公開を禁止する
-#define DISABLE_COPY_AND_ASSIGN(CLASS_NAME))   \
+#define DISABLE_COPY_AND_ASSIGN(CLASS_NAME)    \
 private:                                       \
     CLASS_NAME(const CLASS_NAME &);            \
     CLASS_NAME &operator=(const CLASS_NAME &);

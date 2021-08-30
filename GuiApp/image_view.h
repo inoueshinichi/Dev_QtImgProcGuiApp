@@ -27,7 +27,12 @@ class ImageView : public QGraphicsView
 {
     Q_OBJECT
 
-    void updateStatusBar(QMouseEvent *event);
+    void updateStatusBar(const QPoint &viewPos);
+
+    void drawCrossLine(const QPoint &viewPos);
+    void drawProfile(const QPoint &viewPos,
+                     bool isXRed, bool isXGreen, bool isXBlue,
+                     bool isYRed, bool isYGreen, bool isYBlue);
 
 protected:
     ZoomLevel zoomLevel;
