@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2021
  * 
  */
-#include <singleton_manager-internal.hpp>
+#include <singleton/singleton_manager-internal.hpp>
 
 namespace is
 {

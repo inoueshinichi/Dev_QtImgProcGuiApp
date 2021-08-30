@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include <singleton_manager.hpp>
+#include <singleton/singleton_manager.hpp>
 
 #include <typeinfo>
 #include <iostream>
