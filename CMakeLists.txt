@@ -244,6 +244,10 @@ message(STATUS "========== [START] C++ Build Test ==========")
 include(CTest)
 enable_testing()
 
+# ========== Test File ==========
+add_subdirectory(Test)
+
+
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
