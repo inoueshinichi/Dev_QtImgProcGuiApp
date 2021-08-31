@@ -28,8 +28,8 @@ namespace fs = std::filesystem;
 // ctor/dtor
 //////////////////////////////////////////////////////////
 
-MainWindow::MainWindow(QWidget *p_parent)
-    : QMainWindow(p_parent)
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
     , m_pUi(new Ui::MainWindow())
     , m_pStatusBarLabel(new QLabel())
     , m_pLastActiveImgWin(nullptr) {

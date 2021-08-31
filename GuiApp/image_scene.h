@@ -44,9 +44,6 @@
 class ImageScene : public QGraphicsScene
 {
     Q_OBJECT
-    
-    
-
 public:
     QImage m_rawDibImg;
     SceneImage m_editImgIns;
