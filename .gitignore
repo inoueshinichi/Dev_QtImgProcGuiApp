@@ -1,6 +1,7 @@
 # Directories
 /build
 /.vscode
+/Is/third-party/eigen-3.3.7
 
 # Files
 *.bmp
