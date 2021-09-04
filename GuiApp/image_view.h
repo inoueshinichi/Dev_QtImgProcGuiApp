@@ -43,7 +43,7 @@ class ImageView : public QGraphicsView
     void drawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSquareDrag);
 
 protected:
-    ZoomLevel zoomLevel;
+    ZoomLevel m_zoomLevel;
     bool isAcceptDragDrop {false};
 
 public:

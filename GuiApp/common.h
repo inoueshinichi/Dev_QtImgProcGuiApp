@@ -11,12 +11,13 @@
 
 #pragma once
 
+#if 1
+#include <cstdio>
+#define DEBUG_STREAM(format, ...) std::printf(format, ##__VA_ARGS__)
+#else
+#define DEBUG_STREAM(format, ...)
+#endif
+
 #include "defs.h"
 #include "qt_defs.h"
 
-#if 1
-#   include <cstdio>
-#   define DEBUG_STREAM(FORMAT, ...) std::printf(FORMAT, ##__VA_ARGS__)
-#else
-#   define DEBUG_STREAM(FORMAT, ...) 
-#endif

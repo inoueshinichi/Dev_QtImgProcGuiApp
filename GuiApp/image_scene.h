@@ -51,6 +51,9 @@ public:
     Profile m_profile;
     Roi m_roi;
 
+    QRectF m_rect;
+    QPointF m_anchor;
+
     explicit ImageScene(QObject *parent=nullptr);
     virtual ~ImageScene();
 

@@ -289,29 +289,99 @@ void ImageView::drawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSqua
         QRectF localRect = p_item->boundingRect(); // Local座標における矩形サイズ
 
         if (m_isMousePressLeft && !m_isMouseDrag) {
+            p_scene->m_rect.setTopLeft(localPos);
+            p_scene->m_rect.setBottomRight(localPos);
+
             // アンカーポイント
-            p_scene->m_roi.m_anchor = localPos;
-            
+            p_scene->m_anchor = localPos;
+
             // 矩形
-            if (p_scene->m_roi.m_isRoi)
-            {
-                p_scene->m_roi.makeRect(p_scene, localPos); // 新規作成
+            if (p_scene->m_roi.m_isRoi) {
+                p_scene->m_roi.makeRect(p_scene, p_scene->m_rect); // 新規作成
             }
         }
         else if (m_isMousePressLeft && m_isMouseDrag) {
+            QPointF dp, tl, br;
+            qreal dw, dh;
+
+            if (isCenterDrag) {
+                dp = localPos - p_scene->m_anchor;
+                dw = std::abs(dp.x()) + 1; // 幅
+                dh = std::abs(dp.y()) + 1; // 高さ
+
+                if (isSquareDrag) {
+                    dw = (dw < dh) ? dw : dh;
+                    dh = dw;
+                }
+                tl.setX(p_scene->m_anchor.x() - dw + 1);
+                tl.setY(p_scene->m_anchor.y() - dh + 1);
+                br.setX(p_scene->m_anchor.x() + dw);
+                br.setY(p_scene->m_anchor.y() + dh);
+            }
+            else {
+                qreal ax, ay, lx, ly;
+                ax = p_scene->m_anchor.x();
+                ay = p_scene->m_anchor.y();
+                lx = localPos.x();
+                ly = localPos.y();
+                if (ax < lx) {
+                    tl.setX(ax);
+                    br.setX(lx);
+                }
+                else {
+                    tl.setX(lx);
+                    br.setX(ax);
+                }
+                if (ay < ly) {
+                    tl.setY(ay);
+                    br.setY(ly);
+                }
+                else {
+                    tl.setY(ly);
+                    br.setY(ay);
+                }
+
+                if (isSquareDrag) {
+                    dw = std::abs(br.x() - tl.x()) + 1;
+                    dh = std::abs(br.y() - tl.y()) + 1;
+                    if (dw < dh) {
+                        br.setX(tl.x() + dw);
+                    }
+                    else {
+                        br.setY(tl.y() + dh);
+                    }
+                } 
+            }
+
+            p_scene->m_rect.setTopLeft(tl);
+            p_scene->m_rect.setBottomRight(br);
+
             // 矩形
-            if (p_scene->m_roi.m_isRoi)
-            {
-                auto[tl, br] = p_scene->m_roi.calcTlBr(localPos, isCenterDrag, isSquareDrag);
-                p_scene->m_roi.updateRect(p_scene, tl, br); // 描画更新
+            if (p_scene->m_roi.m_isRoi) {
+                p_scene->m_roi.updateRect(p_scene, p_scene->m_rect); // 描画更新
+            }
+        }
+        else if (!m_isMousePressLeft && m_isMouseDrag) {
+            // 矩形
+            if (p_scene->m_roi.m_isRoi) {
+                qreal w, h;
+                w = p_scene->m_rect.width();
+                h = p_scene->m_rect.height();
+                DEBUG_STREAM("w:%d, h:%d\n", (int)w, (int)h);
+                if (w > 2 && h > 2) {
+                    p_scene->m_roi.updateRect(p_scene, p_scene->m_rect); // 描画更新
+                }
+                else {
+                    p_scene->m_roi.removeRect(p_scene, p_scene->m_roi.m_rois.size() - 1);
+                    p_scene->m_rect.setX(0);
+                    p_scene->m_rect.setY(0);
+                    p_scene->m_rect.setWidth(0);
+                    p_scene->m_rect.setHeight(0);
+                }
             }
         }
         else {
-            // 矩形
-            if (p_scene->m_roi.m_isRoi) {
-                auto[tl, br] = p_scene->m_roi.calcTlBr(localPos, isCenterDrag, isSquareDrag);
-                // 後で実装
-            }
+
         }
     }
 }
@@ -413,10 +483,10 @@ void ImageView::mouseMoveEvent(QMouseEvent *event) {
     // 図形
     if (p_scene->m_roi.m_isRoi) {
         drawFigure(event->pos(),
-                   event->modifiers() & Qt::ControlModifier,
-                   event->modifiers() & Qt::ShiftModifier);
+                event->modifiers() & Qt::ControlModifier,
+                event->modifiers() & Qt::ShiftModifier);
     }
-
+    
     // DEBUG_STREAM("ImageView::mouseMoveEvent\n");
     QGraphicsView::mouseMoveEvent(event);
 }

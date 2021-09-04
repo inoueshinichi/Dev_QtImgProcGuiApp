@@ -83,7 +83,6 @@ typedef struct Profile
 
 typedef struct Roi {
     bool m_isRoi{false};
-    QPointF m_anchor;
     std::map<int, QGraphicsRectItem *> m_rois;
 
     Roi() {}
@@ -104,75 +103,41 @@ typedef struct Roi {
         m_rois.clear();
     }
 
-    void makeRect(QGraphicsScene *scene, const QPointF &localPos) {
+    void makeRect(QGraphicsScene *scene, const QRectF &rect) {
         QGraphicsRectItem *p_item = new QGraphicsRectItem();
         p_item->setPen(QPen(QColor(Qt::magenta)));
-        p_item->setRect(localPos.x(), localPos.y(), 0.0, 0.0); // (幅,高さ)=(0,0)
-        size_t index = m_rois.size();
+        p_item->setRect(rect); // (幅,高さ)=(0,0)
+        int index = m_rois.size();
         m_rois.insert({index, p_item});
         scene->addItem(p_item);
+        DEBUG_STREAM("New Rect[%d]: (%f, %f, %f, %f)\n",
+                     index, rect.x(), rect.y(), rect.width(), rect.height());
     }
 
-    void updateRect(QGraphicsScene *scene, 
-                    const QPointF &localPos1, 
-                    const QPointF &localPos2) {
-        size_t last = m_rois.size() - 1;
+    void updateRect(QGraphicsScene *scene, const QRectF &rect) {
+        int last = m_rois.size() - 1;
         if (last < 0)
             return;
 
+        DEBUG_STREAM("Update Rect[%d]: (%f, %f, %f, %f)\n",
+                     last, rect.x(), rect.y(), rect.width(), rect.height());
+
         auto p_item = m_rois[last];
         scene->removeItem(p_item);
-        p_item->setRect(QRectF(localPos1, localPos2));
+        p_item->setRect(rect);
         scene->addItem(p_item);
     }
 
     void removeRect(QGraphicsScene *scene, int index) {
-        if (m_rois.contains(index))
-        {
+        if (m_rois.contains(index)) {
             auto p_item = m_rois[index];
             scene->removeItem(p_item);
             delete p_item; p_item = nullptr;
             m_rois.erase(index);
+            DEBUG_STREAM("Rm Rect[%d]\n", index);
         }
     }
 
-    std::tuple<QPointF, QPointF> calcTlBr(const QPointF &localPos, 
-                                    bool isCenterDrag, bool isSquareDrag) {
-        QPointF dp, tl, br;
-        qreal dw, dh, min;
-        QRectF tmpRect;
-
-        dp = localPos - m_anchor;
-        dw = std::abs(dp.x()) + 1; // 幅
-        dh = std::abs(dp.y()) + 1; // 高さ
-        if (isCenterDrag) {
-            if (isSquareDrag) {
-                min = (dw < dh) ? dw : dh;
-                dw = min;
-                dh = min;
-            }
-            tl.setX(m_anchor.x() - dw + 1);
-            tl.setY(m_anchor.y() - dh + 1);
-            br.setX(m_anchor.x() + dw);
-            br.setY(m_anchor.y() + dh);
-        }
-        else {
-            if (isSquareDrag) {
-                min = (dw < dh) ? dw : dh;
-                dw = min;
-                dh = min;
-            }
-            tl.setX(m_anchor.x());
-            tl.setY(m_anchor.y());
-            br.setX(m_anchor.x() + dw);
-            br.setY(m_anchor.y() + dh);
-        }
-
-        tmpRect.setTopLeft(tl);
-        tmpRect.setBottomRight(br);
-
-        return std::make_tuple(tmpRect.topLeft(), tmpRect.bottomRight());
-    }
 } Roi;
 
 

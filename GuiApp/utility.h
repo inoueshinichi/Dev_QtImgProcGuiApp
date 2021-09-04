@@ -28,4 +28,4 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 
 std::string getNewSerialNoFilename(const std::string &filename,
-                                    const std::set<std::string> &filenameSet); 
+    const std::set<std::string> &filenameSet); 

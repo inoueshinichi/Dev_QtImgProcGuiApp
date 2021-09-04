@@ -1,29 +1,11 @@
-cmake_minimum_required(VERSION 3.14.0)
+cmake_minimum_required(VERSION 3.14.6)
 
-set(APP_TARGET_NAME QtGuiApp)
+get_filename_component(DIRNAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+set(APP_TARGET_NAME ${DIRNAME})
 
-project(${APP_TARGET_NAME} LANGUAGES CXX VERSION 0.1.0)
+project(${APP_TARGET_NAME} LANGUAGES C CXX VERSION 0.1.0)
 
 message(STATUS ">>>>> ${APP_TARGET_NAME}")
-
-#############################################################################
-# ファイルのコーデックをUTF8からUTF16に変換する
-#############################################################################
-if(WIN32)
-    # utf8版バージョン情報管理ファイル(雛形)の生成
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.rc.in 
-                   ${CMAKE_CURRENT_BINARY_DIR}/version-utf8.rc)
-
-    # utf16版バージョン情報管理ファイルの生成
-    execute_process(
-        COMMAND ${PYTHON_COMMAND} ${CMAKE_SOURCE_DIR}/build_tool/utf8_to_utf16.py 
-        ${CMAKE_CURRENT_BINARY_DIR}/version-utf8.rc ${CMAKE_CURRENT_BINARY_DIR}/version.rc
-    )
-
-    # ソースファイルに追加
-    list(APPEND DESINGN_PATTERN_SRC_FILES ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
-endif()
-
 
 ###############################################################################
 # Qt Configuration
@@ -200,7 +182,7 @@ list(APPEND APP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 message(STATUS "Include dir: ${APP_INCLUDE_DIR}")
 
 # Sources
-file(GLOB_RECURSE APP_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+file(GLOB APP_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 message(STATUS "Source files: ${APP_SOURCE_FILES}")
 
 # App Sources
@@ -210,6 +192,21 @@ target_sources(${APP_TARGET_NAME} PRIVATE ${APP_SOURCE_FILES})
 target_include_directories(${APP_TARGET_NAME} PRIVATE 
     ${APP_INCLUDE_DIR}
 )
+
+if(MSVC)
+    # utf8版バージョン情報管理ファイル(雛形)の生成
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.rc.in 
+                   ${CMAKE_CURRENT_BINARY_DIR}/version-utf8.rc)
+
+    # utf16版バージョン情報管理ファイルの生成
+    execute_process(
+        COMMAND ${PYTHON_INTERPRETER} ${CMAKE_CURRENT_SOURCE_DIR}/build_tool/utf8_to_utf16.py 
+        ${CMAKE_CURRENT_BINARY_DIR}/version-utf8.rc ${CMAKE_CURRENT_BINARY_DIR}/version.rc
+    )
+
+    # ソースファイルに追加
+    list(APPEND APP_SOURCE_FILES ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
+endif()
 
 
 ###############################################################################
@@ -247,26 +244,49 @@ endif()
 # 自作ライブラリのリンク
 ###############################################################################
 
-# Dependency
-add_dependencies(${APP_TARGET_NAME} 
-    ${IS_COMMONLIB_TARGET_NAME}
-)
-
 # Include
 target_include_directories(${APP_TARGET_NAME} PRIVATE 
-    ${CMAKE_SOURCE_DIR}#/IsCommonLib
+    ${CMAKE_SOURCE_DIR}/Is/include
 )
 
 # Link
 target_link_libraries(${APP_TARGET_NAME} PRIVATE
-    ${IS_COMMONLIB_TARGET_NAME}
+    IsCommon
+)
+
+# Dependency
+add_dependencies(${APP_TARGET_NAME} 
+    IsCommon
 )
 
 # Copy
 add_custom_command(TARGET ${APP_TARGET_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${IS_COMMONLIB_TARGET_NAME}> $<TARGET_FILE_DIR:${APP_TARGET_NAME}>
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:IsCommon> $<TARGET_FILE_DIR:${APP_TARGET_NAME}>
     # COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:> $<TARGET_FILE_DIR:${APP_TARGET_NAME}>
     # COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:> $<TARGET_FILE_DIR:${APP_TARGET_NAME}>
 )
+
+
+###############################################################################
+# C++ Testing
+###############################################################################
+message(STATUS "========== [START] C++ Build Test ==========")
+
+# if(BUILD_CPP_TEST)
+#     include(CTest)
+#     enable_testing()
+#     # ========== Test File ==========
+#     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test)
+# endif()
+
+# CPackとは何なのか調べること
+# set(CPACK_PROJECT_NAME ${PROJECT_NAME})
+# set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+# include(CPack)
+
+message(STATUS "========== [END] C++ Build Test ==========")
+
+
+
 
 message(STATUS "<<<<< ${APP_TARGET_NAME}")
