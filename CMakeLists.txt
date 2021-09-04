@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14.0)
+cmake_minimum_required(VERSION 3.14.6)
 
 project(QtImgProcGuiApp LANGUAGES CXX VERSION 0.1.0)
 
@@ -6,39 +6,20 @@ project(QtImgProcGuiApp LANGUAGES CXX VERSION 0.1.0)
 # Version
 ###############################################################################
 message(STATUS "========== [START] Version Management ==========")
-
-# CMake Version
-message(STATUS "CMake Version: ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}.${CMAKE_TWEAK_VERSION}")
-
-# プロジェクト Version
-file(STRINGS ${CMAKE_SOURCE_DIR}/VERSION.txt versions NEWLINE_CONSUME)
-string(REGEX REPLACE [[^([A-z0-9.\-_]+).*$]] [[\1]] version ${versions})
-string(REGEX REPLACE [[^([0-9]+)\.([0-9]+)\.(.*)$]] [[\1]] version_major ${version})
-string(REGEX REPLACE [[^([0-9]+)\.([0-9]+)\.(.*)$]] [[\2]] version_minor ${version})
-string(REGEX REPLACE [[^([0-9]+)\.([0-9]+)\.(.*)$]] [[\3]] version_patch ${version})
-
+message(STATUS "CMake Ver: ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}.${CMAKE_TWEAK_VERSION}")
 message(STATUS "========== [END] Version Management ==========")
-
-###############################################################################
-# Project
-###############################################################################
-project("Is" LANGUAGES C CXX VERSION ${version_major}.${version_minor}.${version_patch})
-
 
 ###############################################################################
 # 前処理
 ###############################################################################
 message(STATUS "========== [START] Preprocessing ==========")
 
-# # pythonコマンドをCMakeで使えるようにする
-# set(PYTHON_COMMAND_NAME "python3") # どのインタープリタが選ばれるかはPCの設定次第. もっと詳細設定をコマンドライン引数から与えても良いと思う.
-# find_program(PYTHON_INTERPRETER ${PYTHON_COMMAND_NAME})
-# if(NOT EXISTS ${PYTHON_INTERPRETER})
-#     message(FATAL_ERROR "Python [${PYTHON_INTERPRETER}] not found.")
-#     error() # Place Unknown command to stop cmake process here.
-# endif()
-# set(PYTHON_COMMAND "${PYTHON_INTERPRETER}")
-# message(STATUS "Python3 Interpreter: ${PYTHON_INTERPRETER}")
+find_program(PYTHON_INTERPRETER "python3")
+if(NOT EXISTS ${PYTHON_INTERPRETER})
+    message(FATAL_ERROR "python [${PYTHON_INTERPRETER}] not found.")
+    error() # Place Unknown command to stop cmake process here.
+endif()
+message(STATUS "Python interpreter: ${PYTHON_INTERPRETER}")
 
 message(STATUS "========== [END] Preprocessing ==========")
 
@@ -51,19 +32,11 @@ message(STATUS "========== [START] C++ All Target Options ==========")
 option(BUILD_OPENMP "Enable/Disable OpenMP" ON)
 option(BUILD_CPP_TEST "Building test" OFF)
 option(BUILD_CPP_SHARED_LIBS "Enable/Disable shared libraries" ON)
-option(BUILD_CPP_COMPILE_PCH "Enable/Disable compile pre-compile header" OFF)
-option(BUILD_CPP_USE_PCH "Enable/Disable use pre-compile header" OFF)
+
 
 # コードページ(ファイルIOなどのエンコードに使われる)
 # 従来のWidowsは,ANSI(システム規定)コードページがCP932(拡張Shift-Jis)だったが, Windows10以降はCP65001(UTF-8)が使われる場合が多い.
 option(BUILD_CPP_MSVC_DEFAULT_LOCALE_UTF8 "Enable/Disable utf-8 default locale" OFF) 
-
-# # Global Shared lib flag
-# if(BUILD_CPP_SHARED_LIBS)
-#     set(BUILD_CPP_SHARED_LIBS ON)
-# else()
-#     set(BUILD_CPP_SHARED_LIBS OFF)
-# endif()
 
 # C++20
 set(CMAKE_CXX_STANDARD 20)
@@ -113,15 +86,6 @@ if (MSVC)
     add_compile_definitions(_CRT_NONSTDC_NO_DEPRECATE) # mkdir, closeなどPOSIX関数でコンパイル時に警告発生（unsafe）を抑制.
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS) # strcpy、sprinitfなどでコンパイル時に警告発生（unsafe）を抑制.
     add_compile_definitions(_USE_MATH_DEFINES) # math.hに定義されている円周率等の物理定数を有効化する.
-
-    # プリコンパイル済みヘッダーの生成と利用
-    if(BUILD_CPP_COMPILE_PCH)
-
-    endif()
-    if(BUILD_CPP_USE_PCH)
-        # add_compile_options("$<$<C_COMPILER_ID:MSVC>:/Yu>")
-        # add_compile_options("$<$<CXX_CPMPILER_ID:MSVC>:/Yu>")
-    endif()
 
 elseif(APPLE)
     message(STATUS "Compiler: Clang in macOS")    
@@ -202,15 +166,6 @@ else()
     # string(APPEND CMAKE_CXX_FLAGS " -Werror")
     # string(APPEND CMAKE_CXX_FLAGS " -Wno-unused")
 
-    # プリコンパイル済みヘッダーの生成と利用
-    if(BUILD_CPP_COMPILE_PCH)
-
-    endif()
-
-    if(BUILD_CPP_USE_PCH)
-
-    endif()
-
 endif()
 
 message(STATUS "---------- Compiler Options for Multi Configuration such as XCode, Visual Studio ----------")
@@ -225,31 +180,10 @@ message(STATUS "========== [END] C++ All Target Options ==========")
 ###############################################################################
 # C++ core
 ###############################################################################
-message(STATUS "========== [START] C++ Build Core ==========")
-
+message(STATUS "========== [START] C++ Build Components ==========")
 # ========== Library File ==========
-add_subdirectory(IsCommonLib)
-# add_subdirectory(IsNdArrayLib)
-# add_subdirectory(IsCvLib)
-
+add_subdirectory(Is)
 # ========== Executable File ==========
 add_subdirectory(GuiApp)
+message(STATUS "========== [END] C++ Build Components ==========")
 
-
-message(STATUS "========== [END] C++ Build Core ==========")
-###############################################################################
-# C++ Testing
-###############################################################################
-message(STATUS "========== [START] C++ Build Test ==========")
-include(CTest)
-enable_testing()
-
-# ========== Test File ==========
-add_subdirectory(Test)
-
-
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-include(CPack)
-
-message(STATUS "========== [END] C++ Build Test ==========")
