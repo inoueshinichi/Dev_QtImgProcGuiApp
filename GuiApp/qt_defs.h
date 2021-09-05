@@ -81,6 +81,7 @@ typedef struct Profile
     Direction m_directY;
 } Profile;
 
+
 typedef struct Roi {
     bool m_isRoi{false};
     std::map<int, QGraphicsRectItem *> m_rois;
@@ -135,6 +136,23 @@ typedef struct Roi {
             delete p_item; p_item = nullptr;
             m_rois.erase(index);
             DEBUG_STREAM("Rm Rect[%d]\n", index);
+        }
+    }
+
+    void removeRect(QGraphicsScene *scene, QGraphicsItem *item) {
+        for (auto iter = m_rois.begin(); iter != m_rois.end();) {
+            if (iter->second == item) {
+                int index = iter->first;
+                scene->removeItem(iter->second);
+                delete iter->second;
+                iter->second = nullptr;
+                iter = m_rois.erase(iter);
+                DEBUG_STREAM("Rm Rect[%d]\n", index);
+                return;
+            }
+            else {
+                ++iter;
+            }
         }
     }
 

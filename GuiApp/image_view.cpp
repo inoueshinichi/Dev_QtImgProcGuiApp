@@ -90,7 +90,7 @@ void ImageView::drawCrossLine(const QPoint &viewPos)
         
         if (localRect.contains(localPos.toPoint()))
         {
-            DEBUG_STREAM("[CrossLine] Detect target item! LocalPos(%.1f, %.1f)\n", localPos.x(), localPos.y());
+            //DEBUG_STREAM("[CrossLine] Detect target item! LocalPos(%.1f, %.1f)\n", localPos.x(), localPos.y());
 
             // 水平線
             qreal y = localPos.y();
@@ -132,7 +132,7 @@ void ImageView::drawProfile(const QPoint &viewPos,
         
         if (localRect.contains(localPos.toPoint()))
         {
-            DEBUG_STREAM("[Profile] Detect target item! LocalPos(%.1f, %.1f)\n", localPos.x(), localPos.y());
+            //DEBUG_STREAM("[Profile] Detect target item! LocalPos(%.1f, %.1f)\n", localPos.x(), localPos.y());
 
             // シーンに登録済みのProfileItemを解除
             foreach (QGraphicsItem *p_item, p_scene->items())
@@ -179,7 +179,7 @@ void ImageView::drawProfile(const QPoint &viewPos,
             QColor color, nextColor;
             int red, green, blue;
             int nextRed, nextGreen, nextBlue;
-            DEBUG_STREAM("profileX %d, profileY %d\n", profileX, profileY);
+            //DEBUG_STREAM("profileX %d, profileY %d\n", profileX, profileY);
 
             auto p_viewport = this->viewport();
             int viewWidth = p_viewport->width();
@@ -289,32 +289,34 @@ void ImageView::drawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSqua
         QRectF localRect = p_item->boundingRect(); // Local座標における矩形サイズ
 
         if (m_isMousePressLeft && !m_isMouseDrag) {
-            p_scene->m_rect.setTopLeft(localPos);
-            p_scene->m_rect.setBottomRight(localPos);
-
             // アンカーポイント
             p_scene->m_anchor = localPos;
-
-            // 矩形
-            if (p_scene->m_roi.m_isRoi) {
-                p_scene->m_roi.makeRect(p_scene, p_scene->m_rect); // 新規作成
-            }
+            p_scene->m_rect.setTopLeft(localPos);
+            p_scene->m_rect.setBottomRight(localPos);
         }
         else if (m_isMousePressLeft && m_isMouseDrag) {
+            if (!m_isGenFigure) {
+                // 矩形
+                if (p_scene->m_roi.m_isRoi) {
+                    p_scene->m_roi.makeRect(p_scene, p_scene->m_rect); // 新規作成
+                }
+                m_isGenFigure = true;
+            }
+
             QPointF dp, tl, br;
             qreal dw, dh;
 
             if (isCenterDrag) {
                 dp = localPos - p_scene->m_anchor;
-                dw = std::abs(dp.x()) + 1; // 幅
-                dh = std::abs(dp.y()) + 1; // 高さ
+                dw = std::abs(dp.x()); // 幅
+                dh = std::abs(dp.y()); // 高さ
 
                 if (isSquareDrag) {
                     dw = (dw < dh) ? dw : dh;
                     dh = dw;
                 }
-                tl.setX(p_scene->m_anchor.x() - dw + 1);
-                tl.setY(p_scene->m_anchor.y() - dh + 1);
+                tl.setX(p_scene->m_anchor.x() - dw);
+                tl.setY(p_scene->m_anchor.y() - dh);
                 br.setX(p_scene->m_anchor.x() + dw);
                 br.setY(p_scene->m_anchor.y() + dh);
             }
@@ -324,33 +326,60 @@ void ImageView::drawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSqua
                 ay = p_scene->m_anchor.y();
                 lx = localPos.x();
                 ly = localPos.y();
+                qreal l, r, t, b;
+
                 if (ax < lx) {
-                    tl.setX(ax);
-                    br.setX(lx);
+                    l = ax;
+                    r = lx;
                 }
                 else {
-                    tl.setX(lx);
-                    br.setX(ax);
+                    l = lx;
+                    r = ax;
                 }
                 if (ay < ly) {
-                    tl.setY(ay);
-                    br.setY(ly);
+                    t = ay;
+                    b = ly;
                 }
                 else {
-                    tl.setY(ly);
-                    br.setY(ay);
+                    t = ly;
+                    b = ay;
                 }
-
+                
                 if (isSquareDrag) {
-                    dw = std::abs(br.x() - tl.x()) + 1;
-                    dh = std::abs(br.y() - tl.y()) + 1;
-                    if (dw < dh) {
-                        br.setX(tl.x() + dw);
+                    dw = r - l;
+                    dh = b - t;
+                    dw = dw < dh ? dw : dh;
+                    dh = dw;
+                    if (ax < lx && ay < ly) {
+                        l = ax;
+                        r = l + dw;
+                        t = ay;
+                        b = t + dh;
                     }
-                    else {
-                        br.setY(tl.y() + dh);
+                    else if (ax < lx && ay > ly) {
+                        l = ax;
+                        r = l + dw;
+                        t = ay - dw;
+                        b = ay;
+                    }
+                    else if (ax > lx && ay > ly) {
+                        l = ax - dw;
+                        r = ax;
+                        t = ay - dh;
+                        b = ay;
+                    }
+                    else if (ax > lx && ay < ly) {
+                        l = ax - dw;
+                        r = ax;
+                        t = ay;
+                        b = t + dh;
                     }
                 } 
+
+                tl.setX(l);
+                tl.setY(t);
+                br.setX(r);
+                br.setY(b);
             }
 
             p_scene->m_rect.setTopLeft(tl);
@@ -379,9 +408,25 @@ void ImageView::drawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSqua
                     p_scene->m_rect.setHeight(0);
                 }
             }
+
+            m_isGenFigure = false;
         }
         else {
+            
+        }
+    }
+}
 
+void ImageView::removeFigure(const QPoint &viewPos) {
+    /* 図形消去
+    */
+    auto scenePos = this->mapToScene(viewPos);
+    auto p_scene = qobject_cast<ImageScene *>(this->scene());
+    auto p_item = p_scene->itemAt(scenePos, QTransform());
+    if (p_item) {
+        // 矩形
+        if (p_scene->m_roi.m_isRoi) {
+            p_scene->m_roi.removeRect(p_scene, p_item);
         }
     }
 }
@@ -390,6 +435,8 @@ void ImageView::drawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSqua
 // protected method
 //////////////////////////////////////////////////////////
 void ImageView::mousePressEvent(QMouseEvent *event) {
+    /* マウスプレスイベント
+    */
 
     updateStatusBar(event->pos());
 
@@ -446,6 +493,8 @@ void ImageView::mousePressEvent(QMouseEvent *event) {
 }
 
 void ImageView::mouseMoveEvent(QMouseEvent *event) {
+    /* マウス移動イベント
+    */
 
     updateStatusBar(event->pos());
     auto p_scene = qobject_cast<ImageScene *>(this->scene());
@@ -492,6 +541,8 @@ void ImageView::mouseMoveEvent(QMouseEvent *event) {
 }
 
 void ImageView::mouseReleaseEvent(QMouseEvent *event) {
+    /* マウスリリースイベント
+    */
 
     updateStatusBar(event->pos());
     auto p_scene = qobject_cast<ImageScene *>(this->scene());
@@ -517,7 +568,35 @@ void ImageView::mouseReleaseEvent(QMouseEvent *event) {
                    event->modifiers() & Qt::ShiftModifier);
     }
 
+    m_isMouseDrag = false;
+
     QGraphicsView::mouseReleaseEvent(event);
+}
+
+void ImageView::mouseDoubleClickEvent(QMouseEvent *event) {
+    /* マウスダブルクリックイベント
+    */
+    updateStatusBar(event->pos());
+    auto p_scene = qobject_cast<ImageScene *>(this->scene());
+
+    auto mouseButton = event->button();
+    if (mouseButton == Qt::MouseButton::LeftButton) {
+        
+    }
+    else if (mouseButton == Qt::MouseButton::RightButton) {
+
+    }
+    else if (Qt::MouseButton::MiddleButton) {
+
+    }
+    else {
+        DEBUG_STREAM("Unknown mouse button in mouseMoveEvent...\n");
+    }
+
+    // 図形の削除
+    removeFigure(event->pos());
+
+    QGraphicsView::mouseDoubleClickEvent(event);
 }
 
 //////////////////////////////////////////////////////////

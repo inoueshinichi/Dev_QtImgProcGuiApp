@@ -34,6 +34,8 @@ class ImageView : public QGraphicsView
     bool m_isMousePressMiddle{false};
     bool m_isMouseDrag{false};
 
+    bool m_isGenFigure{false};
+
     void updateStatusBar(const QPoint &viewPos);
 
     void drawCrossLine(const QPoint &viewPos);
@@ -41,6 +43,7 @@ class ImageView : public QGraphicsView
                      bool isXRed, bool isXGreen, bool isXBlue,
                      bool isYRed, bool isYGreen, bool isYBlue);
     void drawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSquareDrag);
+    void removeFigure(const QPoint &viewPos);
 
 protected:
     ZoomLevel m_zoomLevel;
@@ -54,6 +57,7 @@ protected:
     virtual void mousePressEvent(QMouseEvent *event) override;
     virtual void mouseMoveEvent(QMouseEvent *event) override;
     virtual void mouseReleaseEvent(QMouseEvent *event) override;
+    virtual void mouseDoubleClickEvent(QMouseEvent *event) override;
 
 signals:
     void emitShowPosToStatusBar(
