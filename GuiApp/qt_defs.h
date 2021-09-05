@@ -10,7 +10,7 @@
 #include <QGraphicsLineItem>
 #include <QGraphicsRectItem>
 #include <QGraphicsPixmapItem>
-#include <QgraphicsScene>
+#include <QGraphicsScene>
 
 #include <map>
 #include <tuple>

@@ -39,3 +39,4 @@
 private:                                    \
     class_name(const class_name &);         \
     class_name &operator=(const class_name &);
+    
