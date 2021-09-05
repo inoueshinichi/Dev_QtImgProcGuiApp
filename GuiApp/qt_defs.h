@@ -54,6 +54,10 @@ typedef struct Profile
         bool m_isPathRed{false};
         bool m_isPathGreen{false};
         bool m_isPathBlue{false};
+        
+        bool m_isAddedRed{false};
+        bool m_isAddedGreen{false};
+        bool m_isAddedBlue{false};
 
         Direction() {
             m_pItemPathRed = new QGraphicsPathItem();

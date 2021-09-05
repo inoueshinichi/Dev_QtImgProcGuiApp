@@ -216,33 +216,45 @@ void ImageWindow::slotToggleProfile(bool checked)
     /*プロファイルの(非)表示*/
     auto p_sender = QObject::sender();
     if (p_sender == m_pUi->actionProfileXRed) {
-        if (!checked)
+        if (!checked) {
             m_pScene->removeItem(m_pScene->m_profile.m_directX.m_pItemPathRed);
+            m_pScene->m_profile.m_directX.m_isAddedRed = false;
+        }
         m_pScene->m_profile.m_directX.m_isPathRed = checked;
     }
     else if (p_sender == m_pUi->actionProfileXGreen) {
-        if (!checked)
+        if (!checked) {
             m_pScene->removeItem(m_pScene->m_profile.m_directX.m_pItemPathGreen);
+            m_pScene->m_profile.m_directX.m_isAddedGreen = false;
+        }
         m_pScene->m_profile.m_directX.m_isPathGreen = checked;
     }
     else if (p_sender == m_pUi->actionProfileXBlue) {
-        if (!checked)
+        if (!checked) {
             m_pScene->removeItem(m_pScene->m_profile.m_directX.m_pItemPathBlue);
+            m_pScene->m_profile.m_directX.m_isAddedBlue = false;
+        }
         m_pScene->m_profile.m_directX.m_isPathBlue = checked;
     }
     else if (p_sender == m_pUi->actionProfileYRed) {
-        if (!checked)
+        if (!checked) {
             m_pScene->removeItem(m_pScene->m_profile.m_directY.m_pItemPathRed);
+            m_pScene->m_profile.m_directY.m_isAddedRed = false;
+        }
         m_pScene->m_profile.m_directY.m_isPathRed = checked;
     }
     else if (p_sender == m_pUi->actionProfileYGreen) {
-        if (!checked)
+        if (!checked) {
             m_pScene->removeItem(m_pScene->m_profile.m_directY.m_pItemPathGreen);
+            m_pScene->m_profile.m_directY.m_isAddedGreen = false;
+        }
         m_pScene->m_profile.m_directY.m_isPathGreen = checked;
     }
     else if (p_sender == m_pUi->actionProfileYBlue) {
-        if (!checked)
+        if (!checked) {
             m_pScene->removeItem(m_pScene->m_profile.m_directY.m_pItemPathBlue);
+            m_pScene->m_profile.m_directY.m_isAddedBlue = false;
+        }
         m_pScene->m_profile.m_directY.m_isPathBlue = checked;
     }
 

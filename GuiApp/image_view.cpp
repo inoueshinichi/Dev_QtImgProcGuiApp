@@ -134,44 +134,6 @@ void ImageView::drawProfile(const QPoint &viewPos,
         {
             //DEBUG_STREAM("[Profile] Detect target item! LocalPos(%.1f, %.1f)\n", localPos.x(), localPos.y());
 
-            // シーンに登録済みのProfileItemを解除
-            foreach (QGraphicsItem *p_item, p_scene->items())
-            {
-                // X
-                if (p_item == p_scene->m_profile.m_directX.m_pItemPathRed)
-                {
-                    p_scene->removeItem(p_scene->m_profile.m_directX.m_pItemPathRed);
-                    p_scene->m_profile.m_directX.m_pathRed.clear();
-                }
-                if (p_item == p_scene->m_profile.m_directX.m_pItemPathGreen)
-                {
-                    p_scene->removeItem(p_scene->m_profile.m_directX.m_pItemPathGreen);
-                    p_scene->m_profile.m_directX.m_pathGreen.clear();
-                }
-                if (p_item == p_scene->m_profile.m_directX.m_pItemPathBlue)
-                {
-                    p_scene->removeItem(p_scene->m_profile.m_directX.m_pItemPathBlue);
-                    p_scene->m_profile.m_directX.m_pathBlue.clear();
-                }
-
-                // Y
-                if (p_item == p_scene->m_profile.m_directY.m_pItemPathRed)
-                {
-                    p_scene->removeItem(p_scene->m_profile.m_directY.m_pItemPathRed);
-                    p_scene->m_profile.m_directY.m_pathRed.clear();
-                }
-                if (p_item == p_scene->m_profile.m_directY.m_pItemPathGreen)
-                {
-                    p_scene->removeItem(p_scene->m_profile.m_directY.m_pItemPathGreen);
-                    p_scene->m_profile.m_directY.m_pathGreen.clear();
-                }
-                if (p_item == p_scene->m_profile.m_directY.m_pItemPathBlue)
-                {
-                    p_scene->removeItem(p_scene->m_profile.m_directY.m_pItemPathBlue);
-                    p_scene->m_profile.m_directY.m_pathBlue.clear();
-                }
-            }
-
             int profileY = (int)localPos.y();
             int profileX = (int)localPos.x();
             int width = (int)localRect.width();
@@ -188,6 +150,13 @@ void ImageView::drawProfile(const QPoint &viewPos,
             QPointF top = this->mapToScene(viewPos.x(), 0);
             QPointF right = this->mapToScene(viewWidth, viewPos.y());
             QPointF bottom = this->mapToScene(viewPos.x(), viewHeight);
+
+            p_scene->m_profile.m_directX.m_pathRed.clear();
+            p_scene->m_profile.m_directX.m_pathGreen.clear();
+            p_scene->m_profile.m_directX.m_pathBlue.clear();
+            p_scene->m_profile.m_directY.m_pathRed.clear();
+            p_scene->m_profile.m_directY.m_pathGreen.clear();
+            p_scene->m_profile.m_directY.m_pathBlue.clear();
 
             // 水平プロファイル
             for (int x = left.x() + 1; x < right.x(); ++x)
@@ -259,18 +228,30 @@ void ImageView::drawProfile(const QPoint &viewPos,
                 p_scene->m_profile.m_directY.m_pItemPathBlue->setPen(QPen(QColor(Qt::blue)));
             }
 
-            if (isXRed)
+            if (isXRed && !p_scene->m_profile.m_directX.m_isAddedRed) {
                 p_scene->addItem(p_scene->m_profile.m_directX.m_pItemPathRed);
-            if (isXGreen)
+                p_scene->m_profile.m_directX.m_isAddedRed = true;
+            }
+            if (isXGreen && !p_scene->m_profile.m_directX.m_isAddedGreen) {
                 p_scene->addItem(p_scene->m_profile.m_directX.m_pItemPathGreen);
-            if (isXBlue)
+                p_scene->m_profile.m_directX.m_isAddedGreen = true;
+            }
+            if (isXBlue && !p_scene->m_profile.m_directX.m_isAddedBlue) {
                 p_scene->addItem(p_scene->m_profile.m_directX.m_pItemPathBlue);
-            if (isYRed)
+                p_scene->m_profile.m_directX.m_isAddedBlue = true;
+            }
+            if (isYRed && !p_scene->m_profile.m_directY.m_isAddedRed) {
                 p_scene->addItem(p_scene->m_profile.m_directY.m_pItemPathRed);
-            if (isYGreen)
+                p_scene->m_profile.m_directY.m_isAddedRed = true;
+            }
+            if (isYGreen && !p_scene->m_profile.m_directY.m_isAddedGreen) {
                 p_scene->addItem(p_scene->m_profile.m_directY.m_pItemPathGreen);
-            if (isYBlue)
+                p_scene->m_profile.m_directY.m_isAddedGreen = true;
+            }
+            if (isYBlue && !p_scene->m_profile.m_directY.m_isAddedBlue) {
                 p_scene->addItem(p_scene->m_profile.m_directY.m_pItemPathBlue);
+                p_scene->m_profile.m_directY.m_isAddedBlue = true;
+            }
         }
     }
 }
@@ -581,7 +562,8 @@ void ImageView::mouseDoubleClickEvent(QMouseEvent *event) {
 
     auto mouseButton = event->button();
     if (mouseButton == Qt::MouseButton::LeftButton) {
-        
+        // 図形の削除
+        removeFigure(event->pos());
     }
     else if (mouseButton == Qt::MouseButton::RightButton) {
 
@@ -593,8 +575,7 @@ void ImageView::mouseDoubleClickEvent(QMouseEvent *event) {
         DEBUG_STREAM("Unknown mouse button in mouseMoveEvent...\n");
     }
 
-    // 図形の削除
-    removeFigure(event->pos());
+    
 
     QGraphicsView::mouseDoubleClickEvent(event);
 }
