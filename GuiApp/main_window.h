@@ -57,8 +57,8 @@ public:
     virtual ~MainWindow();
 
     /*ImageWindow*/
-    using ImgWinRegistory_t = std::set<ImageWindow*>;
-    static ImgWinRegistory_t& getImgWinRegistory();
+    using ImgWinRegistry_t = std::set<ImageWindow*>;
+    static ImgWinRegistry_t& getImgWinRegistry();
     ImageWindow* genImgWin(const QString &filename);
 
 protected:

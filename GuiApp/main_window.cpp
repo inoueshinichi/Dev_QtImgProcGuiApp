@@ -178,8 +178,8 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
 // public method
 //////////////////////////////////////////////////////////
 
-MainWindow::ImgWinRegistory_t &MainWindow::getImgWinRegistory() {
-    static ImgWinRegistory_t imgWindowBacket;
+MainWindow::ImgWinRegistry_t &MainWindow::getImgWinRegistry() {
+    static ImgWinRegistry_t imgWindowBacket;
     return imgWindowBacket;
 }
 
@@ -188,11 +188,11 @@ ImageWindow* MainWindow::genImgWin(const QString &filename) {
     */
     ImageWindow *p_imgWin = new ImageWindow(this);
     p_imgWin->setFilename(filename);
-    getImgWinRegistory().insert(p_imgWin);
+    getImgWinRegistry().insert(p_imgWin);
     p_imgWin->show();
     p_imgWin->activateWindow();
 
-    m_pStatusBarLabel->setText(QString::number(getImgWinRegistory().size()));
+    m_pStatusBarLabel->setText(QString::number(getImgWinRegistry().size()));
     m_pUi->statusBar->addPermanentWidget(m_pStatusBarLabel);
 
     return p_imgWin;
@@ -207,8 +207,8 @@ void MainWindow::slotRmImgWin(ImageWindow *ptr) {
     /* 指定のImageWindowの登録を解除
     */
 
-    getImgWinRegistory().erase(ptr);
-    size_t count = getImgWinRegistory().size();
+    getImgWinRegistry().erase(ptr);
+    size_t count = getImgWinRegistry().size();
     m_pStatusBarLabel->setText(QString::number(count));
     m_pUi->statusBar->addPermanentWidget(m_pStatusBarLabel);
 
@@ -257,7 +257,7 @@ void MainWindow::slotActMenuBarFileOpen() {
     auto fileList = QFileDialog::getOpenFileNames(this, tr("画像ファイルを開く"), cwdPath, fileFilter);
 
     std::set<std::string> currImgWinFilenames;
-    for (const auto &p_imgWin : getImgWinRegistory()) {
+    for (const auto &p_imgWin : getImgWinRegistry()) {
         currImgWinFilenames.insert(p_imgWin->filename().toStdString());
     }
 
@@ -309,12 +309,14 @@ void MainWindow::slotActMenuBarFileClose()
  * @brief Menu -> File -> Close all
  * 
  */
-void MainWindow::slotActMenuBarFileCloseAll()
+void MainWindow::slotActMenuBarFileCloseAll() 
 {
     /* 開いているすべてのImageWindowを閉じる
     */
-   
-
+    // auto &registry = getImgWinRegistry();
+    // for (auto iter = registry.begin(); iter != registry.end(); ++iter) {
+    //     slotRmImgWin(*iter);
+    // }
 }
 
 /**
