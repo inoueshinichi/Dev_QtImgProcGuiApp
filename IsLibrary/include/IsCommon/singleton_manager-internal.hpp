@@ -19,25 +19,25 @@
 
 #if defined(_MSC_VER)
     #if !defined(_DEBUG) || defined(NDEBUG)
-        #define IS_CHECK_SINGLETON(NEW_OR_DELETE, SINGLETON)
+        #define IS_CHECK_SINGLETON(new_or_delete, singleton)
     #else
-        #define IS_CHECK_SINGLETON(NEW_OR_DELETE, SINGLETON)                            \
-            std::cout << #NEW_OR_DELETE << " a singleton `" << typeid(SINGLETON).name() \
-                    << "`" << std::endl;
-    #endif
+        #define IS_CHECK_SINGLETON(new_or_delete, singleton)                            \
+            std::cout << #NEW_OR_DELETE << " a singleton `" << typeid(singleton).name() \
+                    << "`" << std::endl
+#endif
+
 #else
     // 以下の条件が正しいか疑問 Shinichi Inoue 21/2/5
     #if !defined(NDEBUG)
-        #define IS_CHECK_SINGLETON(NEW_OR_DELETE, SINGLETON)
+        #define IS_CHECK_SINGLETON(new_or_delete, singleton)
     #else
         // UNIX系だとlibstdc++に含まれる.
-        // Windowsは未調査.
-        // Shinichi Inoue 21/2/5
+        // Windowsはvcruntime14X.dllかな...
         #if __has_include(<cxxabi.h>)
             #include <cxxabi.h>
-            #define IS_CHECK_SINGLETON(NEW_OR_DELETE, SINGLETON)                          \
+            #define IS_CHECK_SINGLETON(new_or_delete, singleton)                          \
                 std::string singleton_name;                                               \
-                const std::type_info &type_id = typeid(SINGLETON); /* RTTI */             \
+                const std::type_info &type_id = typeid(singleton); /* RTTI */             \
                 int stat{-1};                                                             \
                 char *name = abi::__cxa_demangle(type_id.name(), 0, 0, &stat);            \
                 if (name != nullptr)                                                      \
@@ -45,32 +45,30 @@
                     if (stat == 0) /* success: stat == 0 */                               \
                     {                                                                     \
                         singleton_name = name;                                            \
-                        std::cout << #NEW_OR_DELETE << " a singleton `" << singleton_name \
+                        std::cout << #new_or_delete << " a singleton `" << singleton_name \
                                   << "`" << std::endl;                                    \
                         ::free(name);                                                     \
                     }                                                                     \
                 }                                                                         \
                 if (stat != 0)                                                            \
                 {                                                                         \
-                    std::cout << #NEW_OR_DELETE << " a singleton `"                       \
+                    std::cout << #new_or_delete << " a singleton `"                       \
                               << typeid(SINGLETON).name() << "`" << std::endl;            \
                 }
         #else
-            #define IS_CHECK_SINGLETON(NEW_OR_DELETE, SINGLETON)      \
-                std::cout << #NEW_OR_DELETE << " a singleton `"       \
-                    << typeid(SINGLETON).name() << "`" << std::endl;
+            #define IS_CHECK_SINGLETON(new_or_delete, singleton)      \
+                std::cout << #new_or_delete << " a singleton `"       \
+                    << typeid(singleton).name() << "`" << std::endl
         #endif
     #endif
 #endif
 
 
-namespace is
-{
-    namespace common
-    {
+namespace is {
+    namespace common {
+
         template <typename SINGLETON>
-        SINGLETON *SingletonManager::get()
-        {
+        SINGLETON *SingletonManager::get() {
             // 内部リンケージのstatic変数は必ずdll側の*.cppで定義すること.
             // https://qiita.com/Chironian/items/3fb61cffa2a20dbee5c2
             // static std::mutex mtx_;
@@ -81,19 +79,16 @@ namespace is
             std::lock_guard<std::recursive_mutex> locker(rmtx_);
 
             static SINGLETON *instance{nullptr}; // 初回だけnullptrで初期化される
-            if (instance)
-            {
+            if (instance) {
                 return instance;
             }
 
             SingletonManager &self_ = SingletonManager::get_self();
-            IS_CHECK_SINGLETON(Creating, SINGLETON)
+            IS_CHECK_SINGLETON(Create, SINGLETON)
             instance = new SINGLETON{};
 
-            auto deleter = [&]() -> void
-            {
-                IS_CHECK_SINGLETON(Deleting, SINGLETON);
-
+            auto deleter = [&]() -> void {
+                IS_CHECK_SINGLETON(Delete, SINGLETON);
                 delete instance;
                 instance = nullptr;
             };
@@ -106,25 +101,23 @@ namespace is
         }
 
         template <typename SINGLETON>
-        int SingletonManager::get_id()
-        {
+        int SingletonManager::get_id() {
             SingletonManager &self_ = SingletonManager::get_self();
             auto address = (uintptr_t)(get<SINGLETON>());
             return self_.address2id_[address];
         }
 
         template <typename SINGLETON>
-        void SingletonManager::erase()
-        {
+        void SingletonManager::erase() {
             erase_by_id(get_id<SINGLETON>());
         }
 
 // SingletonManagerクラスのメンバ関数テンプレートの明示的インスタンス化用のマクロ
 // dllライブラリのエクスポートに対応するため
 // https://qiita.com/Chironian/items/462a3bdf271d5f0b00b6
-#define IS_INSTANTIATE_SINGLETON(API, SINGLETON_CLASS)                      \
-    template API SINGLETON_CLASS *SingletonManager::get<SINGLETON_CLASS>(); \
-    template API int SingletonManager::get_id<SINGLETON_CLASS>();           \
-    template API void SingletonManager::erase<SINGLETON_CLASS>();
+#define IS_INSTANTIATE_SINGLETON(api, singleton_class)                      \
+    template api singleton_class *SingletonManager::get<singleton_class>(); \
+    template api int SingletonManager::get_id<singleton_class>();           \
+    template api void SingletonManager::erase<singleton_class>();
     }
 }

@@ -125,7 +125,7 @@ else()
     set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
     set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
     set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -DNDEBUG")
-    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -DNDEBUG")
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
 
     if(BUILD_OPENMP)
         message(STATUS "Enable OpenMP")
@@ -168,7 +168,11 @@ else()
 
 endif()
 
-message(STATUS "---------- Compiler Options for Multi Configuration such as XCode, Visual Studio ----------")
+if(UNIX)
+message(STATUS "---------- Compiler Options for Single Configuration such as Makefile, Ninja ----------")
+else()
+message(STATUS "---------- Compiler Options for Multi Configuration such as XCode, MSVC ----------")
+endif()
 message(STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 message(STATUS "CMAKE_CXX_FLAGS_DEBUG: ${CMAKE_CXX_FLAGS_DEBUG}")
 message(STATUS "CMAKE_CXX_FLAGS_RELEASE: ${CMAKE_CXX_FLAGS_RELEASE}")
@@ -182,7 +186,7 @@ message(STATUS "========== [END] C++ All Target Options ==========")
 ###############################################################################
 message(STATUS "========== [START] C++ Build Components ==========")
 # ========== Library File ==========
-add_subdirectory(Is)
+add_subdirectory(IsLibrary)
 # ========== Executable File ==========
 add_subdirectory(GuiApp)
 message(STATUS "========== [END] C++ Build Components ==========")

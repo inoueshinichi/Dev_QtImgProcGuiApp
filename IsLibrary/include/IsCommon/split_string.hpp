@@ -13,10 +13,9 @@
 #include <string>
 #include <vector>
 
-namespace is
-{
-    namespace common
-    {
+namespace is {
+    namespace common {
+
         /**
          * @brief split関数
          * https://marycore.jp/prog/cpp/std-string-split/
@@ -24,23 +23,19 @@ namespace is
          * @param sep 
          * @return std::vector<std::string> 
          */
-        inline std::vector<std::string> split_string(const std::string &msg, const std::string &sep)
-        {
+        inline std::vector<std::string> 
+        split_string(const std::string &msg, const std::string &sep) {
             int len_sep = sep.length();
             std::vector<std::string> tokens;
 
-            if (len_sep == 0)
-            {
+            if (len_sep == 0) {
                 tokens.push_back(msg);
             }
-            else
-            {
+            else {
                 auto offset = std::string::size_type(0);
-                while (true)
-                {
+                while (true) {
                     auto pos = msg.find(sep, offset);
-                    if (pos == std::string::npos)
-                    {
+                    if (pos == std::string::npos) {
                         tokens.push_back(msg.substr(offset));
                         break;
                     }

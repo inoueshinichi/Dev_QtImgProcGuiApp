@@ -17,28 +17,23 @@
 #include <cstdlib> // std::abort
 #include <iostream>
 
-namespace is 
-{
-    namespace common
-    {
-        namespace detail
-        {
+namespace is {
+    namespace common {
+        namespace detail {
 
 #if __cplusplus >= 201703L
             // C++17以上
 
             /* std::string型をconst char*に変換し、それ以外はそのまま出力 */
             template <typename T>
-            auto convert(T &&value)
-            {
+            auto convert(T &&value) {
                 /* std::string型をconst char*に変換 */
-                if constexpr (std::is_same<std::remove_cv_t<std::remove_reference_t<T>>, std::string>::value)
-                {
+                if constexpr (std::is_same<std::remove_cv_t<std::remove_reference_t<T>>, \
+                    std::string>::value) {
                     return std::forward<T>(value).c_str();
                 }
                 /* std::string型以外は、そのまま出力 */
-                else
-                {
+                else {
                     return std::forward<T>(value);
                 }
             }
@@ -46,28 +41,26 @@ namespace is
             // C++11, 14
 
             /* std::string型をconst char*に変換 */
-            template <typename T, typename std::enable_if_t<std::is_same<std::remove_cv_t<std::remove_reference_t<T>>, std::string>::value>::type * = nullptr>
-            auto convert(T &&value)
-            {
+            template <typename T, typename std::enable_if_t<std::is_same<std::remove_cv_t<std::remove_reference_t<T>>, \
+                        std::string>::value>::type * = nullptr>
+            auto convert(T &&value) {
                 return std::forward<T>(value).c_str();
             }
 
             /* std::string型以外は、そのまま出力 */
-            template <typename T, typename std::enable_if_t<!std::is_same<std::remove_cv_t<std::remove_reference_t<T>>, std::string>::value>::type * = nullptr>
-            auto convert(T &&value)
-            {
+            template <typename T, typename std::enable_if_t<!std::is_same<std::remove_cv_t<std::remove_reference_t<T>>, \
+                        std::string>::value>::type * = nullptr>
+            auto convert(T &&value) {
                 return std::forward<T>(value);
             }
 #endif
 
             /* 文字列のフォーマッティング(内部処理) */
             template <typename... Args>
-            std::string format_string_internal(const std::string &format, Args &&...args)
-            {
+            std::string format_string_internal(const std::string &format, Args &&...args) {
                 /* フォーマット後の文字数を算出 */
                 int size = std::snprintf(nullptr, 0, format.c_str(), std::forward<Args>(args)...);
-                if (size < 0)
-                {
+                if (size < 0) {
                     std::printf("Fatal error: std::snprintf() in is::detail::format_string_internal().\n");
                     std::abort();
                 }
@@ -88,8 +81,7 @@ namespace is
 
         /* 文字列のフォーマッティング */
         template <typename... Args>
-        std::string format_string(const std::string &format, Args &&...args)
-        {
+        std::string format_string(const std::string &format, Args &&...args) {
             /* 各パラメータの型を変換して、文字列のフォーマッティング */
             return detail::format_string_internal(format, detail::convert(std::forward<Args>(args))...);
         }

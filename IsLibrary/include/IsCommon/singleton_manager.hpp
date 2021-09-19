@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2021
  * 
  */
-#include <IsCommon/defs.hpp>
+#include <IsCommon/IsCommon.hpp>
 
 #include <functional>
 #include <memory>
@@ -16,18 +16,15 @@
 #include <thread>
 #include <unordered_map>
 
-namespace is
-{
-    namespace common
-    {
+namespace is {
+    namespace common {
         using std::pair;
         using std::unique_ptr;
         using std::unordered_map;
 
         // mozc式シングルトン
         // https://qiita.com/kikuuuty/items/fcf5f7df2f0493c437dc
-        class IS_COMMON_API SingletonManager
-        {
+        class IS_COMMON_API SingletonManager {
         public:
             /**
              * @brief SINGLETON型のシングルトンクラスを作成
@@ -108,8 +105,8 @@ namespace is
             SingletonManager();
             ~SingletonManager();
 
-            // コピー系オペレータを禁止
-            DISABLE_COPY_AND_ASSIGN(SingletonManager)
+            // コピー系オペレータをprivateに変更
+            IS_DISABLE_COPY_AND_ASSIGN(SingletonManager)
         };
     }
 }

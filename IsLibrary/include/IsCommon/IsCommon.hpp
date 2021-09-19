@@ -29,14 +29,27 @@
 // debug log
 #if 1
 #include <cstdio>
-#define DEBUG_STREAM(format, ...) std::printf(format, ##__VA_ARGS__)
+#include <mutex>
+#define IS_DEBUG_STREAM(format, ...)                     \
+    {                                                    \
+        std::mutex mtx;                                  \
+        std::unique_lock<std::mutex> locker(mtx);        \
+        std::printf(format, ##__VA_ARGS__);              \
+    }
 #else
-#define DEBUG_STREAM(format, ...)
+#define IS_DEBUG_STREAM(format, ...)
 #endif
 
 // コピーコンストラクタとコピー代入演算子の外部公開を禁止する
-#define DISABLE_COPY_AND_ASSIGN(class_name) \
-private:                                    \
-    class_name(const class_name &);         \
+#define IS_DISABLE_COPY_AND_ASSIGN(class_name) \
+private:                                       \
+    class_name(const class_name &);            \
     class_name &operator=(const class_name &);
-    
+
+
+
+#if (__cplusplus < 201704L)
+#define IS_INVOKE_RESULT_TYPE(Func, Args) typename std::result_of<Func(Args...)>::type
+#else
+#define IS_INVOKE_RESULT_TYPE(Func, Args) typename std::invoke_result<Func, Args...>::type
+#endif

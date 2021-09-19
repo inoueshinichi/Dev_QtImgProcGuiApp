@@ -9,7 +9,7 @@
  * 
  */
 
-#include <IsCommon/defs.hpp>
+#include <IsCommon/IsCommon.hpp>
 
 #include <cstdio>
 #include <cstdlib>
@@ -18,39 +18,41 @@
 #include <string>
 #include <vector>
 
-namespace is
-{
-    namespace common
-    {
+namespace is {
+    namespace common {
         using std::string;
         using std::vector;
 
-        /**
-         * @brief このマクロを通して例外をthrowする.
-         * エラーコードは, common::error_codeのenum classで定義されている.
-         * i.e : IS_ERROR(error_code::cuda_error, "Error size %d", size);
-         */
-#define IS_ERROR(code, msg, ...) \
-    throw Exception(code, format_string(msg, ##__VA_ARGS__), __func__, __FILE__, __LINE__);
+    /**
+     * @brief このマクロを通して例外をthrowする.
+     * エラーコードは, common::error_codeのenum classで定義されている.
+     * i.e : IS_ERROR(error_code::cuda_error, "Error size %d", size);
+     */
+#define IS_ERROR(code, msg, ...)                                                  \
+    throw Exception(code, format_string(msg, ##__VA_ARGS__),                      \
+                    __func__, __FILE__, __LINE__)
 
-        /**
-         * @brief 特定の条件を満たすかどうかをチェックする.
-         * エラーが発生したら，メッセージを投げる.
-         * i.e : IS_CHECK(size == 2, error_code::cuda_error, "Error size %d", size);
-         */
-#define IS_CHECK(condition, code, msg, ...)                                      \
-    if (!(condition))                                                              \
-    {                                                                              \
-        IS_ERROR(code, string("Failed `" #condition "`: ") + msg, ##__VA_ARGS__) \
+    /**
+     * @brief 特定の条件を満たすかどうかをチェックする.
+     * エラーが発生したら，メッセージを投げる.
+     * i.e : IS_CHECK(size == 2, error_code::cuda_error, "Error size %d", size);
+     */
+#define IS_CHECK(condition, code, msg, ...)                                       \
+    if (!(condition)) {                                                           \
+        IS_ERROR(code, string("Failed `" #condition "`: ") + msg, ##__VA_ARGS__)  \
     }
 
-#define IS_FORCE_ASSERT(condition, msg, ...)                                   \
-    if (!(condition))                                                            \
-    {                                                                            \
-        std::cerr << "Aborting: " << format_string(msg, ##__VA_ARGS__) << " at " \
-                  << __func__ << " in " << __FILE__ << ":" << __LINE__           \
-                  << std::endl;                                                  \
-        ::abort();                                                               \
+
+    /**
+     * @brief 強制終了
+     * 
+     */
+#define IS_FORCE_ASSERT(condition, msg, ...)                                      \
+    if (!(condition)) {                                                           \
+        std::cerr << "Aborting: " << format_string(msg, ##__VA_ARGS__) << " at "  \
+                  << __func__ << " in " << __FILE__ << ":" << __LINE__            \
+                  << std::endl;                                                   \
+        ::abort();                                                                \
     }
 
         /**
@@ -58,8 +60,7 @@ namespace is
          * 開発者はsrc/nbla/exception.cppの中にあるget_error_string()関数に
          * `CASE_ERROR_STRING({code name});`を追加しなけｒばならない.
          */
-        enum class error_code
-        {
+        enum class error_code {
             // 独自例外コード
             unclassified = 0,
             not_implemented,
@@ -90,8 +91,7 @@ namespace is
          * 開発者/ユーザーがこの例外を直接投げることは想定されていない.
          * 代わりにIs_ERRORマクロを使用すること.
          */
-        class IS_COMMON_API Exception : public std::exception
-        {
+        class IS_COMMON_API Exception : public std::exception {
         protected:
             error_code code_;
             string full_msg_; // 表示されるFullメッセージ

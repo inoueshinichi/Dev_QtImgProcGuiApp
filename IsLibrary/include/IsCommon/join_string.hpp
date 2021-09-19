@@ -14,10 +14,9 @@
 #include <vector>
 #include <sstream>
 
-namespace is
-{
-    namespace common
-    {
+namespace is {
+    namespace common {
+
         /**
          * @brief Pythonの" ".join(['A', 'B', 'C'])と同じ文字連結処理
          * 
@@ -27,16 +26,14 @@ namespace is
          * @return string 
          */
         template <typename T>
-        inline std::string join_string(const std::vector<T> &vector, const std::string &delimiter)
-        {
+        inline std::string join_string(const std::vector<T> &vector, 
+                                        const std::string &delimiter) {
             std::stringstream ss;
-            if (vector.empty())
-            {
+            if (vector.empty()) {
                 return "";
             }
 
-            for (int i = 0; i < vector.size() - 1; ++i)
-            {
+            for (int i = 0; i < vector.size() - 1; ++i) {
                 ss << vector[i] << delimiter;
             }
             ss << vector[vector.size() - 1];

@@ -49,6 +49,12 @@ else()
     add_library(${LIB_TARGET_NAME} STATIC ${LIB_SOURCES})
 endif()
 
+# Thread
+find_package(Threads REQUIRED)
+target_link_libraries(${LIB_TARGET_NAME}
+    PRIVATE Threads::Threads
+)
+
 
 if(MSVC)
     # msvc does not append 'lib' - do it here to have consistent name
