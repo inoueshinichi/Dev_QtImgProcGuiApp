@@ -77,10 +77,6 @@ public slots:
     void slotRmImgWin(ImageWindow *ptr);
     void slotActiveImgWin(ImageWindow *ptr);
 
-private slots:
-    void slotSelectInputDir();
-    void slotSelectOutputDir();
-
     /* Menu -> File */
     void slotActMenuBarFileNew();
     void slotActMenuBarFileOpen();
@@ -91,27 +87,39 @@ private slots:
     void slotActMenuBarFilePrint();
     void slotActMenuBarFileQuit();
 
-    // /* Menu -> Edit */
-    // void slotActMenuBarEditUndo();
-    // void slotActMenuBarEditCut();
-    // void slotActMenuBarEditCopy();
-    // void slotActMenuBarEditPaste();
-    // void slotActMenuBarEditClear();
-    // void slotActMenuBarEditClearOutside();
-    // void slotActMenuBarEditFill();
-    // void slotActMenuBarEditInvert();
+    /* Menu -> Edit */
+    void slotActMenuBarEditUndo();
+    void slotActMenuBarEditRename();
+    void slotActMenuBarEditCut();
+    void slotActMenuBarEditCopy();
+    void slotActMenuBarEditPaste();
+    void slotActMenuBarEditClear();
+    void slotActMenuBarEditClearOutside();
+    void slotActMenuBarEditFill();
+    void slotActMenuBarEditInvert();
 
-    // /* Menu -> Image */
-    // void slotActMenuBarImageType();
+    /* Menu -> Image */
+    void slotActMenuBarImageType();
     // void slotActMenuBarImageShowInfo();
     // void slotActMenuBarImageColor();
     // void slotActMenuBarImageBorder();
     // void slotActMenuBarImageCrop();
     // void slotActMenuBarImageDuplicate();
-    // void slotActMenuBarImageRename();
-    // void slotActMenuBarImageScale();
     // void slotActMenuBarImageTransform();
-    // void slotActMenuBarImageZoom();
+
+    /* Menu -> View */
+    // void slotActMenuBarViewFitView();
+    // void slotActMenuBarViewOriginalScale();
+
+private slots:
+    void slotSelectInputDir();
+    void slotSelectOutputDir();
+
+   
+
+    
+
+    
 
     // /* Menu -> Camera */
     // void slotActMenuBarCameraWindow();

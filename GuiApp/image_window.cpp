@@ -32,9 +32,10 @@
 
 ImageWindow::ImageWindow(QWidget *p_parent)
     : QMainWindow(p_parent)
+    , m_pMainWindow(qobject_cast<MainWindow *>(p_parent))
     , m_pUi(new Ui::ImageWindow())
-    , m_pStatusBarLabel(new QLabel())
-{
+    , m_pStatusBarLabel(new QLabel()) {
+    
     // ui
     m_pUi->setupUi(this);
     this->setAttribute(Qt::WA_DeleteOnClose);
@@ -51,19 +52,15 @@ ImageWindow::ImageWindow(QWidget *p_parent)
     memuBarConnection();
     toolBarConnection();
     customConnection();
-
 }
 
-ImageWindow::~ImageWindow()
-{
-    if (m_pUi) 
-    {
+ImageWindow::~ImageWindow() {
+    if (m_pUi) {
         delete m_pUi;
         m_pUi = nullptr;
     }
 
-    if (m_pScene)
-    {
+    if (m_pScene) {
         delete m_pScene;
         m_pScene = nullptr;
     }
@@ -73,14 +70,78 @@ ImageWindow::~ImageWindow()
 // private method
 //////////////////////////////////////////////////////////
 
-void ImageWindow::uiConnection()
-{
+void ImageWindow::uiConnection() {
 
 }
 
-void ImageWindow::memuBarConnection()
-{
+void ImageWindow::memuBarConnection() {
 
+    /* Menu -> File */
+    // New
+    connect(m_pUi->actionNew, &QAction::triggered,
+            m_pMainWindow, &MainWindow::slotActMenuBarFileNew);
+
+    // Open
+    connect(m_pUi->actionOpen, &QAction::triggered,
+            m_pMainWindow, &MainWindow::slotActMenuBarFileOpen);
+
+    // Close
+    connect(m_pUi->actionClose, &QAction::triggered,
+            m_pMainWindow, &MainWindow::slotActMenuBarFileClose);
+
+    // Save
+    connect(m_pUi->actionSave, &QAction::triggered,
+            m_pMainWindow, &MainWindow::slotActMenuBarFileSave);
+
+    // Save As
+    // CSV
+    connect(m_pUi->actionSaveAsCsv, &QAction::triggered,
+            m_pMainWindow, &MainWindow::slotActMenuBarFileSaveAs);
+    // TSV
+    connect(m_pUi->actionSaveAsTsv, &QAction::triggered, 
+            m_pMainWindow, &MainWindow::slotActMenuBarFileSaveAs);
+
+    /* Menu -> Edit */
+    // Undo
+    connect(m_pUi->actionUndo, &QAction::triggered,
+            m_pMainWindow, &MainWindow::slotActMenuBarEditUndo);
+
+    // Rename
+    connect(m_pUi->actionRename, &QAction::triggered, 
+            m_pMainWindow, &MainWindow::slotActMenuBarEditRename);
+
+    // Cut
+    connect(m_pUi->actionCut, &QAction::triggered, 
+            m_pMainWindow, &MainWindow::slotActMenuBarEditCut);
+
+    // Copy
+    connect(m_pUi->actionCopy, &QAction::triggered, m_pMainWindow,
+            &MainWindow::slotActMenuBarEditCopy);
+
+    // Paste
+    connect(m_pUi->actionPaste, &QAction::triggered, m_pMainWindow,
+            &MainWindow::slotActMenuBarEditPaste);
+
+    // Clear
+    connect(m_pUi->actionClear, &QAction::triggered, m_pMainWindow,
+            &MainWindow::slotActMenuBarEditClear);
+
+    // Clear outside
+    connect(m_pUi->actionClearOutside, &QAction::triggered, m_pMainWindow,
+            &MainWindow::slotActMenuBarEditClearOutside);
+
+    // Fill
+    connect(m_pUi->actionFill, &QAction::triggered, m_pMainWindow,
+            &MainWindow::slotActMenuBarEditFill);
+
+    // Invert
+    connect(m_pUi->actionInvert, &QAction::triggered, m_pMainWindow,
+            &MainWindow::slotActMenuBarEditInvert);
+
+
+    /* Menu -> Image */
+    connect(m_pUi->actionCvt8bit, &QAction::triggered, m_pMainWindow,
+            &MainWindow::slotActMenuBarImageType);
 }
 
 void ImageWindow::toolBarConnection()
@@ -90,23 +151,31 @@ void ImageWindow::toolBarConnection()
     /* QAction -> ImageScene */
 
     // CrossLine
-    connect(m_pUi->actionCrossLine, &QAction::toggled, this, &ImageWindow::slotToggleCrossLine);
+    connect(m_pUi->actionCrossLine, &QAction::toggled, 
+            this, &ImageWindow::slotToggleCrossLine);
 
     // Profile-X(R)
-    connect(m_pUi->actionProfileXRed, &QAction::toggled, this, &ImageWindow::slotToggleProfile);
+    connect(m_pUi->actionProfileXRed, &QAction::toggled, 
+            this, &ImageWindow::slotToggleProfile);
     // Profile-X(G)
-    connect(m_pUi->actionProfileXGreen, &QAction::toggled, this, &ImageWindow::slotToggleProfile);
+    connect(m_pUi->actionProfileXGreen, &QAction::toggled, 
+            this, &ImageWindow::slotToggleProfile);
     // Profile-X(B)
-    connect(m_pUi->actionProfileXBlue, &QAction::toggled, this, &ImageWindow::slotToggleProfile);
+    connect(m_pUi->actionProfileXBlue, &QAction::toggled, 
+            this, &ImageWindow::slotToggleProfile);
     // Profile-Y(R)
-    connect(m_pUi->actionProfileYRed, &QAction::toggled, this, &ImageWindow::slotToggleProfile);
+    connect(m_pUi->actionProfileYRed, &QAction::toggled, 
+            this, &ImageWindow::slotToggleProfile);
     // Profile-Y(G)
-    connect(m_pUi->actionProfileYGreen, &QAction::toggled, this, &ImageWindow::slotToggleProfile);
+    connect(m_pUi->actionProfileYGreen, &QAction::toggled, 
+            this, &ImageWindow::slotToggleProfile);
     // Profile-Y(B)
-    connect(m_pUi->actionProfileYBlue, &QAction::toggled, this, &ImageWindow::slotToggleProfile);
+    connect(m_pUi->actionProfileYBlue, &QAction::toggled, 
+            this, &ImageWindow::slotToggleProfile);
 
     // Roi
-    connect(m_pUi->actionRoi, &QAction::toggled, this, &ImageWindow::slotToggleRoi);
+    connect(m_pUi->actionRoi, &QAction::toggled, 
+            this, &ImageWindow::slotToggleRoi);
 }
 
 void ImageWindow::customConnection()
@@ -172,7 +241,9 @@ void ImageWindow::setFilename(const QString& filename)
 
 QString ImageWindow::filename() const { return m_filename; }
 
-ImageScene* ImageWindow::scene() const { return m_pScene; }
+ImageScene *ImageWindow::scene() const { return m_pScene; }
+
+Ui::ImageWindow *ImageWindow::ui() const { return m_pUi; }
 
 
 //////////////////////////////////////////////////////////

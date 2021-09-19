@@ -24,10 +24,13 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class ImageWindow; }
 QT_END_NAMESPACE
 
+class MainWindow;
+
 class ImageWindow : public QMainWindow
 {
     Q_OBJECT
 
+    MainWindow *m_pMainWindow;
     Ui::ImageWindow *m_pUi;
     ImageScene *m_pScene;
     QLabel *m_pStatusBarLabel;
@@ -47,21 +50,16 @@ public:
     void setFilename(const QString& filename);
     QString filename() const;
     ImageScene* scene() const;
-
-    // void toggleCrossLine(bool isShow);
-    // void toggleProfile(bool isShow);
-    // void toggleRoi(bool isShow);
-    // void toggleLine(bool isShow);
-    // void toggleEllipse(bool isShow);
-    // void toggleMask(bool isShow);
+    Ui::ImageWindow *ui() const;
 
 protected:
     virtual bool event(QEvent *event) override;
     virtual void closeEvent(QCloseEvent *event) override;
 
 signals:
-    void rmImgWin(ImageWindow* ptr);
-    void activeImgWin(ImageWindow* ptr);
+    /* --- ImageWindow --- */
+    void rmImgWin(ImageWindow *ptr);
+    void activeImgWin(ImageWindow *ptr);
 
 public slots:
     void slotShowPosToStatusBar(const QPointF &imgLocalPos,
@@ -72,4 +70,6 @@ private slots:
     void slotToggleCrossLine(bool checked);
     void slotToggleProfile(bool checked);
     void slotToggleRoi(bool checked);
+
+
 };
