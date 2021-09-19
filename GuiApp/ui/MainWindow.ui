@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>864</width>
+    <width>861</width>
     <height>274</height>
    </rect>
   </property>
@@ -135,7 +135,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>864</width>
+     <width>861</width>
      <height>28</height>
     </rect>
    </property>
@@ -143,110 +143,14 @@
     <property name="title">
      <string>File</string>
     </property>
-    <widget class="QMenu" name="menuSaveAs">
-     <property name="title">
-      <string>Save As</string>
-     </property>
-     <addaction name="actionSaveAsBmp"/>
-     <addaction name="actionSaveAsJpg"/>
-     <addaction name="actionSaveAsJpeg"/>
-     <addaction name="actionSaveAsPng"/>
-     <addaction name="separator"/>
-     <addaction name="actionSaveAsCsv"/>
-    </widget>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
     <addaction name="separator"/>
-    <addaction name="actionClose"/>
     <addaction name="actionCloseAll"/>
-    <addaction name="actionSave"/>
-    <addaction name="menuSaveAs"/>
     <addaction name="separator"/>
     <addaction name="actionPrint"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
-   </widget>
-   <widget class="QMenu" name="menuEdit">
-    <property name="title">
-     <string>Edit</string>
-    </property>
-    <addaction name="actionUndo"/>
-    <addaction name="separator"/>
-    <addaction name="actionCut"/>
-    <addaction name="actionCopy"/>
-    <addaction name="actionPaste"/>
-    <addaction name="separator"/>
-    <addaction name="actionClear"/>
-    <addaction name="actionClearOutside"/>
-    <addaction name="actionFill"/>
-    <addaction name="actionInvert"/>
-   </widget>
-   <widget class="QMenu" name="menuImage">
-    <property name="title">
-     <string>Image</string>
-    </property>
-    <widget class="QMenu" name="menuType">
-     <property name="title">
-      <string>Type</string>
-     </property>
-     <addaction name="action8Bit"/>
-     <addaction name="action24Bit"/>
-     <addaction name="actionRgbColor"/>
-    </widget>
-    <widget class="QMenu" name="menuColor">
-     <property name="title">
-      <string>Color</string>
-     </property>
-     <addaction name="actionRgbToGray"/>
-     <addaction name="actionGrayToRgb"/>
-     <addaction name="actionRgbToHsv"/>
-     <addaction name="actionHsvToRgb"/>
-     <addaction name="separator"/>
-     <addaction name="actionSplitChannels"/>
-     <addaction name="actionMergeChannels"/>
-    </widget>
-    <widget class="QMenu" name="menuTransform">
-     <property name="title">
-      <string>Transform</string>
-     </property>
-     <addaction name="actionVerticalFlip"/>
-     <addaction name="actionHorizontalFlip"/>
-     <addaction name="actionRotate90DegreeRight"/>
-     <addaction name="actionRotate90DegreeLeft"/>
-     <addaction name="actionRotate"/>
-     <addaction name="actionTranslate"/>
-     <addaction name="actionDownSampling"/>
-    </widget>
-    <widget class="QMenu" name="menuZoom">
-     <property name="title">
-      <string>Zoom</string>
-     </property>
-     <addaction name="actionZoomIn"/>
-     <addaction name="actionZoomOut"/>
-     <addaction name="actionOriginalScale"/>
-     <addaction name="actionFitView"/>
-    </widget>
-    <widget class="QMenu" name="menuMask">
-     <property name="title">
-      <string>Mask</string>
-     </property>
-     <addaction name="actionMaskImport"/>
-     <addaction name="actionMaskExport"/>
-    </widget>
-    <addaction name="menuType"/>
-    <addaction name="separator"/>
-    <addaction name="actionShowInfo"/>
-    <addaction name="menuColor"/>
-    <addaction name="menuMask"/>
-    <addaction name="separator"/>
-    <addaction name="actionBoarder"/>
-    <addaction name="actionCrop"/>
-    <addaction name="actionDuplicate"/>
-    <addaction name="actionRename"/>
-    <addaction name="actionScale"/>
-    <addaction name="menuTransform"/>
-    <addaction name="separator"/>
-    <addaction name="menuZoom"/>
    </widget>
    <widget class="QMenu" name="menuProcess">
     <property name="title">
@@ -309,9 +213,9 @@
      <property name="title">
       <string>Feature Extraction</string>
      </property>
-     <addaction name="actionFxPca"/>
-     <addaction name="actionFxLda"/>
-     <addaction name="actionFxSbs"/>
+     <addaction name="actionPca"/>
+     <addaction name="actionLda"/>
+     <addaction name="actionSbs"/>
     </widget>
     <widget class="QMenu" name="menuMl">
      <property name="title">
@@ -364,7 +268,7 @@
      <string>Camera</string>
     </property>
     <addaction name="actionCamUsb"/>
-    <addaction name="actionCamEthr"/>
+    <addaction name="actionCamEthrnet"/>
     <addaction name="separator"/>
     <addaction name="actionCamIds"/>
     <addaction name="actionCamOmron"/>
@@ -375,113 +279,37 @@
     <property name="title">
      <string>Video</string>
     </property>
-    <addaction name="actionVideo"/>
-   </widget>
-   <widget class="QMenu" name="menuLocalFeature">
-    <property name="title">
-     <string>Local Feature</string>
-    </property>
-    <widget class="QMenu" name="menuKeyPoint">
-     <property name="title">
-      <string>KeyPoint</string>
-     </property>
-     <addaction name="actionCornerKtl"/>
-     <addaction name="actionCornerHarris"/>
-     <addaction name="actionCornerFast"/>
-     <addaction name="actionCornerAgast"/>
-     <addaction name="separator"/>
-    </widget>
-    <widget class="QMenu" name="menuDescriptor">
-     <property name="title">
-      <string>Descriptor</string>
-     </property>
-     <addaction name="actionDescriptorBrief"/>
-     <addaction name="actionDescriptorFreak"/>
-     <addaction name="separator"/>
-     <addaction name="actionDescriptorHog"/>
-     <addaction name="actionDescriptorHarrLike"/>
-     <addaction name="actionDescriptorLbp"/>
-    </widget>
-    <widget class="QMenu" name="menuKeyPointDescriptor">
-     <property name="title">
-      <string>KeyPoint&amp;Descriptor</string>
-     </property>
-     <addaction name="actionOrb"/>
-     <addaction name="actionBrisk"/>
-     <addaction name="actionKaze"/>
-     <addaction name="actionAkaze"/>
-     <addaction name="separator"/>
-     <addaction name="actionSift"/>
-     <addaction name="actionSurf"/>
-    </widget>
-    <addaction name="menuKeyPointDescriptor"/>
-    <addaction name="menuKeyPoint"/>
-    <addaction name="menuDescriptor"/>
-    <addaction name="separator"/>
-    <addaction name="actionMatching"/>
    </widget>
    <widget class="QMenu" name="menuDetector">
     <property name="title">
      <string>Detector</string>
     </property>
-    <widget class="QMenu" name="menuHough">
-     <property name="title">
-      <string>Hough</string>
-     </property>
-     <addaction name="actionHoughLine"/>
-     <addaction name="actionHoughCircle"/>
-    </widget>
-    <widget class="QMenu" name="menuTemplateMatching">
-     <property name="title">
-      <string>Template Matching</string>
-     </property>
-     <addaction name="actionTmSsd"/>
-     <addaction name="actionTmNssd"/>
-     <addaction name="separator"/>
-     <addaction name="actionTmCcorr"/>
-     <addaction name="actionTmNCcorr"/>
-     <addaction name="separator"/>
-     <addaction name="actionTmCcoeff"/>
-     <addaction name="actionTmNccoeff"/>
-    </widget>
-    <addaction name="menuHough"/>
-    <addaction name="menuTemplateMatching"/>
+    <addaction name="actionTemplateMatching"/>
    </widget>
    <widget class="QMenu" name="menuMition">
     <property name="title">
      <string>Motion Tracking</string>
     </property>
-    <widget class="QMenu" name="menuKalmanFilter">
-     <property name="title">
-      <string>Kalman Filter</string>
-     </property>
-     <addaction name="actionLinearKalmanFilter"/>
-     <addaction name="separator"/>
-     <addaction name="actionNonLinearKalmanFilter"/>
-     <addaction name="actionUnscentedKalmanFilter"/>
-    </widget>
     <addaction name="actionOpticalFlow"/>
+    <addaction name="separator"/>
     <addaction name="actionMeanshift"/>
     <addaction name="actionCAMshift"/>
-    <addaction name="menuKalmanFilter"/>
+    <addaction name="separator"/>
+    <addaction name="actionKalmanFilter"/>
     <addaction name="actionParticleFilter"/>
    </widget>
    <widget class="QMenu" name="menuFitting">
     <property name="title">
      <string>Fitting</string>
     </property>
-    <addaction name="actionFittingLine"/>
-    <addaction name="actionFittingCurve"/>
-    <addaction name="actionFittingEllipse"/>
+    <addaction name="actionHough"/>
+    <addaction name="actionFigureFitting"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuEdit"/>
-   <addaction name="menuImage"/>
    <addaction name="menuCamera"/>
    <addaction name="menuVideo"/>
    <addaction name="menuProcess"/>
    <addaction name="menuAnalyze"/>
-   <addaction name="menuLocalFeature"/>
    <addaction name="menuDetector"/>
    <addaction name="menuFitting"/>
    <addaction name="menuMition"/>
@@ -490,36 +318,9 @@
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="actionCross Line">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Cross Line</string>
-   </property>
-   <property name="toolTip">
-    <string>Cross Line</string>
-   </property>
-  </action>
-  <action name="actionProfile">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Profile</string>
-   </property>
-  </action>
-  <action name="actionROI">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>ROI</string>
-   </property>
-  </action>
   <action name="actionNew">
    <property name="text">
-    <string>New (Ctrl+N)</string>
+    <string>New</string>
    </property>
    <property name="toolTip">
     <string>New</string>
@@ -536,48 +337,12 @@
     <string>Ctrl+O</string>
    </property>
   </action>
-  <action name="actionClose">
-   <property name="text">
-    <string>Close</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+W</string>
-   </property>
-  </action>
   <action name="actionCloseAll">
    <property name="text">
     <string>Close All</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+W</string>
-   </property>
-  </action>
-  <action name="actionSave">
-   <property name="text">
-    <string>Save</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+S</string>
-   </property>
-  </action>
-  <action name="actionSaveAsBmp">
-   <property name="text">
-    <string>BMP</string>
-   </property>
-  </action>
-  <action name="actionSaveAsJpeg">
-   <property name="text">
-    <string>JPEG</string>
-   </property>
-  </action>
-  <action name="actionSaveAsPng">
-   <property name="text">
-    <string>PNG</string>
-   </property>
-  </action>
-  <action name="actionSaveAsCsv">
-   <property name="text">
-    <string>CSV</string>
    </property>
   </action>
   <action name="actionPrint">
@@ -594,180 +359,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
-   </property>
-  </action>
-  <action name="actionUndo">
-   <property name="text">
-    <string>Undo</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Z</string>
-   </property>
-  </action>
-  <action name="actionCut">
-   <property name="text">
-    <string>Cut</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+X</string>
-   </property>
-  </action>
-  <action name="actionCopy">
-   <property name="text">
-    <string>Copy</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+C</string>
-   </property>
-  </action>
-  <action name="actionPaste">
-   <property name="text">
-    <string>Paste</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+V</string>
-   </property>
-  </action>
-  <action name="actionClear">
-   <property name="text">
-    <string>Clear</string>
-   </property>
-  </action>
-  <action name="actionClearOutside">
-   <property name="text">
-    <string>Clear outside</string>
-   </property>
-   <property name="toolTip">
-    <string>Clear Outside</string>
-   </property>
-  </action>
-  <action name="actionFill">
-   <property name="text">
-    <string>Fill</string>
-   </property>
-  </action>
-  <action name="actionInvert">
-   <property name="text">
-    <string>Invert</string>
-   </property>
-  </action>
-  <action name="action8Bit">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>8-bit</string>
-   </property>
-  </action>
-  <action name="actionRgbColor">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>RGB Color</string>
-   </property>
-  </action>
-  <action name="actionShowInfo">
-   <property name="text">
-    <string>Show Info</string>
-   </property>
-  </action>
-  <action name="actionSplitChannels">
-   <property name="text">
-    <string>Split Channels</string>
-   </property>
-  </action>
-  <action name="actionCrop">
-   <property name="text">
-    <string>Crop</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+X</string>
-   </property>
-  </action>
-  <action name="actionDuplicate">
-   <property name="text">
-    <string>Duplicate</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+D</string>
-   </property>
-  </action>
-  <action name="actionRename">
-   <property name="text">
-    <string>Rename</string>
-   </property>
-  </action>
-  <action name="actionScale">
-   <property name="text">
-    <string>Scale</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+E</string>
-   </property>
-  </action>
-  <action name="actionVerticalFlip">
-   <property name="text">
-    <string>Vertical Flip</string>
-   </property>
-  </action>
-  <action name="actionHorizontalFlip">
-   <property name="text">
-    <string>Horizontal Flip</string>
-   </property>
-  </action>
-  <action name="actionRotate90DegreeRight">
-   <property name="text">
-    <string>Rotate 90 Degree Right</string>
-   </property>
-  </action>
-  <action name="actionRotate90DegreeLeft">
-   <property name="text">
-    <string>Rotate 90 Degree Left</string>
-   </property>
-  </action>
-  <action name="actionRotate">
-   <property name="text">
-    <string>Rotate</string>
-   </property>
-  </action>
-  <action name="actionTranslate">
-   <property name="text">
-    <string>Translate</string>
-   </property>
-  </action>
-  <action name="actionDownSampling">
-   <property name="text">
-    <string>Bin</string>
-   </property>
-  </action>
-  <action name="actionHsvToRgb">
-   <property name="text">
-    <string>HSV -&gt; RGB</string>
-   </property>
-   <property name="toolTip">
-    <string>HSV -&gt; RGB</string>
-   </property>
-  </action>
-  <action name="actionRgbToHsv">
-   <property name="text">
-    <string>RGB -&gt; HSV</string>
-   </property>
-   <property name="toolTip">
-    <string>RGB -&gt; HSV</string>
-   </property>
-  </action>
-  <action name="actionRgbToGray">
-   <property name="text">
-    <string>RGB -&gt; Gray</string>
-   </property>
-   <property name="toolTip">
-    <string>RGB -&gt; Gray</string>
-   </property>
-  </action>
-  <action name="actionMergeChannels">
-   <property name="text">
-    <string>Merge Channels</string>
    </property>
   </action>
   <action name="actionEdgeDetector">
@@ -791,27 +382,6 @@
     <string>FFT</string>
    </property>
   </action>
-  <action name="actionReset_Image">
-   <property name="text">
-    <string>Reset Image</string>
-   </property>
-  </action>
-  <action name="actionLine_Measure">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Line Measure</string>
-   </property>
-  </action>
-  <action name="actionAngle_Measure">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Angle Measure</string>
-   </property>
-  </action>
   <action name="actionDataset">
    <property name="text">
     <string>Dataset</string>
@@ -820,135 +390,6 @@
   <action name="actionCamUsb">
    <property name="text">
     <string>USB</string>
-   </property>
-  </action>
-  <action name="actionZoomIn">
-   <property name="text">
-    <string>In [+]</string>
-   </property>
-  </action>
-  <action name="actionZoomOut">
-   <property name="text">
-    <string>Out [-]</string>
-   </property>
-   <property name="toolTip">
-    <string>Out [-]</string>
-   </property>
-  </action>
-  <action name="actionOriginalScale">
-   <property name="text">
-    <string>Original Scale</string>
-   </property>
-  </action>
-  <action name="actionFitView">
-   <property name="text">
-    <string>Fit View</string>
-   </property>
-  </action>
-  <action name="actionIndicator">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Indicator</string>
-   </property>
-  </action>
-  <action name="actionSaveAsJpg">
-   <property name="text">
-    <string>JPG</string>
-   </property>
-  </action>
-  <action name="actionCornerHarris">
-   <property name="text">
-    <string>Harris Corner</string>
-   </property>
-   <property name="toolTip">
-    <string>Harris Corner</string>
-   </property>
-  </action>
-  <action name="actionCornerFast">
-   <property name="text">
-    <string>FAST Corner</string>
-   </property>
-  </action>
-  <action name="actionCornerAgast">
-   <property name="text">
-    <string>AGAST Corner</string>
-   </property>
-  </action>
-  <action name="actionDescriptorBrief">
-   <property name="text">
-    <string>BRIEF Descriptor</string>
-   </property>
-  </action>
-  <action name="actionDescriptorFreak">
-   <property name="text">
-    <string>FREAK Descriptor</string>
-   </property>
-  </action>
-  <action name="actionOrb">
-   <property name="text">
-    <string>ORB</string>
-   </property>
-  </action>
-  <action name="actionKaze">
-   <property name="text">
-    <string>KAZE</string>
-   </property>
-  </action>
-  <action name="actionAkaze">
-   <property name="text">
-    <string>AKAZE</string>
-   </property>
-  </action>
-  <action name="actionBrisk">
-   <property name="text">
-    <string>BRISK</string>
-   </property>
-  </action>
-  <action name="actionSift">
-   <property name="text">
-    <string>SIFT</string>
-   </property>
-  </action>
-  <action name="actionSurf">
-   <property name="text">
-    <string>SURF</string>
-   </property>
-  </action>
-  <action name="actionDescriptorHog">
-   <property name="text">
-    <string>HOG Descriptor</string>
-   </property>
-  </action>
-  <action name="actionDescriptorHarrLike">
-   <property name="text">
-    <string>HarrLike Descriptor</string>
-   </property>
-  </action>
-  <action name="actionDescriptorLbp">
-   <property name="text">
-    <string>LBP Descriptor</string>
-   </property>
-  </action>
-  <action name="actionMatching">
-   <property name="text">
-    <string>Matching</string>
-   </property>
-  </action>
-  <action name="actionCornerKtl">
-   <property name="text">
-    <string>KLT Corner</string>
-   </property>
-  </action>
-  <action name="actionHoughLine">
-   <property name="text">
-    <string>Hough Line</string>
-   </property>
-  </action>
-  <action name="actionHoughCircle">
-   <property name="text">
-    <string>Hough Circle</string>
    </property>
   </action>
   <action name="actionOpticalFlow">
@@ -964,26 +405,6 @@
   <action name="actionCAMshift">
    <property name="text">
     <string>CAMshift</string>
-   </property>
-  </action>
-  <action name="actionLinearKalmanFilter">
-   <property name="text">
-    <string>Linear Kalman Filter</string>
-   </property>
-  </action>
-  <action name="actionNonLinearKalmanFilter">
-   <property name="text">
-    <string>NonLinear Kalman Filter</string>
-   </property>
-  </action>
-  <action name="actionUnscentedKalmanFilter">
-   <property name="text">
-    <string>Unscented Kalman Filter</string>
-   </property>
-  </action>
-  <action name="actionParticleFilter">
-   <property name="text">
-    <string>Particle Filter</string>
    </property>
   </action>
   <action name="actionSurfacePlot">
@@ -1041,40 +462,24 @@
     <string>AdaBoost</string>
    </property>
   </action>
-  <action name="actionFxPca">
+  <action name="actionPca">
    <property name="text">
     <string>PCA</string>
    </property>
   </action>
-  <action name="actionFxLda">
+  <action name="actionLda">
    <property name="text">
     <string>LDA</string>
    </property>
   </action>
-  <action name="actionFxSbs">
+  <action name="actionSbs">
    <property name="text">
     <string>SBS</string>
    </property>
   </action>
-  <action name="actionCamEthr">
+  <action name="actionCamEthrnet">
    <property name="text">
     <string>IP Address</string>
-   </property>
-  </action>
-  <action name="action24Bit">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>24-bit</string>
-   </property>
-  </action>
-  <action name="actionGrayToRgb">
-   <property name="text">
-    <string>Gray -&gt; RGB</string>
-   </property>
-   <property name="toolTip">
-    <string>Gray -&gt; RGB</string>
    </property>
   </action>
   <action name="actionCamIds">
@@ -1109,33 +514,12 @@
     <string>COGNEX Camera USB or GigE Interface</string>
    </property>
   </action>
-  <action name="actionMask">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Mask</string>
-   </property>
-   <property name="toolTip">
-    <string>Show or Hide Mask</string>
-   </property>
-  </action>
-  <action name="actionMaskImport">
-   <property name="text">
-    <string>Import Mask</string>
-   </property>
-  </action>
-  <action name="actionMaskExport">
-   <property name="text">
-    <string>Export Mask</string>
-   </property>
-  </action>
   <action name="actionLut">
    <property name="text">
-    <string>Mapping</string>
+    <string>Lut</string>
    </property>
    <property name="toolTip">
-    <string>Mapping image color</string>
+    <string>Lut</string>
    </property>
   </action>
   <action name="actionNoise">
@@ -1166,70 +550,6 @@
     <string>Boarder</string>
    </property>
   </action>
-  <action name="actionEllipse">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Ellipse</string>
-   </property>
-  </action>
-  <action name="actionTmSsd">
-   <property name="text">
-    <string>SSD</string>
-   </property>
-   <property name="toolTip">
-    <string>Sum of Square Difference</string>
-   </property>
-  </action>
-  <action name="actionTmNssd">
-   <property name="text">
-    <string>NSSD</string>
-   </property>
-   <property name="toolTip">
-    <string>Normalized Sum of Square Difference</string>
-   </property>
-  </action>
-  <action name="actionTmCcorr">
-   <property name="text">
-    <string>CCORR</string>
-   </property>
-   <property name="toolTip">
-    <string>Cross Correlation</string>
-   </property>
-  </action>
-  <action name="actionTmNCcorr">
-   <property name="text">
-    <string>NCCORR</string>
-   </property>
-   <property name="toolTip">
-    <string>Normalized Cross Correlation</string>
-   </property>
-  </action>
-  <action name="actionTmCcoeff">
-   <property name="text">
-    <string>CCOEFF</string>
-   </property>
-   <property name="toolTip">
-    <string>Cross Coefficient</string>
-   </property>
-  </action>
-  <action name="actionTmNccoeff">
-   <property name="text">
-    <string>NCCOEFF</string>
-   </property>
-   <property name="toolTip">
-    <string>Normalized Cross Coefficient</string>
-   </property>
-  </action>
-  <action name="actionLine">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Line</string>
-   </property>
-  </action>
   <action name="actionSvm">
    <property name="text">
     <string>SVM</string>
@@ -1245,29 +565,6 @@
     <string>ROI Annotation</string>
    </property>
   </action>
-  <action name="actionVideo">
-   <property name="text">
-    <string>Video Generate</string>
-   </property>
-   <property name="toolTip">
-    <string>Generate Video</string>
-   </property>
-  </action>
-  <action name="actionFittingLine">
-   <property name="text">
-    <string>Fitting Line</string>
-   </property>
-  </action>
-  <action name="actionFittingCurve">
-   <property name="text">
-    <string>Fitting Curve</string>
-   </property>
-  </action>
-  <action name="actionFittingEllipse">
-   <property name="text">
-    <string>Fitting Ellipse</string>
-   </property>
-  </action>
   <action name="actionImageClassification">
    <property name="text">
     <string>Image Classification</string>
@@ -1281,6 +578,36 @@
   <action name="actionShading">
    <property name="text">
     <string>Shading</string>
+   </property>
+  </action>
+  <action name="actionKeyPointDescriptor">
+   <property name="text">
+    <string>KeyPoint &amp; Descriptor</string>
+   </property>
+  </action>
+  <action name="actionTemplateMatching">
+   <property name="text">
+    <string>Template Matching</string>
+   </property>
+  </action>
+  <action name="actionHough">
+   <property name="text">
+    <string>Hough</string>
+   </property>
+  </action>
+  <action name="actionFigureFitting">
+   <property name="text">
+    <string>Figure</string>
+   </property>
+  </action>
+  <action name="actionKalmanFilter">
+   <property name="text">
+    <string>Kalman Filter</string>
+   </property>
+  </action>
+  <action name="actionParticleFilter">
+   <property name="text">
+    <string>Particle Filter</string>
    </property>
   </action>
  </widget>
