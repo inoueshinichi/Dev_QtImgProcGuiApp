@@ -27,5 +27,5 @@
 // Global関数
 ///////////////////////////////////////////////////////////////////////////////////////
 
-std::string getNewSerialNoFilename(const std::string &filename,
-    const std::set<std::string> &filenameSet); 
+std::string getNewSerialNo(const std::string &filename,
+                           const std::set<std::string> &filenameSet);

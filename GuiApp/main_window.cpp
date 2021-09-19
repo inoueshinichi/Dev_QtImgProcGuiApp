@@ -277,7 +277,7 @@ void MainWindow::slotActMenuBarFileOpen() {
             
             DEBUG_STREAM("%s\n", filename.toStdString().c_str());
 
-            std::string newFilename = getNewSerialNoFilename(filename.toStdString(), currImgWinFilenames);
+            std::string newFilename = getNewSerialNo(filename.toStdString(), currImgWinFilenames);
             ImageWindow *p_newImgWin = genImgWin(QString::fromStdString(newFilename));
 
             p_newImgWin->scene()->clear();

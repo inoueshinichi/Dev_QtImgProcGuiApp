@@ -12,11 +12,8 @@
 
 #include <IsCommon/format_string.hpp>
 
-
-
-std::string getNewSerialNoFilename(const std::string &filename,
-                                   const std::set<std::string> &filenameSet)
-{
+std::string getNewSerialNo(const std::string &filename,
+                           const std::set<std::string> &filenameSet) {
     /* 最新の連番付きファイル名を取得する.
        連番の付け方: name(-番号).拡張子
        ※番号の最大値+1を新たな番号とするので, 途中歯抜けになっている番号は無視する.

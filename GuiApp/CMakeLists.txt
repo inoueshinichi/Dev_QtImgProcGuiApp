@@ -246,7 +246,7 @@ endif()
 
 # Include
 target_include_directories(${APP_TARGET_NAME} PRIVATE 
-    ${CMAKE_SOURCE_DIR}/Is/include
+    ${CMAKE_SOURCE_DIR}/IsLibrary/include
 )
 
 # Link
