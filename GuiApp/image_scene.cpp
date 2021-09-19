@@ -62,11 +62,14 @@ void ImageScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 // public method
 //////////////////////////////////////////////////////////
 
-bool ImageScene::setDibImgOnScreen(const QImage &img) {
-    /* Sceneへ画像を登録.
-       QImage -> QPixmap -> QGraphicsPixmapitem
-    */
-
+/**
+ * @brief Sceneへ画像を登録
+ * QImage -> QPixmap -> QGraphicsPixmapitem
+ * @param img
+ * @return true
+ * @return false
+ */
+bool ImageScene::setDibImg(const QImage &img) {
     if (img.isNull()) {
         return false;
     }
@@ -88,6 +91,15 @@ bool ImageScene::setDibImgOnScreen(const QImage &img) {
     this->update();
 
    return true;
+}
+
+/**
+ * @brief DIB画像の取得
+ * 
+ * @return QImage 
+ */
+QImage ImageScene::getDibImg() {
+    return m_editImgIns.m_memDibImg;
 }
 
 void ImageScene::resetRawImg() {
