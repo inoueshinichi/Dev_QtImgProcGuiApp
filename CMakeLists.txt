@@ -14,7 +14,7 @@ message(STATUS "========== [END] Version Management ==========")
 ###############################################################################
 message(STATUS "========== [START] Preprocessing ==========")
 
-find_program(PYTHON_INTERPRETER "python3")
+find_program(PYTHON_INTERPRETER "python")
 if(NOT EXISTS ${PYTHON_INTERPRETER})
     message(FATAL_ERROR "python [${PYTHON_INTERPRETER}] not found.")
     error() # Place Unknown command to stop cmake process here.
@@ -29,19 +29,24 @@ message(STATUS "========== [END] Preprocessing ==========")
 message(STATUS "========== [START] C++ All Target Options ==========")
 
 # Switching Option
-option(BUILD_OPENMP "Enable/Disable OpenMP" ON)
-option(BUILD_CPP_TEST "Building test" OFF)
-option(BUILD_CPP_SHARED_LIBS "Enable/Disable shared libraries" ON)
+option(BUILD_CPP_OPENMP "Enable/Disable: OpenMP" ON)
+option(BUILD_CPP_TEST "Enable/Disable: Building Test" OFF)
+option(BUILD_CPP_SHARED_LIBS "Enable/Disable: Shared Libraries" ON)
+option(BUILD_CPP_ZERO_CHECK "Enable/Disable: ZERO_CHECK" OFF)
+option(BUILD_CPP_MSVC_DEFAULT_LOCALE_UTF8 "Enable/Disable utf-8 default locale" OFF) # ANSI: ShiftJIS -> UTF8 @ Windows OS
+option(BUILD_CPP_MSVC_STATIC_VCRUNTIME "Enable/Disable Static MSVC Runtime" OFF) # MD, MDd -> MT, MTd
 
-
-# コードページ(ファイルIOなどのエンコードに使われる)
-# 従来のWidowsは,ANSI(システム規定)コードページがCP932(拡張Shift-Jis)だったが, Windows10以降はCP65001(UTF-8)が使われる場合が多い.
-option(BUILD_CPP_MSVC_DEFAULT_LOCALE_UTF8 "Enable/Disable utf-8 default locale" OFF) 
+# ZERO_CHECKプロジェクトの有無
+if(NOT BUILD_CPP_ZERO_CHECK)
+    set(CMAKE_SUPPRESS_REGENERATION true)
+endif()
 
 # C++20
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 message("CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
+
+
 
 # プラットフォーム毎のコンパイラオプション(マルチ・コンフィギュレーションに対応)
 if (MSVC)
@@ -55,7 +60,15 @@ if (MSVC)
     set(CMAKE_CXX_FLAGS_MINSIZEREL "/O1 /MD /DNDEBUG")
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/Od /MDd /Zi /RTC1")
 
-    if(BUILD_OPENMP)
+    # Select VC Runtime (Static or Shared)
+    if(BUILD_CPP_MSVC_STATIC_VCRUNTIME)
+        string(REPLACE "/MDd" "/MTd" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+        string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+        string(REPLACE "/MD" "/MT" CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL}")
+        string(REPLACE "/MDd" "/MTd" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
+    endif()
+
+    if(BUILD_CPP_OPENMP)
         message(STATUS "Enable OpenMP")
         find_package(OpenMP REQUIRED)
         include_directories(${OpenMP_INCLUDE_DIRS})
@@ -99,7 +112,7 @@ elseif(APPLE)
     set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -DNDEBUG")
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
 
-    if(BUILD_OPENMP)
+    if(BUILD_CPP_OPENMP)
         message(STATUS "Enable OpenMP")
         find_package(OpenMP REQUIRED)
         include_directories(${OpenMP_INCLUDE_DIRS})
@@ -127,7 +140,7 @@ else()
     set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -DNDEBUG")
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
 
-    if(BUILD_OPENMP)
+    if(BUILD_CPP_OPENMP)
         message(STATUS "Enable OpenMP")
         find_package(OpenMP REQUIRED)
         include_directories(${OpenMP_INCLUDE_DIRS})
