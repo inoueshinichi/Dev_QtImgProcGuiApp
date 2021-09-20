@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "common.h"
+#include "GuiApp.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
@@ -37,8 +37,7 @@
 
 #include <QMouseEvent>
 
-#include <map>
-#include <vector>
+
 
 
 class ImageScene : public QGraphicsScene

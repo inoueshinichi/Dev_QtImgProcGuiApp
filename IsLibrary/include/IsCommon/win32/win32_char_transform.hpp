@@ -111,6 +111,8 @@ CStringT  // MFC CStringのテンプレート テンプレートクラス -> cha
 #include <tchar.h>
 
 #include <string>
+#include <iostream>
+#include <iomanip> // std::setfill, std::setw
 
 namespace is
 {
@@ -160,7 +162,7 @@ namespace is
 
             /*16進数でダンプ*/
             template <typename OS, typename T>
-            void dump(OS &os, T const *t)
+            void dump_by_hex(OS &os, T const *t)
             {
                 bool is_first = true;
                 const auto *byte = reinterpret_cast<unsigned char const *>(t);

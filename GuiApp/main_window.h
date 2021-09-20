@@ -10,7 +10,7 @@
  */
 #pragma once
 
-#include "common.h"
+#include "GuiApp.h"
 
 #include "image_window.h"
 
@@ -27,7 +27,7 @@
 #include <QString>
 #include <QLabel>
 
-#include <set>
+
 
 
 QT_BEGIN_NAMESPACE

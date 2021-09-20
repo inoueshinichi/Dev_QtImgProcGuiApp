@@ -377,7 +377,7 @@ void ImageView::drawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSqua
                 qreal w, h;
                 w = p_scene->m_rect.width();
                 h = p_scene->m_rect.height();
-                DEBUG_STREAM("w:%d, h:%d\n", (int)w, (int)h);
+                IS_DEBUG_STREAM("w:%d, h:%d\n", (int)w, (int)h);
                 if (w > 2 && h > 2) {
                     p_scene->m_roi.updateRect(p_scene, p_scene->m_rect); // 描画更新
                 }
@@ -437,7 +437,7 @@ void ImageView::mousePressEvent(QMouseEvent *event) {
     }
     else
     {
-        DEBUG_STREAM("Unknown mouse button in mousePressEvent...\n");
+        IS_DEBUG_STREAM("Unknown mouse button in mousePressEvent...\n");
     }
 
     // 十字線@Press
@@ -539,7 +539,7 @@ void ImageView::mouseReleaseEvent(QMouseEvent *event) {
         m_isMousePressMiddle = false;
     }
     else {
-        DEBUG_STREAM("Unknown mouse button in mouseMoveEvent...\n");
+        IS_DEBUG_STREAM("Unknown mouse button in mouseMoveEvent...\n");
     }
 
     // 図形
@@ -572,7 +572,7 @@ void ImageView::mouseDoubleClickEvent(QMouseEvent *event) {
 
     }
     else {
-        DEBUG_STREAM("Unknown mouse button in mouseMoveEvent...\n");
+        IS_DEBUG_STREAM("Unknown mouse button in mouseMoveEvent...\n");
     }
 
     

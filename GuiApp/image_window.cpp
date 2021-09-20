@@ -13,10 +13,6 @@
 #include "image_window.h"
 #include "main_window.h"
 
-#include "utility.h"
-
-#include <IsCommon/format_string.hpp>
-
 // Qt
 #include <QGraphicsItem>
 

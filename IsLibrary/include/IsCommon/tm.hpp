@@ -16,6 +16,7 @@
 #if defined(_MSC_VER)
 #include <Windows.h> // GetTickCount, timeGetTime, QueryPerformanceCounter
 #endif
+#include <iostream>
 
 namespace is {
     namespace common {
@@ -114,7 +115,7 @@ namespace is {
             ULONGLONG start = ::GetTickCount64();
             std::forward<decltype(func)>(func)(std::forward<decltype(args)>(args)...); // 完全転送
             ULONGLONG end = ::GetTickCount64();
-            double duration = (double(end - start);
+            double duration = (double)(end - start);
             std::cout << duration << "[ms]" << std::endl;
             return duration;
         };

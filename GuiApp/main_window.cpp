@@ -9,9 +9,6 @@
  * 
  */
 
-#include <IsCommon/format_string.hpp>
-#include "utility.h"
-
 #include "ui_MainWindow.h"
 #include "main_window.h"
 
@@ -198,7 +195,7 @@ void MainWindow::slotRmImgWin(ImageWindow *ptr) {
     m_pStatusBarLabel->setText(QString::number(count));
     m_pUi->statusBar->addPermanentWidget(m_pStatusBarLabel);
 
-    DEBUG_STREAM("Erase a image window. Given is %p.\n", (void *)ptr);
+    IS_DEBUG_STREAM("Erase a image window. Given is %p.\n", (void *)ptr);
 
     if (m_pLastActiveImgWin == ptr) {
         m_pLastActiveImgWin = nullptr;
@@ -259,7 +256,7 @@ void MainWindow::slotActMenuBarFileOpen() {
             auto tokens = path.split(tr("/"));
             QString filename = tokens[tokens.size() - 1];
 
-            DEBUG_STREAM("%s\n", filename.toStdString().c_str());
+            IS_DEBUG_STREAM("%s\n", filename.toStdString().c_str());
 
             std::string newFilename = getNewSerialNo(filename.toStdString(),
                                                      currImgWinFilenames);
@@ -330,7 +327,7 @@ void MainWindow::slotActMenuBarFileSave() {
             tr("画像(*.bmp *.jpeg *.jpg *.png *.tiff)"));
 
         if (!savepath.isNull()) {
-          DEBUG_STREAM("%s\n", savepath.toStdString().c_str());
+          IS_DEBUG_STREAM("%s\n", savepath.toStdString().c_str());
           qimg.save(savepath);
         }
     }
@@ -347,9 +344,9 @@ void MainWindow::slotActMenuBarFileSave() {
  */
 void MainWindow::slotActMenuBarFileSaveAs() {
    if (sender() == m_pLastActiveImgWin->ui()->actionSaveAsCsv) {
-    DEBUG_STREAM("Save As Csv\n");
+    IS_DEBUG_STREAM("Save As Csv\n");
    } else if (sender() == m_pLastActiveImgWin->ui()->actionSaveAsTsv) {
-     DEBUG_STREAM("Save As Tsv\n");
+     IS_DEBUG_STREAM("Save As Tsv\n");
    }
 }
 

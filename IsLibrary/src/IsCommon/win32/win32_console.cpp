@@ -1,19 +1,17 @@
-#include <IsCommon/win32/win32_console>
-
-#include <IsCommon/win32/win32_console>
-#include <IsCommon/win32/win32_api_error>
-#include <IsCommon/format_string>
+#include <IsCommon/win32/win32_console.hpp>
+#include <IsCommon/win32/win32_api_error.hpp>
+#include <IsCommon/format_string.hpp>
 
 #include "tchar.h" // _T()
 #include <io.h>    // _isatty
 
-namespace Is
-{
-    namespace common
-    {
-        namespace win32
-        {
+namespace is {
+    namespace common {
+        namespace win32 {
+            
             using std::string;
+
+            const int Win32Console::WINDOW_TITLE_LENGTH = 2048;
 
             Win32Console::Win32Console()
                 : m_hWnd(NULL)
@@ -27,10 +25,10 @@ namespace Is
                 , m_hOut(NULL)
                 , m_hErr(NULL)
                 , m_inputConsoleMode(0)
-                , m_isStartUp(false)
-            {
+                , m_isStartUp(false) {
+
                 // 初期化
-                if (init_console())
+                if (initialize())
                 {
                     CString msg(_T("[Open] Win32 Console\n"));
                     ::OutputDebugString(static_cast<LPCTSTR>(msg));
@@ -51,10 +49,8 @@ namespace Is
                 show_console_mode();
             }
 
-            Win32Console::~Win32Console()
-            {
-                if (m_isStartUp)
-                {
+            Win32Console::~Win32Console() {
+                if (m_isStartUp) {
                     // プロセスに割当て済みのWin32コンソールを解放する.
                     FreeConsole();
                     CString msg(_T("[Close] Win32 Console\n"));
@@ -63,30 +59,24 @@ namespace Is
             }
 
             /* コンソールへのシグナルハンドラ */
-            BOOL WINAPI Win32Console::ConsoleSignalHander(DWORD dwCtrlType)
-            {
-                if (dwCtrlType == CTRL_SHUTDOWN_EVENT)
-                {
+            BOOL WINAPI Win32Console::ConsoleSignalHandler(DWORD dwCtrlType) {
+                if (dwCtrlType == CTRL_SHUTDOWN_EVENT) {
                     // PCをシャットダウンする場合
                     // ここに特定の処理を記述
                 }
-                else if (dwCtrlType == CTRL_LOGOFF_EVENT)
-                {
+                else if (dwCtrlType == CTRL_LOGOFF_EVENT) {
                     // PCをログオフする場合
                     // ここに特定の処理を記述
                 }
-                else if (dwCtrlType == CTRL_CLOSE_EVENT)
-                {
+                else if (dwCtrlType == CTRL_CLOSE_EVENT) {
                     // コンソールを消す場合(×ボタン)
                     // ここに特定の処理を記述
                 }
-                else if (dwCtrlType == CTRL_BREAK_EVENT)
-                {
+                else if (dwCtrlType == CTRL_BREAK_EVENT) {
                     // Ctrl + Breakが押された場合
                     // ここに特定の処理を記述
                 }
-                else if (dwCtrlType == CTRL_C_EVENT)
-                {
+                else if (dwCtrlType == CTRL_C_EVENT) {
                     // Ctrl + Cが押された場合
                     // ここに特定の処理を記述
                 }
@@ -94,36 +84,29 @@ namespace Is
             }
 
             /* 入力/スクリーンバッファのモードを取得. */
-            int Win32Console::get_mode()
-            {
+            int Win32Console::get_mode() {
                 int iRet = CNSL_OK;
+                CString full_msg;
 
-                if (m_hWnd != NULL)
-                {
+                if (m_hWnd != NULL) {
                     // コンソール入力バッファのモードを取得
-                    if (!GetConsoleMode(m_hIn, &m_inputConsoleMode))
-                    {
+                    if (!GetConsoleMode(m_hIn, &m_inputConsoleMode)) {
                         // 失敗
                         CString msg = win32_api_error(); // Win32 API エラーメッセージを取得
-                        CString full_msg;
                         full_msg.Format(_T("入力バッファモードの取得失敗: %s\n"), (LPCTSTR)msg);
                         iRet = CNSL_ERR_INPUT_MODE;
                     }
 
                     // コンソールスクリーンバッファのモードを取得
-                    if (!GetConsoleMode(m_hOut, &m_outputConsoleMode))
-                    {
+                    if (!GetConsoleMode(m_hOut, &m_outputConsoleMode)) {
                         // 失敗
                         CString msg = win32_api_error(); // Win32 API エラーメッセージを取得
-                        CString full_msg;
                         full_msg.Format(_T("スクリーンバッファモードの取得失敗: %s\n"), (LPCTSTR)msg);
                         iRet = CNSL_ERR_SCREEN_MODE;
                     }
                 }
-                else
-                {
+                else {
                     CString msg = win32_api_error(); // Win32 API エラーメッセージを取得
-                    CString full_msg;
                     full_msg.Format(_T("Windows Handle Error: %s\n"), (LPCTSTR)msg);
                     iRet = CNSL_ERR_WINDOW_HANDLE;
                 }
@@ -132,15 +115,13 @@ namespace Is
                 return iRet;
             }
 
-            int Win32Console::EvableANSIEscapeSequence()
-            {
+            int Win32Console::enable_ansi_escape_seqence() {
                 /* コンソールでANSIエスケープを有効にする */
                 CString full_msg;
                 int iRet = CNSL_OK;
 
                 // Windows 10（TH2/1511以降）では条件付きでANSIエスケープシーケンスに対応
-                if (m_hWnd != NULL)
-                {
+                if (m_hWnd != NULL) {
                     /*
                     ANSIエスケープを有効にするために
                     GetConsoleModeのmodeに定数ENABLE_VIRTUAL_TERMINAL_PROCESSING / ENABLE_VIRTUAL_TERMINAL_INPUTを指定する
@@ -149,23 +130,19 @@ namespace Is
                     */
 
                     // 標準入力に繋がっているかチェック
-                    if (_isatty(m_fdIn))
-                    {
-                        if (!SetConsoleMode(m_hIn, m_inputConsoleMode | ENABLE_VIRTUAL_TERMINAL_INPUT))
-                        {
+                    if (_isatty(m_fdIn)) {
+                        if (!SetConsoleMode(m_hIn, m_inputConsoleMode | ENABLE_VIRTUAL_TERMINAL_INPUT)) {
                             // 成功
                             full_msg.Format("[Success] Input: Enable ANSI-Escape Sequence\n");
                         }
-                        else
-                        {
+                        else {
                             // 失敗
                             CString msg = win32_api_error(); // Win32 API エラーメッセージを取得
                             full_msg.Format(_T("[Error] 入力バッファモードのANSI ESCAPEの有効化失敗: %s\n"), (LPCTSTR)msg);
                             iRet = CNSL_ERR_ANSI_ESCAPE_INPUT;
                         }
                     }
-                    else
-                    {
+                    else {
                         // 標準入力につながっていない
                         CString msg = win32_api_error(); // Win32 API エラーメッセージを取得
                         full_msg.Format(_T("標準入力に未接続: %s\n"), (LPCTSTR)msg);
@@ -173,32 +150,27 @@ namespace Is
                     }
 
                     // 標準出力に繋がっているかチェック
-                    if (_isatty(m_fdOut))
-                    {
+                    if (_isatty(m_fdOut)) {
                         // ANSI Escape Sequenceを有効化
-                        if (!SetConsoleMode(m_hOut, m_outputConsoleMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING))
-                        {
+                        if (!SetConsoleMode(m_hOut, m_outputConsoleMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING)) {
                             // 成功
                             full_msg.Format(_T("[Success] Output: Enable ANSI-Escape Sequence\n"));
                         }
-                        else
-                        {
+                        else {
                             // 失敗
                             CString msg = win32_api_error(); // Win32 API エラーメッセージを取得
                             full_msg.Format(_T("[Error] スクリーンバッファモードのANSI ESCAPEの有効化失敗: %s\n"), (LPCTSTR)msg);
                             iRet = CNSL_ERR_ANSI_ESCAPE_SCREEN;
                         }
                     }
-                    else
-                    {
+                    else {
                         // 標準出力につながっていない
                         CString msg = win32_api_error(); // Win32 API エラーメッセージを取得
                         full_msg.Format(_T("標準出力に未接続: %s\n"), (LPCTSTR)msg);
                         iRet = CNSL_ERR_NO_STD_OUTPUT;
                     }
                 }
-                else
-                {
+                else {
                     CString msg = win32_api_error(); // Win32 API エラーメッセージを取得
                     full_msg.Format(_T("Windows Handle Error: %s\n"), (LPCTSTR)msg);
                     iRet = CNSL_ERR_WINDOW_HANDLE;
@@ -209,10 +181,8 @@ namespace Is
             }
 
             /* 現在のコンソールモードの状態を表示 */
-            void Win32Console::show_console_mode()
-            {
-                if (m_hWnd != NULL)
-                {
+            void Win32Console::show_console_mode() {
+                if (m_hWnd != NULL) {
                     /*
                     BOOL GetConsoleMode(HANDLE hConsoleHandle, LPDWORD lpMode)関数
 
@@ -245,8 +215,7 @@ namespace Is
                     ENABLE_VIRTUAL_TERMINAL_INPUT	0x0200 :
                     */
 
-                    if (m_hIn != NULL)
-                    {
+                    if (m_hIn != NULL) {
                         ::OutputDebugString(_T("[InputConsoleBuffer Mode]\n"));
                         CString isFlags;
                         isFlags.Format(_T("ENABLE_LINE_INPUT -> %s\n"),
@@ -291,8 +260,7 @@ namespace Is
                     ENABLE_LVB_GRID_WORLDWIDE			0x0010 :
                     */
 
-                    if (m_hOut != NULL)
-                    {
+                    if (m_hOut != NULL) {
                         ::OutputDebugString(_T("[ScreenConsoleBuffer Mode]\n"));
                         CString isFlags;
                         isFlags.Format(_T("ENABLE_PROCESSED_OUTPUT -> %s\n"),
@@ -312,13 +280,10 @@ namespace Is
             }
 
             /* コンソールの初期化 */
-            BOOL Win32Console::InitConsole()
-            {
+            BOOL Win32Console::initialize() {
                 // コンソールに標準入力・標準出力・標準エラー出力を割り当てる
                 if (!AllocConsole())
-                {
                     return FALSE;
-                }
 
                 // (C/C++) FILE Pointerの取得
                 freopen_s(&m_fpIn, "CONIN$", "r", stdin);
@@ -336,7 +301,7 @@ namespace Is
                 m_hErr = (HANDLE)_get_osfhandle(m_fdErr);
 
                 // コンソールへのシグナルハンドラを設定
-                ::SetConsoleCtrlHandler(&Win32Console::ConsoleSignalHander, TRUE);
+                ::SetConsoleCtrlHandler(&Win32Console::ConsoleSignalHandler, TRUE);
 
                 // コンソールウィンドウのタイトルを取得
                 TCHAR cnslTitle[WINDOW_TITLE_LENGTH];

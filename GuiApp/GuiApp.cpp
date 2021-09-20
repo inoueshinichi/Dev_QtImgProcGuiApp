@@ -1,5 +1,5 @@
 /**
- * @file utility.cpp
+ * @file GuiApp.cpp
  * @author inoue shinichi (inoue.shinichi.1800@gmail.com)
  * @brief GuiAppプロジェクトにおける自作関数用Sourceファイル
  * @version 0.1
@@ -8,9 +8,9 @@
  * @copyright Copyright (c) 2021
  * 
  */
-#include "utility.h"
+#include "GuiApp.h"
 
-#include <IsCommon/format_string.hpp>
+
 
 std::string getNewSerialNo(const std::string &filename,
                            const std::set<std::string> &filenameSet) {

@@ -10,6 +10,8 @@
  */
 #pragma once
 
+#include "GuiApp.h"
+
 #include "ui_ImageWindow.h"
 #include "image_view.h"
 #include "image_scene.h"

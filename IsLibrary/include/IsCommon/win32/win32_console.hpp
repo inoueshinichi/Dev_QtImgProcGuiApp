@@ -11,18 +11,16 @@
 
 #pragma once
 
-#include <IsCommon/defs.hpp>
+#include <IsCommon/IsCommon.hpp>
 
 #include <Windows.h>
 
 #include <cstdio>
 
-namespace is
-{
-    namespace common
-    {
-        namespace win32
-        {
+namespace is {
+    namespace common {
+        namespace win32 {
+            
 /* WindowsコンソールのANSI エスケープシーケンス対応のプリプロセッサ */
 // Windows SDKが古いバージョンだとENABLE_VIRTUAL_TERMINAL_INPUT / ENABLE_VIRTUAL_TERMINAL_PROCESSING
 // は，宣言されていない.
@@ -38,10 +36,9 @@ namespace is
 #define ENABLE_LVB_GRID_WORLDWIDE 0x0010
 #endif
 
-            class IS_COMMON_API Win32Console
-            {
-                enum
-                {
+            class IS_COMMON_API Win32Console {
+
+                enum {
                     CNSL_OK = 0,
                     CNSL_ERR_WINDOW_HANDLE = 1,
                     CNSL_ERR_INPUT_MODE = 2,
@@ -68,9 +65,9 @@ namespace is
                 DWORD m_outputConsoleMode;
                 BOOL m_isStartUp;
 
-                constexpr int WINDOW_TITLE_LENGTH = 2048;
+                static const int WINDOW_TITLE_LENGTH;
 
-                BOOL init_console();
+                BOOL initialize();
 
             public:
                 Win32Console();
@@ -78,11 +75,8 @@ namespace is
 
                 static BOOL WINAPI ConsoleSignalHandler(DWORD dwCtrlType);
 
-                // int GetMode();
                 int get_mode();
-                // int EnableANSIEscapeSequence();
                 int enable_ansi_escape_seqence();
-                // void ShowConsoleMode();
                 void show_console_mode();
             };
         }

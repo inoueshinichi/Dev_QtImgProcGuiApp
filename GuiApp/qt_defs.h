@@ -115,7 +115,7 @@ typedef struct Roi {
         int index = m_rois.size();
         m_rois.insert({index, p_item});
         scene->addItem(p_item);
-        DEBUG_STREAM("New Rect[%d]: (%f, %f, %f, %f)\n",
+        IS_DEBUG_STREAM("New Rect[%d]: (%f, %f, %f, %f)\n",
                      index, rect.x(), rect.y(), rect.width(), rect.height());
     }
 
@@ -124,7 +124,7 @@ typedef struct Roi {
         if (last < 0)
             return;
 
-        DEBUG_STREAM("Update Rect[%d]: (%f, %f, %f, %f)\n",
+        IS_DEBUG_STREAM("Update Rect[%d]: (%f, %f, %f, %f)\n",
                      last, rect.x(), rect.y(), rect.width(), rect.height());
 
         auto p_item = m_rois[last];
@@ -139,7 +139,7 @@ typedef struct Roi {
             scene->removeItem(p_item);
             delete p_item; p_item = nullptr;
             m_rois.erase(index);
-            DEBUG_STREAM("Rm Rect[%d]\n", index);
+            IS_DEBUG_STREAM("Rm Rect[%d]\n", index);
         }
     }
 
@@ -151,7 +151,7 @@ typedef struct Roi {
                 delete iter->second;
                 iter->second = nullptr;
                 iter = m_rois.erase(iter);
-                DEBUG_STREAM("Rm Rect[%d]\n", index);
+                IS_DEBUG_STREAM("Rm Rect[%d]\n", index);
                 return;
             }
             else {
