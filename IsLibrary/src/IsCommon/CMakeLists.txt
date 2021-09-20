@@ -56,10 +56,11 @@ target_link_libraries(${LIB_TARGET_NAME}
 )
 
 
+# PDBファイルを出力する
 if(MSVC)
-    # msvc does not append 'lib' - do it here to have consistent name
-    set_target_properties(${LIB_TARGET_NAME} PROPERTIES PREFIX "lib")
-    set_target_properties(${LIB_TARGET_NAME} PROPERTIES IMPORT_PREFIX "lib")
+    set_target_properties(${LIB_TARGET_NAME} PROPERTIES
+        COMPILE_PDB_NAME ${LIB_TARGET_NAME}
+    )
 endif()
 
 

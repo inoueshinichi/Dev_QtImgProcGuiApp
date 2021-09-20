@@ -194,6 +194,12 @@ target_include_directories(${APP_TARGET_NAME} PRIVATE
 )
 
 if(MSVC)
+
+    # PDBファイルの生成
+    set_target_properties(${APP_TARGET_NAME} PROPERTIES
+        COMPILE_PDB_NAME ${APP_TARGET_NAME}
+    )
+
     # utf8版バージョン情報管理ファイル(雛形)の生成
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.rc.in 
                    ${CMAKE_CURRENT_BINARY_DIR}/version-utf8.rc)
