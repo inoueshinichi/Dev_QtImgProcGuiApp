@@ -109,6 +109,11 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
 
 
 else()
+    # # UI, MOC, RC関連の出力先ディレクトリを設定
+    # set(QT_AUTOGEN_UI_MOC_RC_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/qt_autogen)
+    # message(STATUS "AutoGen Build Dir: ${QT_AUTOGEN_UI_MOC_RC_BUILD_DIR}")
+    # set(AUTOGEN_BUILD_DIR ${QT_AUTOGEN_UI_MOC_RC_BUILD_DIR})
+
     # UIC compiler
     message(STATUS "Generate Qt Ui Header Files(.h)...")
     file(GLOB QT_UI_FORMS ${CMAKE_CURRENT_SOURCE_DIR}/${UI_DIRNAME}/*.ui)
@@ -150,11 +155,13 @@ else()
     )
 
     # ui_<basename>.h が生成されたディレクトリをインクルードディレクトリに追加
-    target_include_directories(${APP_TARGET_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+    target_include_directories(${APP_TARGET_NAME} PRIVATE 
+        ${CMAKE_CURRENT_BINARY_DIR}
+    )
 
     # 生成されたUIヘッダーの内部に格上げするクラスのヘッダーファイルがインクルードされるのでヘッダーディレクトリを登録
     target_include_directories(${APP_TARGET_NAME} PRIVATE 
-        ${CMAKE_CURRENT_DIR}
+       ${CMAKE_CURRENT_SOURCE_DIR}
     )
 
 endif()

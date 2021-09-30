@@ -107,6 +107,29 @@ void MainWindow::startDragProcess(Qt::DropActions *dropActions, QMouseEvent *eve
 
 }
 
+
+void MainWindow::helperImgProc(const QString &process, 
+                               std::function<void(QImage &)> func) {
+    /* ヘルパー関数 */
+    auto tp_start = high_resolution_clock::now();
+
+    QImage img = m_pLastActiveImgWin->getDibImg();
+
+    // 画像処理タスク
+    func(img);
+
+    m_pLastActiveImgWin->setDibImg(img);
+
+    auto tp_end = high_resolution_clock::now();
+    auto duration = duration_cast<milliseconds>(tp_end - tp_start).count();
+    IS_DEBUG_STREAM("%s: %ld[ms]\n", process.toStdString().c_str(), duration);
+
+    std::string status = is::common::format_string("%s: %ld[ms]", 
+                                    process.toStdString().c_str(), duration);
+    m_pUi->statusBar->clearMessage();
+    m_pUi->statusBar->showMessage(QString::fromStdString(status));
+}
+
 //////////////////////////////////////////////////////////
 // protected method
 //////////////////////////////////////////////////////////
@@ -241,16 +264,21 @@ void MainWindow::slotActMenuBarFileOpen() {
     foreach (QString path, fileList) {
         if (!path.isEmpty()) {
             QImage img(path);
-            int depth = img.bitPlaneCount();
+            int depth = img.depth();
             bool isGray = img.isGrayscale();
             if (isGray && depth == 8) {
                 img = img.convertToFormat(QImage::Format_Grayscale8);
-            } else if (depth == 24 || depth == 32) {
-                
-                img = img.convertToFormat(QImage::Format_RGB888); // 透明度は破棄
+            } 
+            else if (depth == 24) {
+                img = img.convertToFormat(QImage::Format_RGB888);
+            }
+            else if (depth == 32) {
+                img = img.convertToFormat(QImage::Format_RGBA8888);
             }
             else {
-                throw std::runtime_error("No support image format.");
+                std::string msg = is::common::format_string(
+                    "No support image format. Given depth is %d", depth);
+                throw std::runtime_error(msg.c_str());
             }
 
             auto tokens = path.split(tr("/"));
@@ -273,7 +301,8 @@ void MainWindow::slotActMenuBarFileOpen() {
             }
 
             p_newImgWin->scene()->clear();
-            p_newImgWin->scene()->setDibImg(img);
+            // p_newImgWin->scene()->setDibImg(img);
+            p_newImgWin->setDibImg(img);
         }
     }
 }
@@ -383,7 +412,20 @@ void MainWindow::slotActMenuBarEditRename() {
     auto new_name = QInputDialog::getText(m_pLastActiveImgWin, 
                                         tr("画像ファイル名の変更"),
                                         tr("新しいファイル名"));
-    m_pLastActiveImgWin->setFilename(new_name);
+    
+    if (new_name.isEmpty())
+        return;
+
+    auto qname = m_pLastActiveImgWin->filename();
+    std::string name = qname.toStdString();
+    IS_DEBUG_STREAM("Before %s\n", name.c_str());
+    auto tokens = is::common::split_string(name, ".");
+    QString filename = new_name + QString(".") + 
+        QString::fromStdString(tokens[tokens.size() - 1]);
+
+    IS_DEBUG_STREAM("After %s\n", filename.toStdString().c_str());
+    
+    m_pLastActiveImgWin->setFilename(filename);
 
 }
 
@@ -419,8 +461,34 @@ void MainWindow::slotActMenuBarEditPaste() {
  * 
  */
 void MainWindow::slotActMenuBarEditClear() {
-  QMessageBox::warning(m_pLastActiveImgWin, tr("ROI領域のクリア"),
-                      tr("工事中..."));
+    // QMessageBox::warning(m_pLastActiveImgWin, tr("ROI領域のクリア"),
+    //                   tr("工事中..."));
+    std::map<int, QRectF> localRects = m_pLastActiveImgWin->getRectsOnDibImg();
+    using byte = uchar;
+
+    auto func = [&](QImage &qimg) -> void {
+        int l, t, r, b;
+        int memWidth = qimg.bytesPerLine();
+        int memChannels = qimg.depth() / 8;
+        int channels = (memChannels > 3) ? 3 : memChannels;
+        byte *imgPtr = qimg.bits();
+        for (const auto &roi : localRects) {
+            l = roi.second.x();
+            t = roi.second.y();
+            r = int(l + roi.second.width());
+            b = int(t + roi.second.height());
+
+            for (int c = 0; c < channels; ++c) {
+                for (int y = t; y < b; ++y) {
+                    for (int x = l; x < r; ++x) {
+                        imgPtr[y*memWidth + memChannels*x + c] = 0; // 黒
+                    }
+                }
+            }
+        }
+    };
+
+    helperImgProc(QString("Clear"), func);
 }
 
 /**
@@ -428,8 +496,21 @@ void MainWindow::slotActMenuBarEditClear() {
  * 
  */
 void MainWindow::slotActMenuBarEditClearOutside() {
-  QMessageBox::warning(m_pLastActiveImgWin, tr("ROI領域以外のクリア"),
+    QMessageBox::warning(m_pLastActiveImgWin, tr("ROI領域以外のクリア"),
                       tr("工事中..."));
+
+
+    auto tp_start = high_resolution_clock::now();
+
+    QImage qimg = m_pLastActiveImgWin->getDibImg();
+    std::map<int, QRectF> localRects = m_pLastActiveImgWin->getRectsOnDibImg();
+
+    using byte = uchar;
+    int l, t, r, b;
+    int memWidth = qimg.bytesPerLine();
+    int memChannels = qimg.depth() / 8;
+    int channels = (memChannels > 3) ? 3 : memChannels;
+    byte *imgPtr = qimg.bits();
 }
 
 /**
@@ -494,10 +575,4 @@ void MainWindow::slotActMenuBarImageType() {
 //////////////////////////////////////////////////////////
 // private slot method
 //////////////////////////////////////////////////////////
-
-void
-MainWindow::slotSelectInputDir() {}
-
-void MainWindow::slotSelectOutputDir()
-{}
 

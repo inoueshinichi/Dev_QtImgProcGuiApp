@@ -13,6 +13,8 @@
 #include "image_window.h"
 #include "main_window.h"
 
+#include "qt_util.h"
+
 // Qt
 #include <QGraphicsItem>
 
@@ -146,6 +148,10 @@ void ImageWindow::toolBarConnection()
 
     /* QAction -> ImageScene */
 
+    // Reset DIB Image
+    connect(m_pUi->actionResetImage, &QAction::triggered,
+            this, &ImageWindow::slotResetDibImg);
+
     // CrossLine
     connect(m_pUi->actionCrossLine, &QAction::toggled, 
             this, &ImageWindow::slotToggleCrossLine);
@@ -242,6 +248,49 @@ ImageScene *ImageWindow::scene() const { return m_pScene; }
 Ui::ImageWindow *ImageWindow::ui() const { return m_pUi; }
 
 
+void ImageWindow::resetDibImg() {
+    /* 原画像に戻す */
+    m_pScene->resetRawImg();
+}
+
+
+QImage ImageWindow::getDibImg() {
+    /* シーン上の編集画像を取得 */
+    return m_pScene->getDibImg();
+}
+
+bool ImageWindow::setDibImg(const QImage &img) {
+    /* シーン上の編集画像に設定 */
+
+    auto format = getFormatStr(img);
+    int width = img.width();
+    int height = img.height();
+
+    std::string status = is::common::format_string("%dx%d@%s", 
+                              width, height, 
+                              format.second.toStdString().c_str());
+
+    m_pUi->lineEditImageStatus->clear();
+    m_pUi->lineEditImageStatus->setText(QString::fromStdString(status));
+
+    return m_pScene->setDibImg(img);
+}
+
+
+
+std::map<int, QRectF> ImageWindow::getRectsOnDibImg() const {
+    /* シーン上のRoiを取得 */
+
+    std::map<int, QRectF> rects;
+    for (auto iter = m_pScene->m_roi.m_rois.begin(); 
+        iter != m_pScene->m_roi.m_rois.end(); ++iter) 
+    {
+        rects[iter->first] = iter->second->rect();
+    }
+    return rects;
+}
+
+
 //////////////////////////////////////////////////////////
 // public slot method
 //////////////////////////////////////////////////////////
@@ -255,7 +304,7 @@ void ImageWindow::slotShowPosToStatusBar(
     */
    using namespace is::common;
 
-    m_posStatus = format_string("ImageLocalPos(%.1f, %.1f), ScenePos(%.1f, %.1f), ViewPos(%d, %d)",
+    m_posStatus = format_string("ImageLocalPos(%4.1f, %4.1f), ScenePos(%4.1f, %4.1f), ViewPos(%4d, %4d)",
                                imgLocalPos.x(), imgLocalPos.y(),
                                scenePos.x(), scenePos.y(),
                                viewPos.x(), viewPos.y());
@@ -267,8 +316,14 @@ void ImageWindow::slotShowPosToStatusBar(
 // private slot method
 //////////////////////////////////////////////////////////
 
-void ImageWindow::slotToggleCrossLine(bool checked)
-{
+void ImageWindow::slotResetDibImg(bool checked) {
+    /* 原画像に戻す */
+    resetDibImg();
+    IS_DEBUG_STREAM("ImageWindow::slotResetDibImg\n");
+}
+
+
+void ImageWindow::slotToggleCrossLine(bool checked) {
     /*十字線の(非)表示*/
     m_pScene->m_crossLine.m_isCrossLine = checked;
 
@@ -278,8 +333,7 @@ void ImageWindow::slotToggleCrossLine(bool checked)
     }
 }
 
-void ImageWindow::slotToggleProfile(bool checked)
-{
+void ImageWindow::slotToggleProfile(bool checked) {
     /*プロファイルの(非)表示*/
     auto p_sender = QObject::sender();
     if (p_sender == m_pUi->actionProfileXRed) {

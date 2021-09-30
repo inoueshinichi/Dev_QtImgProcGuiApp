@@ -53,6 +53,10 @@ public:
     QString filename() const;
     ImageScene* scene() const;
     Ui::ImageWindow *ui() const;
+    void resetDibImg();
+    QImage getDibImg();
+    bool setDibImg(const QImage &img);
+    std::map<int, QRectF> getRectsOnDibImg() const;
 
 protected:
     virtual bool event(QEvent *event) override;
@@ -69,6 +73,7 @@ public slots:
                                 const QPoint &viewPos);
 
 private slots:
+    void slotResetDibImg(bool checked);
     void slotToggleCrossLine(bool checked);
     void slotToggleProfile(bool checked);
     void slotToggleRoi(bool checked);

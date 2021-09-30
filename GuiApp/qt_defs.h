@@ -167,6 +167,7 @@ typedef struct SceneImage {
     QImage m_memDibImg;
     QPixmap m_offScreenDdbImg;
     QGraphicsPixmapItem *m_pItemOffScreenDdbImg;
+    bool m_isSceneImg {false};
 
     SceneImage() {
         m_pItemOffScreenDdbImg = new QGraphicsPixmapItem();

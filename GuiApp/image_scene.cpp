@@ -80,11 +80,14 @@ bool ImageScene::setDibImg(const QImage &img) {
     }
 
     // ディスプレイに表示するQImageはARGB32(OxffRRGGBB)フォーマットで統一
-    m_editImgIns.m_offScreenDdbImg = QPixmap::fromImage(img); // ARGB32に統一される？
+    m_editImgIns.m_offScreenDdbImg = QPixmap::fromImage(img);
 
     // QGraphicsPixmapItemにセット
     m_editImgIns.m_pItemOffScreenDdbImg->setPixmap(m_editImgIns.m_offScreenDdbImg);
-    this->addItem(m_editImgIns.m_pItemOffScreenDdbImg);
+    if (!m_editImgIns.m_isSceneImg) {
+        m_editImgIns.m_isSceneImg = true;
+        this->addItem(m_editImgIns.m_pItemOffScreenDdbImg);
+    }
 
     // 描画指令
     this->update();
@@ -102,14 +105,20 @@ QImage ImageScene::getDibImg() {
 }
 
 void ImageScene::resetRawImg() {
-    /*原画像に戻す
-    */
+    /* 原画像に戻す */
+
+    // 初期化
+    m_editImgIns.m_memDibImg = m_rawDibImg.copy();
+
     // ディスプレイに表示するQImageはARGB32(OxffRRGGBB)フォーマットで統一
-    m_editImgIns.m_offScreenDdbImg = QPixmap::fromImage(m_rawDibImg); // ARGB32に統一される？
+    m_editImgIns.m_offScreenDdbImg = QPixmap::fromImage(m_rawDibImg);
 
     // QGraphicsPixmapItemにセット
     m_editImgIns.m_pItemOffScreenDdbImg->setPixmap(m_editImgIns.m_offScreenDdbImg);
-    this->addItem(m_editImgIns.m_pItemOffScreenDdbImg);
+    if (!m_editImgIns.m_isSceneImg) {
+        m_editImgIns.m_isSceneImg = true;
+        this->addItem(m_editImgIns.m_pItemOffScreenDdbImg);
+    }
 
     // 描画指令
     this->update();

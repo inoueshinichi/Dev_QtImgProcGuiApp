@@ -11,8 +11,9 @@
 #pragma once
 
 #include "GuiApp.h"
-
 #include "image_window.h"
+
+#include <functional>
 
 #include <QMainWindow>
 #include <Qt>
@@ -51,6 +52,8 @@ private:
     void enableViewMode();
     void enableFileMode();
     void startDragProcess(Qt::DropActions *dropActions, QMouseEvent *event);
+
+    void helperImgProc(const QString &process, std::function<void(QImage&)> func);
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
@@ -112,15 +115,8 @@ public slots:
     // void slotActMenuBarViewOriginalScale();
 
 private slots:
-    void slotSelectInputDir();
-    void slotSelectOutputDir();
-
+ 
    
-
-    
-
-    
-
     // /* Menu -> Camera */
     // void slotActMenuBarCameraWindow();
 
