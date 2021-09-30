@@ -19,6 +19,9 @@
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QLineEdit" name="lineEditImageStatus">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
         <property name="placeholderText">
          <string>Image Status</string>
         </property>
@@ -182,7 +185,10 @@
   </widget>
   <action name="actionResetImage">
    <property name="text">
-    <string>原画像</string>
+    <string>Reset</string>
+   </property>
+   <property name="toolTip">
+    <string>Reset to raw image</string>
    </property>
   </action>
   <action name="actionCrossLine">
@@ -190,7 +196,10 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>十字線</string>
+    <string>CrossLine</string>
+   </property>
+   <property name="toolTip">
+    <string>CrossLine</string>
    </property>
   </action>
   <action name="actionRoi">
