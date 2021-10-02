@@ -106,8 +106,8 @@ public slots:
     // void slotActMenuBarImageShowInfo();
     // void slotActMenuBarImageColor();
     // void slotActMenuBarImageBorder();
-    // void slotActMenuBarImageCrop();
-    // void slotActMenuBarImageDuplicate();
+    void slotActMenuBarImageCrop();
+    void slotActMenuBarImageDuplicate();
     // void slotActMenuBarImageTransform();
 
     /* Menu -> View */
@@ -118,7 +118,7 @@ private slots:
  
    
     // /* Menu -> Camera */
-    // void slotActMenuBarCameraWindow();
+    void slotActMenuBarCameraWindow();
 
     // /* Menu -> Video */
     // void slotActMenuBarVideoWindow();

@@ -13,16 +13,13 @@
 #include "image_window.h"
 #include "main_window.h"
 
-#include "qt_util.h"
-
-// Qt
-#include <QGraphicsItem>
-
-
 #include <cstring>
 #include <ctime>
 #include <string>
 #include <iostream>
+
+#include <QGraphicsItem>
+
 
 //////////////////////////////////////////////////////////
 // ctor/dtor
@@ -138,8 +135,25 @@ void ImageWindow::memuBarConnection() {
 
 
     /* Menu -> Image */
+    // Type
     connect(m_pUi->actionCvt8bit, &QAction::triggered, m_pMainWindow,
             &MainWindow::slotActMenuBarImageType);
+    connect(m_pUi->actionCvt24bit, &QAction::triggered, m_pMainWindow,
+            &MainWindow::slotActMenuBarImageType);
+    connect(m_pUi->actionCvtRGBA, &QAction::triggered, m_pMainWindow,
+            &MainWindow::slotActMenuBarImageType); 
+
+    // ShowInfo
+
+    // Color
+
+    // Crop
+    connect(m_pUi->actionCrop, &QAction::triggered, m_pMainWindow,
+            &MainWindow::slotActMenuBarImageCrop);
+
+    // Duplicate
+    connect(m_pUi->actionDuplicate, &QAction::triggered, m_pMainWindow,
+            &MainWindow::slotActMenuBarImageDuplicate);
 }
 
 void ImageWindow::toolBarConnection()
@@ -265,10 +279,14 @@ bool ImageWindow::setDibImg(const QImage &img) {
     auto format = getFormatStr(img);
     int width = img.width();
     int height = img.height();
+    int depth = img.depth();
+    qsizetype datasize = img.sizeInBytes();
 
-    std::string status = is::common::format_string("%dx%d@%s", 
-                              width, height, 
-                              format.second.toStdString().c_str());
+    std::string status = is::common::format_string("%dx%d@%s, %d-bits, %ld[bytes]", 
+                                width, height, 
+                                format.second.toStdString().c_str(),
+                                depth,
+                                datasize);
 
     m_pUi->lineEditImageStatus->clear();
     m_pUi->lineEditImageStatus->setText(QString::fromStdString(status));

@@ -1,5 +1,9 @@
 #include "main_window.h"
 
+#include "camera_frame_reader.h"
+
+#include <memory>
+
 #include <QApplication>
 
 int main(int argc, char** argv)
@@ -28,6 +32,17 @@ int main(int argc, char** argv)
 
     MainWindow main_win;
     main_win.show();
+
+    // UsbCameraFrameReader テスト
+    std::shared_ptr<CameraFrameReader> camFrameReader = std::make_shared<UsbCameraFrameReader>();
+
+    camFrameReader->setDeviceId(0);
+    camFrameReader->setDelay(50);
+    camFrameReader->initialize();
+
+    camFrameReader->retrieveFrame();
+    
+    camFrameReader->release();
 
     return app.exec();
 }

@@ -12,11 +12,6 @@
 #include "ui_MainWindow.h"
 #include "main_window.h"
 
-#include <QApplication>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QInputDialog>
-#include <QImage>
 
 #include <algorithm>
 #include <vector>
@@ -26,6 +21,13 @@
 namespace fs = std::filesystem;
 #include <chrono>
 using namespace std::chrono;
+
+
+#include <QApplication>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QInputDialog>
+#include <QImage>
 
 
 //////////////////////////////////////////////////////////
@@ -79,6 +81,21 @@ void MainWindow::menuBarConnection() {
     // Quit
     connect(m_pUi->actionQuit, &QAction::triggered,
             this, &MainWindow::slotActMenuBarFileQuit);
+    
+    /* Menu -> Camera */
+    connect(m_pUi->actionCamUsb, &QAction::triggered,
+        this, &MainWindow::slotActMenuBarCameraWindow);
+    connect(m_pUi->actionCamEthrnet, &QAction::triggered,
+        this, &MainWindow::slotActMenuBarCameraWindow);
+    connect(m_pUi->actionCamIds, &QAction::triggered,
+        this, &MainWindow::slotActMenuBarCameraWindow);
+    connect(m_pUi->actionCamOmron, &QAction::triggered,
+        this, &MainWindow::slotActMenuBarCameraWindow);
+    connect(m_pUi->actionCamCognex, &QAction::triggered,
+        this, &MainWindow::slotActMenuBarCameraWindow);
+    connect(m_pUi->actionCamBaslar, &QAction::triggered,
+        this, &MainWindow::slotActMenuBarCameraWindow);
+    
     
 }
 
@@ -265,8 +282,7 @@ void MainWindow::slotActMenuBarFileOpen() {
         if (!path.isEmpty()) {
             QImage img(path);
             int depth = img.depth();
-            bool isGray = img.isGrayscale();
-            if (isGray && depth == 8) {
+            if (depth == 8) {
                 img = img.convertToFormat(QImage::Format_Grayscale8);
             } 
             else if (depth == 24) {
@@ -290,18 +306,17 @@ void MainWindow::slotActMenuBarFileOpen() {
                                                      currImgWinFilenames);
             ImageWindow *p_newImgWin = genImgWin(QString::fromStdString(newFilename));
 
-            if (isGray && depth == 8) {
-              p_newImgWin->ui()->actionCvt8bit->setChecked(true);
+            if (depth == 8) {
+                p_newImgWin->ui()->actionCvt8bit->setChecked(true);
             }
-            else if (isGray && depth == 24) {
-              p_newImgWin->ui()->actionCvt24bit->setChecked(true);
+            else if (depth == 24) {
+                p_newImgWin->ui()->actionCvt24bit->setChecked(true);
             }
-            else {
-              p_newImgWin->ui()->actionCvtRGB->setChecked(true);
+            else if (depth == 32) {
+                p_newImgWin->ui()->actionCvtRGBA->setChecked(true);
             }
 
             p_newImgWin->scene()->clear();
-            // p_newImgWin->scene()->setDibImg(img);
             p_newImgWin->setDibImg(img);
         }
     }
@@ -463,21 +478,37 @@ void MainWindow::slotActMenuBarEditPaste() {
 void MainWindow::slotActMenuBarEditClear() {
     // QMessageBox::warning(m_pLastActiveImgWin, tr("ROI領域のクリア"),
     //                   tr("工事中..."));
+
     std::map<int, QRectF> localRects = m_pLastActiveImgWin->getRectsOnDibImg();
-    using byte = uchar;
 
-    auto func = [&](QImage &qimg) -> void {
+    auto func = [&](QImage &img) -> void {
+        using byte = uchar;
         int l, t, r, b;
-        int memWidth = qimg.bytesPerLine();
-        int memChannels = qimg.depth() / 8;
+        int memWidth = img.bytesPerLine();
+        int memChannels = img.depth() / 8;
         int channels = (memChannels > 3) ? 3 : memChannels;
-        byte *imgPtr = qimg.bits();
-        for (const auto &roi : localRects) {
-            l = roi.second.x();
-            t = roi.second.y();
-            r = int(l + roi.second.width());
-            b = int(t + roi.second.height());
+        byte *imgPtr = img.bits();
 
+        if (localRects.size() > 0) {
+            for (const auto &roi : localRects) {
+                l = roi.second.x();
+                t = roi.second.y();
+                r = int(l + roi.second.width());
+                b = int(t + roi.second.height());
+                for (int c = 0; c < channels; ++c) {
+                    for (int y = t; y < b; ++y) {
+                        for (int x = l; x < r; ++x) {
+                            imgPtr[y*memWidth + memChannels*x + c] = 0; // 黒
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            l = 0;
+            t = 0;
+            r = img.width();
+            b = img.height();
             for (int c = 0; c < channels; ++c) {
                 for (int y = t; y < b; ++y) {
                     for (int x = l; x < r; ++x) {
@@ -496,21 +527,45 @@ void MainWindow::slotActMenuBarEditClear() {
  * 
  */
 void MainWindow::slotActMenuBarEditClearOutside() {
-    QMessageBox::warning(m_pLastActiveImgWin, tr("ROI領域以外のクリア"),
-                      tr("工事中..."));
+    // QMessageBox::warning(m_pLastActiveImgWin, tr("ROI領域以外のクリア"),
+    //                   tr("工事中..."));
 
-
-    auto tp_start = high_resolution_clock::now();
-
-    QImage qimg = m_pLastActiveImgWin->getDibImg();
     std::map<int, QRectF> localRects = m_pLastActiveImgWin->getRectsOnDibImg();
 
-    using byte = uchar;
-    int l, t, r, b;
-    int memWidth = qimg.bytesPerLine();
-    int memChannels = qimg.depth() / 8;
-    int channels = (memChannels > 3) ? 3 : memChannels;
-    byte *imgPtr = qimg.bits();
+    auto func = [&](QImage &img) -> void {
+        if (localRects.size() > 0) {
+            using byte = uchar;
+            int l, t, r, b;
+            int memWidth = img.bytesPerLine();
+            int memChannels = img.depth() / 8;
+            int channels = (memChannels > 3) ? 3 : memChannels;
+            byte *srcPtr = img.bits();
+
+            QImage blackImg = img.copy();
+            blackImg.fill(Qt::black);
+            byte *dstPtr = blackImg.bits();
+
+            for (const auto &roi : localRects) {
+                l = roi.second.x();
+                t = roi.second.y();
+                r = int(l + roi.second.width());
+                b = int(t + roi.second.height());
+
+                for (int c = 0; c < channels; ++c) {
+                    for (int y = t; y < b; ++y) {
+                        for (int x = l; x < r; ++x) {
+                            dstPtr[y*memWidth + memChannels*x + c] = 
+                            srcPtr[y*memWidth + memChannels*x + c];
+                        }
+                    }
+                }
+            }
+
+            blackImg.swap(img);
+        }
+    };
+
+    helperImgProc(QString("Clear Outside"), func);
 }
 
 /**
@@ -518,8 +573,10 @@ void MainWindow::slotActMenuBarEditClearOutside() {
  * 
  */
 void MainWindow::slotActMenuBarEditFill() {
-  QMessageBox::warning(m_pLastActiveImgWin, tr("ROI領域の色指定"),
-                      tr("工事中..."));
+    QMessageBox::warning(m_pLastActiveImgWin, tr("ROI領域の色指定"),
+                          tr("工事中..."));
+
+    auto color = QColorDialog::getColor();
 }
 
 /**
@@ -527,8 +584,42 @@ void MainWindow::slotActMenuBarEditFill() {
  * 
  */
 void MainWindow::slotActMenuBarEditInvert() {
-  QMessageBox::warning(m_pLastActiveImgWin, tr("色反転"),
-                      tr("工事中..."));
+    // QMessageBox::warning(m_pLastActiveImgWin, tr("色反転"), 
+    //                         tr("工事中..."));
+
+    std::map<int, QRectF> localRects = m_pLastActiveImgWin->getRectsOnDibImg();
+
+    auto func = [&](QImage &img) -> void {
+
+        if (localRects.size() > 0) {
+            using byte = uchar;
+            int l, t, r, b;
+            int memWidth = img.bytesPerLine();
+            int memChannels = img.depth() / 8;
+            int channels = (memChannels > 3) ? 3 : memChannels;
+            byte *imgPtr = img.bits();
+            for (const auto &roi : localRects) {
+                l = roi.second.x();
+                t = roi.second.y();
+                r = int(l + roi.second.width());
+                b = int(t + roi.second.height());
+
+                for (int c = 0; c < channels; ++c) {
+                    for (int y = t; y < b; ++y) {
+                        for (int x = l; x < r; ++x) {
+                            byte& v = imgPtr[y*memWidth + memChannels*x + c];
+                            v = 255 - v;
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            img.invertPixels();
+        }
+    };
+
+    helperImgProc(QString("Clear"), func);
 }
 
 /**
@@ -540,7 +631,7 @@ void MainWindow::slotActMenuBarImageType() {
 
     p_ui->actionCvt8bit->setChecked(false);
     p_ui->actionCvt24bit->setChecked(false);
-    p_ui->actionCvtRGB->setChecked(false);
+    p_ui->actionCvtRGBA->setChecked(false);
 
     QImage::Format format;
 
@@ -552,23 +643,76 @@ void MainWindow::slotActMenuBarImageType() {
         p_ui->actionCvt24bit->setChecked(true);
         format = QImage::Format_RGB888;
     }
-    else if (sender() == p_ui->actionCvtRGB) {
-        p_ui->actionCvtRGB->setChecked(true);
-        format = QImage::Format_RGB32;
+    else if (sender() == p_ui->actionCvtRGBA) {
+        p_ui->actionCvtRGBA->setChecked(true);
+        format = QImage::Format_RGBA8888;
     }
 
-    auto tp_start = high_resolution_clock::now();
+    auto func = [&](QImage &img) -> void {
+        img = img.convertToFormat(format);
+    };
 
-    auto qimg = m_pLastActiveImgWin->scene()->getDibImg();
-    m_pLastActiveImgWin->scene()->setDibImg(qimg.convertToFormat(format).copy());
+    helperImgProc(QString("Type"), func);
+}
 
-    auto tp_end = high_resolution_clock::now();
-    auto elapsedTime = duration_cast<milliseconds>(tp_end - tp_start).count();
 
-    m_pUi->statusBar->clearMessage();
-    QString msg = QString::fromStdString(
-        is::common::format_string("Type response: %.3f[ms]", elapsedTime));
-    m_pUi->statusBar->showMessage(msg);
+/**
+ * @brief Menu -> Image -> Crop
+ * 
+ */
+void MainWindow::slotActMenuBarImageCrop() {
+    std::map<int, QRectF> localRects = m_pLastActiveImgWin->getRectsOnDibImg();
+    QImage img = m_pLastActiveImgWin->getDibImg();
+
+    for (const auto& roi : localRects) {
+        auto filename = m_pLastActiveImgWin->filename();
+        int pos = filename.lastIndexOf(tr("."));
+        auto name = filename.left(pos);
+        auto ext = filename.mid(pos + 1);
+        filename = name + tr("_crop.") + ext;
+
+        ImageWindow *p_newImgWin = genImgWin(filename);
+
+        QImage cropedImg = img.copy(roi.second.toRect());
+
+        p_newImgWin->scene()->clear();
+        p_newImgWin->setDibImg(cropedImg);
+    }
+}
+
+
+/**
+ * @brief Menu -> Image -> Duplicate
+ * 
+ */
+void MainWindow::slotActMenuBarImageDuplicate() {
+    std::set<std::string> currImgWinFilenames;
+    for (const auto &p_imgWin : getImgWinRegistry()) {
+        currImgWinFilenames.insert(p_imgWin->filename().toStdString());
+    }
+
+    auto filename = m_pLastActiveImgWin->filename();
+    int pos = filename.lastIndexOf(tr("."));
+    auto name = filename.left(pos);
+    auto ext = filename.mid(pos + 1);
+
+    pos = name.indexOf(tr("-"));
+    if (pos > 0) {
+        name = name.left(pos);
+    }
+    IS_DEBUG_STREAM("Duplicate %s.%s\n", 
+                    name.toStdString().c_str(),
+                    ext.toStdString().c_str());
+
+    QImage img = m_pLastActiveImgWin->getDibImg();
+
+    filename = name + tr(".") + ext;
+    std::string newFilename = getNewSerialNo(filename.toStdString(), currImgWinFilenames);
+    ImageWindow *p_newImgWin = genImgWin(QString::fromStdString(newFilename));
+
+    p_newImgWin->scene()->clear();
+    p_newImgWin->setDibImg(img);
+
 }
 
 
@@ -576,3 +720,11 @@ void MainWindow::slotActMenuBarImageType() {
 // private slot method
 //////////////////////////////////////////////////////////
 
+/**
+ * @brief Menu -> Camera
+ * 
+ */
+void MainWindow::slotActMenuBarCameraWindow() {
+    QMessageBox::warning(m_pLastActiveImgWin, tr("Camera"), 
+                        tr("工事中..."));
+}
