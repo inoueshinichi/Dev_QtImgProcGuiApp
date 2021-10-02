@@ -120,7 +120,7 @@
      </property>
      <addaction name="actionCvt8bit"/>
      <addaction name="actionCvt24bit"/>
-     <addaction name="actionCvtRGB"/>
+     <addaction name="actionCvtRGBA"/>
     </widget>
     <widget class="QMenu" name="menuColor">
      <property name="title">
@@ -399,12 +399,15 @@
     <string>24 bit</string>
    </property>
   </action>
-  <action name="actionCvtRGB">
+  <action name="actionCvtRGBA">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>RGB Color</string>
+    <string>RGBA Color</string>
+   </property>
+   <property name="toolTip">
+    <string>RGBA Color</string>
    </property>
   </action>
   <action name="actionShowInfo">
