@@ -35,7 +35,7 @@ if(MSVC)
     )
     execute_process(
         COMMAND ${PYTHON_INTERPRETER}
-        ${CMAKE_CURRENT_SOURCE_DIR}/../build-tools/utf8_to_utf16.py
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../build-tools/utf8_to_utf16.py
         ${CMAKE_CURRENT_BINARY_DIR}/version-utf8.rc ${CMAKE_CURRENT_BINARY_DIR}/version.rc
     )
     list(APPEND SOURCES ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
