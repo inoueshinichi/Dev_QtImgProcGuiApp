@@ -250,6 +250,7 @@ void ImageWindow::setFilename(const QString& filename)
     {
         strftime(timeString, 256, "%Y-%m-%d %H:%M ", stm);
     }
+    
     QString timeNow(timeString);
     this->setWindowTitle(timeNow + filename);
     m_filename = filename;
