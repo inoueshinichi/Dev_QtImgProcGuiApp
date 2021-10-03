@@ -1,8 +1,10 @@
 #include "main_window.h"
 
-#include "camera_frame_reader.h"
+#include "camera_controller.h"
 
 #include <memory>
+#include <thread>
+#include <chrono>
 
 #include <QApplication>
 
@@ -33,16 +35,17 @@ int main(int argc, char** argv)
     MainWindow main_win;
     main_win.show();
 
-    // UsbCameraFrameReader テスト
-    std::shared_ptr<CameraFrameReader> camFrameReader = std::make_shared<UsbCameraFrameReader>();
+    // CameraControllerテスト
+    CameraController camCtrl;
+    camCtrl.setCameraType("general", "usb");
+    camCtrl.startCamera(0, 50);
 
-    camFrameReader->setDeviceId(0);
-    camFrameReader->setDelay(50);
-    camFrameReader->initialize();
+    camCtrl.fetchFrame();   
 
-    camFrameReader->retrieveFrame();
-    
-    camFrameReader->release();
+    std::this_thread::sleep_for(std::chrono::seconds(5));
+ 
+
+    camCtrl.stopCamera();
 
     return app.exec();
 }

@@ -1,14 +1,13 @@
 #pragma once
 
-#include <opencv4/opencv2/opencv.hpp>
 
 #include <deque>
 #include <tuple>
 #include <vector>
 #include <map>
-#include <thread>
 #include <future>
 #include <mutex>
+#include <functional>
 #include <stdexcept> 
 #include <exception> // current_exception/rethrow_exception
 #include <chrono>
@@ -22,7 +21,7 @@ using namespace std::chrono;
 class CameraFrameReader : public std::enable_shared_from_this<CameraFrameReader> {
 public:
     using byte = unsigned char;
-    using FrameDesc = std::tuple<std::vector<byte>, float, float>; // Image, Fps, Interval
+    using FrameDesc = std::tuple<std::vector<byte>, float>; // Image, Fps
 
 protected:
 
@@ -41,10 +40,9 @@ protected:
     int deviceId_;
     int delay_; // ms
     float fps_;
-    float elapsedTime_; // ms
 
 private:
-    void spin() const;
+    void spin();
 
 public:
     CameraFrameReader();
@@ -53,12 +51,16 @@ public:
     int width() const;
     int height() const;
     int channels() const;
+    size_t sizePerLine() const;
+    std::vector<int> shape() const;
+    std::vector<int> strides() const;
     void setDeviceId(int deviceId);
     int  getDeviceId() const;
     void setDelay(int delay);
     int  getDelay() const;
     void stop();
     void start(std::promise<int> result); // フレーム読み込みループ
+    std::function<void(std::promise<int>)> wrapedStart();
 
     FrameDesc retrieveFrame() const;
 
@@ -75,6 +77,7 @@ protected:
 
 
 
+#include <opencv4/opencv2/opencv.hpp>
 #include <opencv2/videoio.hpp>
 
 class cv::VideoCapture;
@@ -95,5 +98,4 @@ protected:
     bool initializeImpl() override final;
     void releaseImpl() override final;
     bool captureImpl() override final;
-   
 };
