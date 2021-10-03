@@ -1,7 +1,5 @@
 #pragma once
 
-#include <opencv4/opencv2/opencv.hpp>
-
 #include <deque>
 #include <tuple>
 #include <vector>
@@ -53,6 +51,8 @@ public:
     int width() const;
     int height() const;
     int channels() const;
+    size_t memSizePerLine() const;
+    size_t memDataSize() const;
     void setDeviceId(int deviceId);
     int  getDeviceId() const;
     void setDelay(int delay);
@@ -74,7 +74,7 @@ protected:
 };
 
 
-
+#include <opencv2/opencv.hpp>
 #include <opencv2/videoio.hpp>
 
 class cv::VideoCapture;

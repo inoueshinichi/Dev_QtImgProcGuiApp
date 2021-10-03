@@ -41,6 +41,8 @@ void CameraFrameReader::spin() const {
 int CameraFrameReader::width() const { return width_; }
 int CameraFrameReader::height() const { return height_; }
 int CameraFrameReader::channels() const { return channels_; }
+size_t CameraFrameReader::memSizePerLine() const { return memSizePerLine_; }
+size_t CameraFrameReader::memDataSize() const { return memDataSize_; }
 
 
 void CameraFrameReader::setDeviceId(int deviceId) {
