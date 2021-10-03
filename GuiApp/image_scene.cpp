@@ -68,19 +68,19 @@ void ImageScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
  * @return true
  * @return false
  */
-bool ImageScene::setDibImg(const QImage &img) {
+bool ImageScene::setDibImg(const QImage& img) {
     if (img.isNull()) {
         return false;
     }
 
-    m_editImgIns.m_memDibImg = img;
+    m_editImgIns.m_memDibImg = img.copy(); // ここのcopy必要!
     if (m_rawDibImg.isNull())
     {
-        m_rawDibImg = img.copy();
+        m_rawDibImg = m_editImgIns.m_memDibImg.copy();
     }
 
     // ディスプレイに表示するQImageはARGB32(OxffRRGGBB)フォーマットで統一
-    m_editImgIns.m_offScreenDdbImg = QPixmap::fromImage(img);
+    m_editImgIns.m_offScreenDdbImg = QPixmap::fromImage(m_editImgIns.m_memDibImg);
 
     // QGraphicsPixmapItemにセット
     m_editImgIns.m_pItemOffScreenDdbImg->setPixmap(m_editImgIns.m_offScreenDdbImg);

@@ -56,7 +56,7 @@ public:
     explicit ImageScene(QObject *parent=nullptr);
     virtual ~ImageScene();
 
-    bool setDibImg(const QImage &img);
+    bool setDibImg(const QImage& img);
     QImage getDibImg();
     void resetRawImg();
     QGraphicsPixmapItem *getEditImgItem(const QPointF &scenePos);

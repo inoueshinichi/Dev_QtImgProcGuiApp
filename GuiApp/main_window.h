@@ -103,26 +103,25 @@ public slots:
 
     /* Menu -> Image */
     void slotActMenuBarImageType();
-    // void slotActMenuBarImageShowInfo();
-    // void slotActMenuBarImageColor();
-    // void slotActMenuBarImageBorder();
+    void slotActMenuBarImageShowInfo();
+    void slotActMenuBarImageColor();
+    void slotActMenuBarImageBorder();
     void slotActMenuBarImageCrop();
     void slotActMenuBarImageDuplicate();
-    // void slotActMenuBarImageTransform();
+    void slotActMenuBarImageTransform();
 
     /* Menu -> View */
     // void slotActMenuBarViewFitView();
     // void slotActMenuBarViewOriginalScale();
 
-private slots:
- 
-   
     // /* Menu -> Camera */
     void slotActMenuBarCameraWindow();
 
     // /* Menu -> Video */
     // void slotActMenuBarVideoWindow();
 
+private slots:
+ 
     // /* Menu -> Process */
     // void slotActMenuBarProcessBlur();
     // void slotActMenuBarProcessShading();

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>757</width>
-    <height>803</height>
+    <height>473</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -60,7 +60,7 @@
      <x>0</x>
      <y>0</y>
      <width>757</width>
-     <height>28</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -189,23 +189,6 @@
      <string>Help</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menuCamera">
-    <property name="title">
-     <string>Camera</string>
-    </property>
-    <addaction name="actionCamUsb"/>
-    <addaction name="actionCamEthrnet"/>
-    <addaction name="separator"/>
-    <addaction name="actionCamIds"/>
-    <addaction name="actionCamOmron"/>
-    <addaction name="actionCamBaslar"/>
-    <addaction name="actionCamCognex"/>
-   </widget>
-   <widget class="QMenu" name="menuVideo">
-    <property name="title">
-     <string>Video</string>
-    </property>
-   </widget>
    <widget class="QMenu" name="menuDetector">
     <property name="title">
      <string>Detector</string>
@@ -232,8 +215,6 @@
     <addaction name="actionFigureFitting"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuCamera"/>
-   <addaction name="menuVideo"/>
    <addaction name="menuProcess"/>
    <addaction name="menuAnalyze"/>
    <addaction name="menuDetector"/>
@@ -2161,11 +2142,6 @@
     <string>Dataset</string>
    </property>
   </action>
-  <action name="actionCamUsb">
-   <property name="text">
-    <string>USB</string>
-   </property>
-  </action>
   <action name="actionOpticalFlow">
    <property name="text">
     <string>Optical Flow</string>
@@ -2251,43 +2227,6 @@
     <string>SBS</string>
    </property>
   </action>
-  <action name="actionCamEthrnet">
-   <property name="text">
-    <string>IP Address</string>
-   </property>
-  </action>
-  <action name="actionCamIds">
-   <property name="text">
-    <string>IDS</string>
-   </property>
-   <property name="toolTip">
-    <string>IDS Camera USB or GigE Interface</string>
-   </property>
-  </action>
-  <action name="actionCamOmron">
-   <property name="text">
-    <string>OMRON</string>
-   </property>
-   <property name="toolTip">
-    <string>Omron sentech camera USB or GigE Interface</string>
-   </property>
-  </action>
-  <action name="actionCamBaslar">
-   <property name="text">
-    <string>BASLER</string>
-   </property>
-   <property name="toolTip">
-    <string>BALSER Camera USB or GigE Interface</string>
-   </property>
-  </action>
-  <action name="actionCamCognex">
-   <property name="text">
-    <string>COGNEX</string>
-   </property>
-   <property name="toolTip">
-    <string>COGNEX Camera USB or GigE Interface</string>
-   </property>
-  </action>
   <action name="actionLut">
    <property name="text">
     <string>Lut</string>
@@ -2317,11 +2256,6 @@
    </property>
    <property name="toolTip">
     <string>Show Histogram</string>
-   </property>
-  </action>
-  <action name="actionBoarder">
-   <property name="text">
-    <string>Boarder</string>
    </property>
   </action>
   <action name="actionSvm">

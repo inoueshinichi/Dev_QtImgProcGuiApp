@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>660</width>
+    <width>728</width>
     <height>447</height>
    </rect>
   </property>
@@ -65,8 +65,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>660</width>
-     <height>28</height>
+     <width>728</width>
+     <height>21</height>
     </rect>
    </property>
    <property name="nativeMenuBar">
@@ -151,10 +151,21 @@
     <addaction name="actionFitView"/>
     <addaction name="actionOriginalScale"/>
    </widget>
+   <widget class="QMenu" name="menuCamera">
+    <property name="title">
+     <string>Camera</string>
+    </property>
+    <addaction name="actionCameraGeneral"/>
+    <addaction name="actionCameraIds"/>
+    <addaction name="actionCameraOmron"/>
+    <addaction name="actionCameraBasler"/>
+    <addaction name="actionCameraCognex"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuImage"/>
    <addaction name="menuView"/>
+   <addaction name="menuCamera"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -182,6 +193,42 @@
    <addaction name="actionRoi"/>
    <addaction name="actionLine"/>
    <addaction name="actionEllipse"/>
+  </widget>
+  <widget class="QDockWidget" name="dockWidgetInspector">
+   <property name="windowTitle">
+    <string>Inspector</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <widget class="QPushButton" name="pushButtonStartCapture">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>start</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButtonStopCapture">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>30</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>stop</string>
+     </property>
+    </widget>
+   </widget>
   </widget>
   <action name="actionResetImage">
    <property name="text">
@@ -489,6 +536,31 @@
   <action name="actionSaveAsTsv">
    <property name="text">
     <string>TSV</string>
+   </property>
+  </action>
+  <action name="actionCameraGeneral">
+   <property name="text">
+    <string>General</string>
+   </property>
+  </action>
+  <action name="actionCameraIds">
+   <property name="text">
+    <string>Ids</string>
+   </property>
+  </action>
+  <action name="actionCameraOmron">
+   <property name="text">
+    <string>Omron</string>
+   </property>
+  </action>
+  <action name="actionCameraBasler">
+   <property name="text">
+    <string>Basler</string>
+   </property>
+  </action>
+  <action name="actionCameraCognex">
+   <property name="text">
+    <string>Cognex</string>
    </property>
   </action>
  </widget>

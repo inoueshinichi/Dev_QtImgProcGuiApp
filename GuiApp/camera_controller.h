@@ -23,8 +23,18 @@ public:
     CameraController(CameraController&&) = default;
     CameraController& operator=(CameraController&&) = default;
 
+    int width() const;
+    int height() const;
+    int channels() const;
+    size_t memSizePerLine() const;
+    size_t memDataSize() const;
+    int ndim() const;
+    std::vector<int> shape() const;
+    std::vector<int> strides() const;
+
     void setCameraType(const std::string& maker = "general", const std::string& type = "usb");
-    void startCamera(int deviceId, int delay);
+    bool startCamera(int deviceId, int delay);
     void stopCamera();
     CameraFrameReader::FrameDesc fetchFrame();
+    
 };

@@ -22,6 +22,7 @@ class CameraFrameReader : public std::enable_shared_from_this<CameraFrameReader>
 public:
     using byte = unsigned char;
     using FrameDesc = std::tuple<std::vector<byte>, float>; // Image, Fps
+    using Shape_t = std::vector<int>;
 
 protected:
 
@@ -32,6 +33,10 @@ protected:
     int channels_;
     size_t memSizePerLine_;
     size_t memDataSize_;
+    
+    Shape_t shape_;
+    Shape_t strides_;
+    int ndim_;
 
     // 制御
     mutable std::mutex mtx_;
@@ -42,7 +47,7 @@ protected:
     float fps_;
 
 private:
-    void spin();
+    void spin(const high_resolution_clock::time_point& tp_base);
 
 public:
     CameraFrameReader();
@@ -56,6 +61,9 @@ public:
 
     std::vector<int> shape() const;
     std::vector<int> strides() const;
+    int ndim() const;
+
+    bool isRunning() const;
 
     void setDeviceId(int deviceId);
     int  getDeviceId() const;

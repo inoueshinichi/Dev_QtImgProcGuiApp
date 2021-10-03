@@ -12,7 +12,7 @@
 CameraFrameReader::CameraFrameReader()
     : deviceId_(-1)
     , delay_(0)
-    , fps_(0.0)
+    , fps_(0)
     , width_(0)
     , height_(0)
     , channels_(0)
@@ -24,15 +24,34 @@ CameraFrameReader::~CameraFrameReader() {}
 //////////////////////////////////////////////////////////
 // private method
 //////////////////////////////////////////////////////////
-void CameraFrameReader::spin() {
+void CameraFrameReader::spin(const high_resolution_clock::time_point& tp_base) {
     // std::this_thread::sleep_for(milliseconds(delay_));
 
-    auto abs_time = high_resolution_clock::now() + microseconds(delay_);
-    // std::this_thread::sleep_until(abs_time);
-
-    while (high_resolution_clock::now() < abs_time) {
-        ; // busy loop
+    if (delay_ > 0) {
+        auto abs_time = tp_base + milliseconds(delay_);
+        std::this_thread::sleep_until(abs_time);
     }
+   
+    // while (high_resolution_clock::now() < abs_time) {
+    //     ; // busy loop
+    // }
+
+
+    // auto abs_time = tp_base + milliseconds(delay_);
+    // std::cout << "tp_start " << tp_start.time_since_epoch().count() << std::endl;
+    // std::cout << "abs_time " << abs_time.time_since_epoch().count() << std::endl;
+    // auto t_abs = abs_time.time_since_epoch().count();
+
+    // for (;;) {
+    //     auto t_now = high_resolution_clock::now().time_since_epoch().count();
+    //     std::cout << "t_now " << t_now << " : t_abs" << t_abs << std::endl;
+    //     if (t_now > t_abs)
+    //         break;
+    // }
+
+    // while (high_resolution_clock::now().time_since_epoch().count() < abs_time.time_since_epoch().count()) {
+    //     std::printf("busy loop\n");
+    // }
 }
 
 
@@ -49,18 +68,22 @@ int CameraFrameReader::height() const { return height_; }
 int CameraFrameReader::channels() const { return channels_; }
 size_t CameraFrameReader::memSizePerLine() const { return memSizePerLine_; }
 size_t CameraFrameReader::memDataSize() const { return memDataSize_; }
+
 std::vector<int> CameraFrameReader::shape() const {
-    std::vector<int> shape = { height_, width_, channels_ };
-    return shape;
+    return shape_;
 }
 
 std::vector<int> CameraFrameReader::strides() const {
-    auto sh = shape();
-    std::vector<int> st(sh.size(), 1);
-    for (int i = st.size() - 1; i > 0; --i) {
-        st[i-1] = st[i] * sh[i];
-    }
-    
+   return strides_;
+}
+
+int CameraFrameReader::ndim() const {
+    return ndim_;
+}
+
+bool CameraFrameReader::isRunning() const {
+    return isRunning_;
+}
 
 void CameraFrameReader::setDeviceId(int deviceId) {
     deviceId_ = deviceId;
@@ -92,16 +115,16 @@ void CameraFrameReader::start(std::promise<int> result) {
 
     bool status;
     isRunning_ = true;
-    // std::deque<float> elapsedTimeSeq(100, 0.0);
     high_resolution_clock::time_point tp_start;
     high_resolution_clock::time_point tp_end;
+
     try {
         while (isRunning_) {
             tp_start = high_resolution_clock::now();
 
-            spin(); // フレーム読み込みループを遅延させる
+            // クリティカルセクション
             {
-                // クリティカルセクション
+                
                 std::lock_guard<std::mutex> locker(mtx_);
                 status = capture();
             }
@@ -109,23 +132,14 @@ void CameraFrameReader::start(std::promise<int> result) {
             if (!status) {
                 std::printf("Miss frame!\n");
             }
+
+            spin(tp_start); // カメラのフレームレートより遅いdelayの場合、間隔を揃える.
     
-            // spin(); // フレーム読み込みループを遅延させる
-            // auto abs_time = high_resolution_clock::now() + microseconds(delay_);
-            // while (high_resolution_clock::now() < abs_time) {
-            //     ; // busy loop
-            // }
-            // std::printf("delay %d\n", delay_);
-            // for (int i = 0; i < 10000000; ++i) {
-            //     ;
-            // }
-
-            std::this_thread::sleep_for(milliseconds(delay_));            tp_end = high_resolution_clock::now();
+            tp_end = high_resolution_clock::now();
             auto msec = duration_cast<milliseconds>(tp_end - tp_start).count();
-
             fps_ = 1000.0f / msec;
 
-            std::printf("CaptureLoop: %f[ms]\n", msec);
+            std::printf("CaptureLoop: %ld[ms] Fps: %f\n", msec, fps_);
         }
         result.set_value(0);
     }
@@ -189,7 +203,7 @@ UsbCameraFrameReader::UsbCameraFrameReader()
 
 UsbCameraFrameReader::~UsbCameraFrameReader() {
     release();
-    std::printf("Dtor of UsbCameraFrameReader\n");
+    // std::printf("Dtor of UsbCameraFrameReader\n");
 }
 
 
@@ -211,7 +225,7 @@ bool UsbCameraFrameReader::initializeImpl() {
     std::printf("[Enter] >>> Initialize\n");
     std::printf("Device Id: %d\n", getDeviceId());
  
-    capPtr_ = new cv::VideoCapture(getDeviceId(), cv::CAP_V4L2); // cv::CAP_GSTREAMER
+    capPtr_ = new cv::VideoCapture(getDeviceId());//, cv::CAP_GSTREAMER); // cv::CAP_V4L2 cv::CAP_GSTREAMER
     if (!capPtr_->isOpened()) {
         std::printf("[Error] Can not open cv::VideoCapture.\n");
         std::printf("[Exit] <<< Initialize\n");
@@ -223,10 +237,13 @@ bool UsbCameraFrameReader::initializeImpl() {
 
     std::string backApiStr = capPtr_->getBackendName();
     std::printf("Background api: %s\n", backApiStr.c_str());
+
     // GStreamerだと設定が反映されない仕様らしい
     // https://qiita.com/iwatake2222/items/b8c442a9ec0406883950
     // capPtr_->set(cv::CAP_PROP_FRAME_WIDTH, 640);
     // capPtr_->set(cv::CAP_PROP_FRAME_HEIGHT, 480);
+
+    // capPtr_->set(cv::CAP_PROP_FPS, 30);
 
     auto width = capPtr_->get(cv::CAP_PROP_FRAME_WIDTH);
     auto height = capPtr_->get(cv::CAP_PROP_FRAME_HEIGHT);
@@ -241,6 +258,7 @@ bool UsbCameraFrameReader::initializeImpl() {
         forcc[i] = (char)(symbol >> 8 * i) & 0xff;
     }
     std::printf("FourCC: %c%c%c%c\n", forcc[0], forcc[1], forcc[2], forcc[3]);
+
     if (capPtr_->read(cvFrame)) {
         width_ = cvFrame.cols;
         height_ = cvFrame.rows;
@@ -249,6 +267,14 @@ bool UsbCameraFrameReader::initializeImpl() {
         memDataSize_ = height_ * memSizePerLine_;
         std::printf("Retrieve frame: (H, W, C) = (%d, %d, %d)\n", height_, width_, channels_);
 
+        // shape, strides, ndim
+        shape_ = { height_, width_, channels_ };
+        ndim_ = shape_.size();
+        strides_.assign(ndim_, 1);
+        for (int i = strides_.size() - 1; i > 0; --i) {
+            strides_[i-1] = strides_[i] * shape_[i];
+        }
+        
         // Frame画像のメモリ確保
         framePtr_ = (byte *)std::malloc(memDataSize_);
         std::memset(framePtr_, 0, memDataSize_);
@@ -287,11 +313,11 @@ void UsbCameraFrameReader::releaseImpl() {
 
 bool UsbCameraFrameReader::captureImpl() {
 
-    auto start = high_resolution_clock::now();
+    // auto start = high_resolution_clock::now();
     bool bret = capPtr_->read(cvFrame);
-    auto end = high_resolution_clock::now();
-    auto msec = duration_cast<milliseconds>(end - start).count();
-    std::printf("Read elapsed time: %ld[ms]\n", msec);
+    // auto end = high_resolution_clock::now();
+    // auto msec = duration_cast<milliseconds>(end - start).count();
+    // std::printf("Read elapsed time: %ld[ms]\n", msec);
     
     if (bret) {
 

@@ -81,22 +81,7 @@ void MainWindow::menuBarConnection() {
     // Quit
     connect(m_pUi->actionQuit, &QAction::triggered,
             this, &MainWindow::slotActMenuBarFileQuit);
-    
-    /* Menu -> Camera */
-    connect(m_pUi->actionCamUsb, &QAction::triggered,
-        this, &MainWindow::slotActMenuBarCameraWindow);
-    connect(m_pUi->actionCamEthrnet, &QAction::triggered,
-        this, &MainWindow::slotActMenuBarCameraWindow);
-    connect(m_pUi->actionCamIds, &QAction::triggered,
-        this, &MainWindow::slotActMenuBarCameraWindow);
-    connect(m_pUi->actionCamOmron, &QAction::triggered,
-        this, &MainWindow::slotActMenuBarCameraWindow);
-    connect(m_pUi->actionCamCognex, &QAction::triggered,
-        this, &MainWindow::slotActMenuBarCameraWindow);
-    connect(m_pUi->actionCamBaslar, &QAction::triggered,
-        this, &MainWindow::slotActMenuBarCameraWindow);
-    
-    
+
 }
 
 /**
@@ -281,22 +266,7 @@ void MainWindow::slotActMenuBarFileOpen() {
     foreach (QString path, fileList) {
         if (!path.isEmpty()) {
             QImage img(path);
-            int depth = img.depth();
-            if (depth == 8) {
-                img = img.convertToFormat(QImage::Format_Grayscale8);
-            } 
-            else if (depth == 24) {
-                img = img.convertToFormat(QImage::Format_RGB888);
-            }
-            else if (depth == 32) {
-                img = img.convertToFormat(QImage::Format_RGBA8888);
-            }
-            else {
-                std::string msg = is::common::format_string(
-                    "No support image format. Given depth is %d", depth);
-                throw std::runtime_error(msg.c_str());
-            }
-
+           
             auto tokens = path.split(tr("/"));
             QString filename = tokens[tokens.size() - 1];
 
@@ -306,18 +276,7 @@ void MainWindow::slotActMenuBarFileOpen() {
                                                      currImgWinFilenames);
             ImageWindow *p_newImgWin = genImgWin(QString::fromStdString(newFilename));
 
-            if (depth == 8) {
-                p_newImgWin->ui()->actionCvt8bit->setChecked(true);
-            }
-            else if (depth == 24) {
-                p_newImgWin->ui()->actionCvt24bit->setChecked(true);
-            }
-            else if (depth == 32) {
-                p_newImgWin->ui()->actionCvtRGBA->setChecked(true);
-            }
-
-            p_newImgWin->scene()->clear();
-            p_newImgWin->setDibImg(img);
+            p_newImgWin->setDibImg(img, true);
         }
     }
 }
@@ -657,6 +616,41 @@ void MainWindow::slotActMenuBarImageType() {
 
 
 /**
+ * @brief Menu -> Image -> ShowInfo
+ * 
+ */
+void MainWindow::slotActMenuBarImageShowInfo() {
+
+}
+
+
+/**
+ * @brief Menu -> Image -> Color
+ * 
+ */
+void MainWindow::slotActMenuBarImageColor() {
+
+}
+
+/**
+ * @brief Menu -> Image -> Border
+ * 
+ */
+void MainWindow::slotActMenuBarImageBorder() {
+
+}
+
+
+/**
+ * @brief 
+ * 
+ */
+void MainWindow::slotActMenuBarImageTransform() {
+
+}
+
+
+/**
  * @brief Menu -> Image -> Crop
  * 
  */
@@ -675,8 +669,7 @@ void MainWindow::slotActMenuBarImageCrop() {
 
         QImage cropedImg = img.copy(roi.second.toRect());
 
-        p_newImgWin->scene()->clear();
-        p_newImgWin->setDibImg(cropedImg);
+        p_newImgWin->setDibImg(cropedImg, true);
     }
 }
 
@@ -704,15 +697,13 @@ void MainWindow::slotActMenuBarImageDuplicate() {
                     name.toStdString().c_str(),
                     ext.toStdString().c_str());
 
-    QImage img = m_pLastActiveImgWin->getDibImg();
+    QImage img = m_pLastActiveImgWin->getDibImg().copy();
 
     filename = name + tr(".") + ext;
     std::string newFilename = getNewSerialNo(filename.toStdString(), currImgWinFilenames);
     ImageWindow *p_newImgWin = genImgWin(QString::fromStdString(newFilename));
 
-    p_newImgWin->scene()->clear();
-    p_newImgWin->setDibImg(img);
-
+    p_newImgWin->setDibImg(img, true);
 }
 
 

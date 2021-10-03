@@ -15,12 +15,15 @@
 #include "ui_ImageWindow.h"
 #include "image_view.h"
 #include "image_scene.h"
+#include "camera_controller.h"
 
 #include <QMainWindow>
 #include <QEvent>
 #include <QString>
 #include <QLabel>
 #include <Qt>
+#include <QTimer>
+#include <QImage>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class ImageWindow; }
@@ -39,10 +42,23 @@ class ImageWindow : public QMainWindow
     QString m_filename;
     std::string m_posStatus;
 
+    // Camera
+    QTimer *m_pCamTimer;
+    int m_camTimerId {0};
+    Qt::TimerType m_camTimerType;
+    CameraController m_camCtrl;
+    QImage::Format m_camFormat;
+    int m_camWidth {0};
+    int m_camHeight {0};
+    int m_camChannels {0};
+    size_t m_camMemSizePerLine {0};
+
     void uiConnection();
     void memuBarConnection();
     void toolBarConnection();
     void customConnection();
+
+
 
 
 public:
@@ -55,7 +71,7 @@ public:
     Ui::ImageWindow *ui() const;
     void resetDibImg();
     QImage getDibImg();
-    bool setDibImg(const QImage &img);
+    bool setDibImg(QImage& img, bool isSceneClear = false);
     std::map<int, QRectF> getRectsOnDibImg() const;
 
 protected:
@@ -78,5 +94,8 @@ private slots:
     void slotToggleProfile(bool checked);
     void slotToggleRoi(bool checked);
 
-
+    // QTimer
+    void slotStartCapture();
+    void slotStopCapture();
+    void slotTimerHandler();
 };

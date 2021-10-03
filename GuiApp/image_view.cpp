@@ -132,7 +132,7 @@ void ImageView::drawProfile(const QPoint &viewPos,
         
         if (localRect.contains(localPos.toPoint()))
         {
-            //DEBUG_STREAM("[Profile] Detect target item! LocalPos(%.1f, %.1f)\n", localPos.x(), localPos.y());
+            IS_DEBUG_STREAM("[Profile] Detect target item! LocalPos(%.1f, %.1f)\n", localPos.x(), localPos.y());
 
             int profileY = (int)localPos.y();
             int profileX = (int)localPos.x();
@@ -141,7 +141,7 @@ void ImageView::drawProfile(const QPoint &viewPos,
             QColor color, nextColor;
             int red, green, blue;
             int nextRed, nextGreen, nextBlue;
-            //DEBUG_STREAM("profileX %d, profileY %d\n", profileX, profileY);
+            // IS_DEBUG_STREAM("profileX %d, profileY %d\n", profileX, profileY);
 
             auto p_viewport = this->viewport();
             int viewWidth = p_viewport->width();

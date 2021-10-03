@@ -42,6 +42,9 @@ ImageWindow::ImageWindow(QWidget *p_parent)
     // statusbar
     slotShowPosToStatusBar(QPointF(0, 0), QPointF(0, 0), QPoint(0, 0));
 
+    // timer
+    m_pCamTimer = new QTimer(this);
+
     /*Singal/Slot*/
     uiConnection();
     memuBarConnection();
@@ -67,6 +70,12 @@ ImageWindow::~ImageWindow() {
 
 void ImageWindow::uiConnection() {
 
+    // 仮の設定
+    connect(m_pUi->pushButtonStartCapture, &QPushButton::clicked,
+        this, &ImageWindow::slotStartCapture);
+    
+    connect(m_pUi->pushButtonStopCapture, &QPushButton::clicked,
+        this, &ImageWindow::slotStopCapture);
 }
 
 void ImageWindow::memuBarConnection() {
@@ -74,86 +83,100 @@ void ImageWindow::memuBarConnection() {
     /* Menu -> File */
     // New
     connect(m_pUi->actionNew, &QAction::triggered,
-            m_pMainWindow, &MainWindow::slotActMenuBarFileNew);
+        m_pMainWindow, &MainWindow::slotActMenuBarFileNew);
 
     // Open
     connect(m_pUi->actionOpen, &QAction::triggered,
-            m_pMainWindow, &MainWindow::slotActMenuBarFileOpen);
+        m_pMainWindow, &MainWindow::slotActMenuBarFileOpen);
 
     // Close
     connect(m_pUi->actionClose, &QAction::triggered,
-            m_pMainWindow, &MainWindow::slotActMenuBarFileClose);
+        m_pMainWindow, &MainWindow::slotActMenuBarFileClose);
 
     // Save
     connect(m_pUi->actionSave, &QAction::triggered,
-            m_pMainWindow, &MainWindow::slotActMenuBarFileSave);
+        m_pMainWindow, &MainWindow::slotActMenuBarFileSave);
 
     // Save As
     // CSV
     connect(m_pUi->actionSaveAsCsv, &QAction::triggered,
-            m_pMainWindow, &MainWindow::slotActMenuBarFileSaveAs);
+        m_pMainWindow, &MainWindow::slotActMenuBarFileSaveAs);
     // TSV
     connect(m_pUi->actionSaveAsTsv, &QAction::triggered, 
-            m_pMainWindow, &MainWindow::slotActMenuBarFileSaveAs);
+        m_pMainWindow, &MainWindow::slotActMenuBarFileSaveAs);
 
     /* Menu -> Edit */
     // Undo
     connect(m_pUi->actionUndo, &QAction::triggered,
-            m_pMainWindow, &MainWindow::slotActMenuBarEditUndo);
+        m_pMainWindow, &MainWindow::slotActMenuBarEditUndo);
 
     // Rename
     connect(m_pUi->actionRename, &QAction::triggered, 
-            m_pMainWindow, &MainWindow::slotActMenuBarEditRename);
+        m_pMainWindow, &MainWindow::slotActMenuBarEditRename);
 
     // Cut
     connect(m_pUi->actionCut, &QAction::triggered, 
-            m_pMainWindow, &MainWindow::slotActMenuBarEditCut);
+        m_pMainWindow, &MainWindow::slotActMenuBarEditCut);
 
     // Copy
-    connect(m_pUi->actionCopy, &QAction::triggered, m_pMainWindow,
-            &MainWindow::slotActMenuBarEditCopy);
+    connect(m_pUi->actionCopy, &QAction::triggered, 
+        m_pMainWindow, &MainWindow::slotActMenuBarEditCopy);
 
     // Paste
-    connect(m_pUi->actionPaste, &QAction::triggered, m_pMainWindow,
-            &MainWindow::slotActMenuBarEditPaste);
+    connect(m_pUi->actionPaste, &QAction::triggered, 
+        m_pMainWindow, &MainWindow::slotActMenuBarEditPaste);
 
     // Clear
-    connect(m_pUi->actionClear, &QAction::triggered, m_pMainWindow,
-            &MainWindow::slotActMenuBarEditClear);
+    connect(m_pUi->actionClear, &QAction::triggered, 
+        m_pMainWindow, &MainWindow::slotActMenuBarEditClear);
 
     // Clear outside
-    connect(m_pUi->actionClearOutside, &QAction::triggered, m_pMainWindow,
-            &MainWindow::slotActMenuBarEditClearOutside);
+    connect(m_pUi->actionClearOutside, &QAction::triggered, 
+        m_pMainWindow, &MainWindow::slotActMenuBarEditClearOutside);
 
     // Fill
-    connect(m_pUi->actionFill, &QAction::triggered, m_pMainWindow,
-            &MainWindow::slotActMenuBarEditFill);
+    connect(m_pUi->actionFill, &QAction::triggered, 
+        m_pMainWindow, &MainWindow::slotActMenuBarEditFill);
 
     // Invert
-    connect(m_pUi->actionInvert, &QAction::triggered, m_pMainWindow,
-            &MainWindow::slotActMenuBarEditInvert);
+    connect(m_pUi->actionInvert, &QAction::triggered, 
+        m_pMainWindow, &MainWindow::slotActMenuBarEditInvert);
 
 
     /* Menu -> Image */
     // Type
-    connect(m_pUi->actionCvt8bit, &QAction::triggered, m_pMainWindow,
-            &MainWindow::slotActMenuBarImageType);
-    connect(m_pUi->actionCvt24bit, &QAction::triggered, m_pMainWindow,
-            &MainWindow::slotActMenuBarImageType);
-    connect(m_pUi->actionCvtRGBA, &QAction::triggered, m_pMainWindow,
-            &MainWindow::slotActMenuBarImageType); 
+    connect(m_pUi->actionCvt8bit, &QAction::triggered, 
+        m_pMainWindow, &MainWindow::slotActMenuBarImageType);
+    connect(m_pUi->actionCvt24bit, &QAction::triggered, 
+        m_pMainWindow, &MainWindow::slotActMenuBarImageType);
+    connect(m_pUi->actionCvtRGBA, &QAction::triggered, 
+        m_pMainWindow, &MainWindow::slotActMenuBarImageType); 
 
     // ShowInfo
 
     // Color
 
     // Crop
-    connect(m_pUi->actionCrop, &QAction::triggered, m_pMainWindow,
-            &MainWindow::slotActMenuBarImageCrop);
+    connect(m_pUi->actionCrop, &QAction::triggered, 
+        m_pMainWindow, &MainWindow::slotActMenuBarImageCrop);
 
     // Duplicate
-    connect(m_pUi->actionDuplicate, &QAction::triggered, m_pMainWindow,
-            &MainWindow::slotActMenuBarImageDuplicate);
+    connect(m_pUi->actionDuplicate, &QAction::triggered, 
+        m_pMainWindow, &MainWindow::slotActMenuBarImageDuplicate);
+
+
+        
+    /* Menu -> Camera */
+    connect(m_pUi->actionCameraGeneral, &QAction::triggered,
+        m_pMainWindow, &MainWindow::slotActMenuBarCameraWindow);
+    connect(m_pUi->actionCameraIds, &QAction::triggered,
+        m_pMainWindow, &MainWindow::slotActMenuBarCameraWindow);
+    connect(m_pUi->actionCameraOmron, &QAction::triggered,
+        m_pMainWindow, &MainWindow::slotActMenuBarCameraWindow);
+    connect(m_pUi->actionCameraBasler, &QAction::triggered,
+        m_pMainWindow, &MainWindow::slotActMenuBarCameraWindow);
+    connect(m_pUi->actionCameraCognex, &QAction::triggered,
+        m_pMainWindow, &MainWindow::slotActMenuBarCameraWindow);
 }
 
 void ImageWindow::toolBarConnection()
@@ -274,7 +297,7 @@ QImage ImageWindow::getDibImg() {
     return m_pScene->getDibImg();
 }
 
-bool ImageWindow::setDibImg(const QImage &img) {
+bool ImageWindow::setDibImg(QImage& img, bool isSceneClear) {
     /* シーン上の編集画像に設定 */
 
     auto format = getFormatStr(img);
@@ -283,6 +306,24 @@ bool ImageWindow::setDibImg(const QImage &img) {
     int depth = img.depth();
     qsizetype datasize = img.sizeInBytes();
 
+    if (depth == 8) {
+        img = img.convertToFormat(QImage::Format_Grayscale8);
+        m_pUi->actionCvt8bit->setChecked(true);
+    } 
+    else if (depth == 24) {
+        img = img.convertToFormat(QImage::Format_RGB888);
+        m_pUi->actionCvt24bit->setChecked(true);
+    }
+    else if (depth == 32) {
+        img = img.convertToFormat(QImage::Format_RGBA8888);
+        m_pUi->actionCvtRGBA->setChecked(true);
+    }
+    else {
+        std::string msg = is::common::format_string(
+            "No support image format. Given depth is %d", depth);
+        throw std::runtime_error(msg.c_str());
+    }
+    
     std::string status = is::common::format_string("%dx%d@%s, %d-bits, %ld[bytes]", 
                                 width, height, 
                                 format.second.toStdString().c_str(),
@@ -291,6 +332,10 @@ bool ImageWindow::setDibImg(const QImage &img) {
 
     m_pUi->lineEditImageStatus->clear();
     m_pUi->lineEditImageStatus->setText(QString::fromStdString(status));
+
+    if (isSceneClear) {
+         m_pScene->clear();
+    }
 
     return m_pScene->setDibImg(img);
 }
@@ -413,4 +458,91 @@ void ImageWindow::slotToggleRoi(bool checked)
         }
         m_pScene->m_roi.release();
     }
+}
+
+
+void ImageWindow::slotStartCapture() {
+    /* カメラキャプチャ開始 */
+
+    // CameraController
+    std::string maker = "general";
+    std::string type = "usb";
+    m_camCtrl.setCameraType(maker, type);
+
+    if (m_camCtrl.startCamera(1, 0)) {
+        // start worker-thread.
+
+        m_camWidth = m_camCtrl.width();
+        m_camHeight = m_camCtrl.height();
+        m_camChannels = m_camCtrl.channels();
+        m_camMemSizePerLine = m_camCtrl.memSizePerLine();
+
+        if (m_camChannels == 1) {
+            m_camFormat = QImage::Format_Grayscale8;
+        }
+        else if (m_camChannels == 3) {
+            m_camFormat = QImage::Format_RGB888;
+        }
+        else if (m_camChannels == 4) {
+            m_camFormat = QImage::Format_RGBA8888;
+        }
+        else {
+            IS_DEBUG_STREAM("No support camera format. Given channels is %d\n", m_camChannels);
+            m_camCtrl.stopCamera();
+            return;
+        }
+
+        // WindowTitle
+        std::string winTitle = is::common::format_string("%s_%s.bmp", maker.c_str(), type.c_str());
+        setFilename(QString::fromStdString(winTitle));
+
+        // QTimer   
+        connect(m_pCamTimer, &QTimer::timeout, this, &ImageWindow::slotTimerHandler);
+        m_camTimerId = m_pCamTimer->timerId();
+
+        // https://doc.qt.io/qt-5/qt.html#TimerType-enum
+        // Qt::TimerType
+        // 0 : Qt::PreciseTimer
+        // 1 : Qt::CoarseTimer
+        // 2 : Qt::VeryCoarseTimer
+        m_camTimerType = m_pCamTimer->timerType(); // default: Qt::CoarseTimer
+
+        IS_DEBUG_STREAM("TimerId: %d, TimerType: %d\n", m_camTimerId, m_camTimerType);
+
+        m_pCamTimer->start(30);
+
+        IS_DEBUG_STREAM("Start draw timer for camera frame.\n");
+    }
+}
+
+
+void ImageWindow::slotStopCapture() {
+    /* カメラキャプチャ停止 */
+
+    // QTimer
+    if (m_pCamTimer->isActive()) {
+        m_pCamTimer->stop();
+        disconnect(m_pCamTimer, &QTimer::timeout, this, &ImageWindow::slotTimerHandler);
+        IS_DEBUG_STREAM("Stop draw timer for camera frame.\n");
+    }
+
+    // CameraController
+    m_camCtrl.stopCamera();
+}
+
+
+void ImageWindow::slotTimerHandler() {
+    /* タイマーハンドラ */
+
+    auto frameDesc = m_camCtrl.fetchFrame();
+    auto& frame = std::get<0>(frameDesc);
+    auto& fps = std::get<1>(frameDesc);
+
+    // IS_DEBUG_STREAM("Timer handler: mem-size: %ld, fps: %f\n", 
+    //     frame.size(), fps);
+
+    QImage frameImg(frame.data(), m_camWidth, m_camHeight, 
+                    (int)m_camMemSizePerLine, m_camFormat);
+
+   m_pScene->setDibImg(frameImg);
 }
