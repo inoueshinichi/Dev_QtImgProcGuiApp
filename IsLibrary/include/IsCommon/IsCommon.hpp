@@ -28,16 +28,10 @@
 
 // debug log
 #if 1
-#include <cstdio>
-#include <mutex>
-#define IS_DEBUG_STREAM(format, ...)                     \
-    {                                                    \
-        std::mutex mtx;                                  \
-        std::unique_lock<std::mutex> locker(mtx);        \
-        std::printf(format, ##__VA_ARGS__);              \
-    }
+    #include <cstdio>
+    #define IS_DEBUG_STREAM(format, ...) std::printf(format, ##__VA_ARGS__)
 #else
-#define IS_DEBUG_STREAM(format, ...)
+    #define IS_DEBUG_STREAM(format, ...)
 #endif
 
 // コピーコンストラクタとコピー代入演算子の外部公開を禁止する
