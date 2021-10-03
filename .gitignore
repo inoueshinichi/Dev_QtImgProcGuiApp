@@ -1,7 +1,10 @@
 # Directories
 /build
 /.vscode
+/IsLibrary/third-party/*.zip
 /IsLibrary/third-party/eigen-3.3.7
+/IsLibrary/third-party/opencv-4.5.3
+/IsLibrary/third-party/opencv_contrib-4.5.3
 
 # Files
 *.bmp
