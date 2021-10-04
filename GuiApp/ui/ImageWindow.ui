@@ -66,7 +66,7 @@
      <x>0</x>
      <y>0</y>
      <width>728</width>
-     <height>21</height>
+     <height>28</height>
     </rect>
    </property>
    <property name="nativeMenuBar">
@@ -130,6 +130,8 @@
      <addaction name="actionGrayToRGB"/>
      <addaction name="actionRGBToHSV"/>
      <addaction name="actionHSVToRGB"/>
+     <addaction name="separator"/>
+     <addaction name="actionRGBToYUV"/>
      <addaction name="separator"/>
      <addaction name="actionSplitMergeChannels"/>
     </widget>
@@ -561,6 +563,11 @@
   <action name="actionCameraCognex">
    <property name="text">
     <string>Cognex</string>
+   </property>
+  </action>
+  <action name="actionRGBToYUV">
+   <property name="text">
+    <string>RGB -&gt; YUV</string>
    </property>
   </action>
  </widget>

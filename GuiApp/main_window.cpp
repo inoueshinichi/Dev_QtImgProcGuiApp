@@ -28,6 +28,7 @@ using namespace std::chrono;
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QImage>
+#include <QRect>
 
 
 //////////////////////////////////////////////////////////
@@ -39,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent)
     , m_pUi(new Ui::MainWindow())
     , m_pStatusBarLabel(new QLabel())
     , m_pLastActiveImgWin(nullptr) {
+
     // UI
     m_pUi->setupUi(this);
 
@@ -63,6 +65,7 @@ MainWindow::~MainWindow() {
  */
 void MainWindow::menuBarConnection() {
     /* Menu -> File */
+
     // New
     connect(m_pUi->actionNew, &QAction::triggered,
             this, &MainWindow::slotActMenuBarFileNew);
@@ -233,8 +236,7 @@ void MainWindow::slotRmImgWin(ImageWindow *ptr) {
  * 
  * @param ptr 
  */
-void MainWindow::slotActiveImgWin(ImageWindow *ptr)
-{
+void MainWindow::slotActiveImgWin(ImageWindow *ptr) {
     m_pLastActiveImgWin = ptr;
 }
 
@@ -408,8 +410,51 @@ void MainWindow::slotActMenuBarEditRename() {
  * 
  */
 void MainWindow::slotActMenuBarEditCut() {
-  QMessageBox::warning(m_pLastActiveImgWin, tr("ROI領域のカット"), 
-                       tr("工事中..."));
+    // QMessageBox::warning(m_pLastActiveImgWin, tr("ROI領域のカット"), 
+    //                     tr("工事中..."));
+
+    std::map<int, QRectF> localRects = m_pLastActiveImgWin->getRectsOnDibImg();
+
+    auto func = [&](QImage& img) -> void {
+
+        int last = -1;
+
+        // 最大値を取得
+        for (auto iter = localRects.begin(); iter != localRects.end(); ++iter) {
+            if (last < iter->first) {
+                last = iter->first;
+            }
+        }
+
+        if (last < 0) {
+            return;
+        }
+
+        // 指定領域をコピー
+        QRect roi = localRects[last].toRect();
+        m_copyImg = img.copy(roi);
+
+        // 指定領域をクリア
+        int l, t, r, b;
+        l = roi.x();
+        t = roi.y();
+        r = l + roi.width();
+        b = t + roi.height();
+        using byte = uchar;
+        int memWidth = img.bytesPerLine();
+        int memChannels = img.depth() / 8;
+        int channels = (memChannels > 3) ? 3 : memChannels;
+        byte *imgPtr = img.bits();
+        for (int c = 0; c < channels; ++c) {
+            for (int y = t; y < b; ++y) {
+                for (int x = l; x < r; ++x) {
+                    imgPtr[y*memWidth + memChannels*x + c] = 0; // 黒
+                }
+            }
+        }
+    };
+
+    helperImgProc(QString("Cut"), func);
 }
 
 /**
@@ -417,8 +462,32 @@ void MainWindow::slotActMenuBarEditCut() {
  *
  */
 void MainWindow::slotActMenuBarEditCopy() {
-  QMessageBox::warning(m_pLastActiveImgWin, tr("ROI領域のコピー"),
-                       tr("工事中..."));
+    // QMessageBox::warning(m_pLastActiveImgWin, tr("ROI領域のコピー"),
+    //                     tr("工事中..."));
+
+    std::map<int, QRectF> localRects = m_pLastActiveImgWin->getRectsOnDibImg();
+
+    auto func = [&](QImage& img) -> void {
+
+        int last = -1;
+
+        // 最大値を取得
+        for (auto iter = localRects.begin(); iter != localRects.end(); ++iter) {
+            if (last < iter->first) {
+                last = iter->first;
+            }
+        }
+
+        if (last < 0) {
+            return;
+        }
+
+        // 指定領域をコピー
+        QRect roi = localRects[last].toRect();
+        m_copyImg = img.copy(roi);
+    };
+
+    helperImgProc(QString("Copy"), func);
 }
 
 /**
@@ -630,6 +699,25 @@ void MainWindow::slotActMenuBarImageShowInfo() {
  */
 void MainWindow::slotActMenuBarImageColor() {
 
+    auto sender = this->sender();
+    if (sender == m_pLastActiveImgWin->ui()->actionRGBToGray) {
+        IS_DEBUG_STREAM("RGB -> Gray\n");
+    }
+    else if (sender == m_pLastActiveImgWin->ui()->actionGrayToRGB) {
+        IS_DEBUG_STREAM("Gray -> RGB\n");
+    }
+    else if (sender == m_pLastActiveImgWin->ui()->actionRGBToHSV) {
+        IS_DEBUG_STREAM("RGB -> HSV\n");
+    }
+    else if (sender == m_pLastActiveImgWin->ui()->actionHSVToRGB) {
+        IS_DEBUG_STREAM("HSV -> RGB\n");
+    }
+    else if (sender == m_pLastActiveImgWin->ui()->actionRGBToYUV) {
+        IS_DEBUG_STREAM("RGB -> YUV\n");
+    }
+    // else if (sender == m_pLastActiveImgWin->ui()->actionYUVToRGB) {
+        
+    // }
 }
 
 /**

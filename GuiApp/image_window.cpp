@@ -155,6 +155,18 @@ void ImageWindow::memuBarConnection() {
     // ShowInfo
 
     // Color
+    connect(m_pUi->actionRGBToGray, &QAction::triggered,
+        m_pMainWindow, &MainWindow::slotActMenuBarImageColor);
+    connect(m_pUi->actionGrayToRGB, &QAction::triggered,
+        m_pMainWindow, &MainWindow::slotActMenuBarImageColor);
+    connect(m_pUi->actionRGBToHSV, &QAction::triggered,
+        m_pMainWindow, &MainWindow::slotActMenuBarImageColor);
+    connect(m_pUi->actionHSVToRGB, &QAction::triggered,
+        m_pMainWindow, &MainWindow::slotActMenuBarImageColor);
+    connect(m_pUi->actionRGBToYUV, &QAction::triggered,
+        m_pMainWindow, &MainWindow::slotActMenuBarImageColor);
+    // connect(m_pUi->actionYUVToRGB, &QAction::triggered,
+    //     m_pMainWindow, &MainWindow::slotActMenuBarImageColor);
 
     // Crop
     connect(m_pUi->actionCrop, &QAction::triggered, 
@@ -469,7 +481,7 @@ void ImageWindow::slotStartCapture() {
     std::string type = "usb";
     m_camCtrl.setCameraType(maker, type);
 
-    if (m_camCtrl.startCamera(1, 0)) {
+    if (m_camCtrl.startCamera(0, 0)) {
         // start worker-thread.
 
         m_camWidth = m_camCtrl.width();

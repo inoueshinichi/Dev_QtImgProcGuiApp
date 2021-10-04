@@ -42,6 +42,8 @@ class MainWindow : public QMainWindow
     Ui::MainWindow *m_pUi;
     QLabel* m_pStatusBarLabel;
     ImageWindow* m_pLastActiveImgWin;
+    QImage m_copyImg;
+
 
 private:
     void menuBarConnection();
