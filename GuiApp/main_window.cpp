@@ -44,6 +44,9 @@ MainWindow::MainWindow(QWidget *parent)
     // UI
     m_pUi->setupUi(this);
 
+    // WA
+    setAttribute(Qt::WA_AcceptTouchEvents);
+
     /* Signal & Slot */
     menuBarConnection();
 }
@@ -81,6 +84,7 @@ void MainWindow::menuBarConnection() {
     // Print
     connect(m_pUi->actionPrint, &QAction::triggered,
             this, &MainWindow::slotActMenuBarFilePrint);
+
     // Quit
     connect(m_pUi->actionQuit, &QAction::triggered,
             this, &MainWindow::slotActMenuBarFileQuit);
@@ -135,6 +139,18 @@ void MainWindow::helperImgProc(const QString &process,
     m_pUi->statusBar->showMessage(QString::fromStdString(status));
 }
 
+
+/**
+ * @brief ドラッグ開始時の処理
+ * 
+ * @param action 
+ * @param event 
+ */
+void MainWindow::startDrag(Qt::DropAction action, QMouseEvent *event) {
+    IS_DEBUG_STREAM("startDrag at %d", __LINE__);
+}
+
+
 //////////////////////////////////////////////////////////
 // protected method
 //////////////////////////////////////////////////////////
@@ -177,8 +193,36 @@ void MainWindow::dragLeaveEvent(QDragLeaveEvent *event)
  * 
  * @param event 
  */
-void MainWindow::mouseMoveEvent(QMouseEvent *event)
-{}
+void MainWindow::mouseMoveEvent(QMouseEvent *event) {
+    // ドラッグ開始を検出
+    auto button = event->button();
+    if (button == Qt::LeftButton) {
+        auto distance = 
+            (event->screenPos() - m_mousePressPosOnScreen).manhattanLength(); // マンハッタン距離
+
+        // Qtアプリの推奨距離(4pixel)以上であればドラッグ開始時の処理を起動
+        if (distance >= QApplication::startDragDistance()) {
+            startDrag(Qt::MoveAction, event);
+        }
+    }
+
+    QMainWindow::mouseMoveEvent(event);
+}
+
+
+/**
+ * @brief マウスボタンクリック時のイベント処理
+ * 
+ * @param event 
+ */
+void MainWindow::mousePressEvent(QMouseEvent *event) {
+    auto button = event->button();
+    if (button == Qt::LeftButton) {
+        m_mousePressPosOnScreen = event->screenPos();
+    }
+
+    QMainWindow::mousePressEvent(event);
+}
 
 //////////////////////////////////////////////////////////
 // public method

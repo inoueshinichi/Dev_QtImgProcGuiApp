@@ -43,7 +43,7 @@ class MainWindow : public QMainWindow
     QLabel* m_pStatusBarLabel;
     ImageWindow* m_pLastActiveImgWin;
     QImage m_copyImg;
-
+    QPointF m_pressPosOnScreen;
 
 private:
     void menuBarConnection();
@@ -56,6 +56,7 @@ private:
     void startDragProcess(Qt::DropActions *dropActions, QMouseEvent *event);
 
     void helperImgProc(const QString &process, std::function<void(QImage&)> func);
+    void startDrag(Qt::DropAction action, QMouseEvent *event);
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
@@ -75,6 +76,7 @@ protected:
 
     /*Mouse*/
     void mouseMoveEvent(QMouseEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
 
 signals:
     
