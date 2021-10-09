@@ -188,41 +188,10 @@ void MainWindow::dragLeaveEvent(QDragLeaveEvent *event)
     void MainWindow::dropEvent(QDropEvent *event)
 {}
 
-/**
- * @brief マウス移動時のイベント処理
- * 
- * @param event 
- */
-void MainWindow::mouseMoveEvent(QMouseEvent *event) {
-    // ドラッグ開始を検出
-    auto button = event->button();
-    if (button == Qt::LeftButton) {
-        auto distance = 
-            (event->screenPos() - m_mousePressPosOnScreen).manhattanLength(); // マンハッタン距離
-
-        // Qtアプリの推奨距離(4pixel)以上であればドラッグ開始時の処理を起動
-        if (distance >= QApplication::startDragDistance()) {
-            startDrag(Qt::MoveAction, event);
-        }
-    }
-
-    QMainWindow::mouseMoveEvent(event);
-}
 
 
-/**
- * @brief マウスボタンクリック時のイベント処理
- * 
- * @param event 
- */
-void MainWindow::mousePressEvent(QMouseEvent *event) {
-    auto button = event->button();
-    if (button == Qt::LeftButton) {
-        m_mousePressPosOnScreen = event->screenPos();
-    }
 
-    QMainWindow::mousePressEvent(event);
-}
+
 
 //////////////////////////////////////////////////////////
 // public method

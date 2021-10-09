@@ -323,6 +323,4 @@ message(STATUS "========== [START] C++ Build Test ==========")
 message(STATUS "========== [END] C++ Build Test ==========")
 
 
-
-
 message(STATUS "<<<<< ${APP_TARGET_NAME}")

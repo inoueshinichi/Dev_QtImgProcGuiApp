@@ -204,3 +204,16 @@ add_subdirectory(IsLibrary)
 add_subdirectory(GuiApp)
 message(STATUS "========== [END] C++ Build Components ==========")
 
+
+###############################################################################
+# C++ SandBox
+###############################################################################
+message(STATUS "========== [START] C++ Build SandBox ==========")
+
+set(SANDBOX ON)
+if(${SANDBOX})
+    add_subdirectory(SandBox)
+endif()
+
+message(STATUS "========== [END] C++ Build SandBox ==========")
+

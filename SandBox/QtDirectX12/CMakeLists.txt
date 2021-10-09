@@ -1,10 +1,12 @@
 cmake_minimum_required(VERSION 3.14.0)
 
+get_filename_component(DIRNAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+set(APP_TARGET_NAME ${DIRNAME})
+
 ###########################################
-# Test -> DirectX12
+# sandbox -> qt_directx
 ###########################################
-set(APP_TARGET_NAME TestDirectX12OnQtGui)
-project(${APP_TARGET_NAME} C CXX VERSION 0.1.0)
+project(${APP_TARGET_NAME} LANGUAGES C CXX VERSION 0.1.0)
 message(STATUS ">>>>> ${APP_TARGET_NAME}")
 
 # ここで必要なモジュールを指定する
@@ -59,7 +61,7 @@ endif()
 # アプリケーションターゲット
 ###############################################################################
 # ライブラリターゲット設定(注意: AUTO_UIC以降で設定しないと、AUTO_UICが起動しない)
-add_executable(${APP_TARGET_NAME})
+add_executable(${APP_TARGET_NAME} WIN32)
 
 # 警告の抑制
 if(MSVC)
@@ -170,28 +172,34 @@ list(APPEND APP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 message(STATUS "Include dir: ${APP_INCLUDE_DIR}")
 
 # Sources
-# file(GLOB_RECURSE APP_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 file(GLOB APP_SOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
     ./*.cpp
-    directx12/*.cpp
 )
 
 message(STATUS "Source files: ${APP_SOURCE_FILES}")
 
 # App Sources
-target_sources(${APP_TARGET_NAME} PRIVATE ${APP_SOURCE_FILES})
+target_sources(${APP_TARGET_NAME} PRIVATE 
+    ${APP_SOURCE_FILES}
+)
 
 # App Include
 target_include_directories(${APP_TARGET_NAME} PRIVATE 
     ${APP_INCLUDE_DIR}
 )
 
+###############################################################################
+# DirectXのリンク
+###############################################################################
+target_link_libraries(${APP_TARGET_NAME} PRIVATE
+    d3d12
+)
 
 ###############################################################################
 # Qtライブラリのリンク
 ###############################################################################
-
-foreach(Module IN ${QT_MODULES})
+foreach(Module ${QT_MODULES})
+    message(STATUS "${Module}")
     # Qt-Link
     target_link_libraries(${APP_TARGET_NAME} PRIVATE
         Qt${QT_VERSION_MAJOR}::${Module}

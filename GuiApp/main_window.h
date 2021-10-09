@@ -75,8 +75,6 @@ protected:
     void dropEvent(QDropEvent *event) override;
 
     /*Mouse*/
-    void mouseMoveEvent(QMouseEvent *event) override;
-    void mousePressEvent(QMouseEvent *event) override;
 
 signals:
     
