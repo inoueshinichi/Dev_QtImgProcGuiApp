@@ -163,11 +163,99 @@
     <addaction name="actionCameraBasler"/>
     <addaction name="actionCameraCognex"/>
    </widget>
+   <widget class="QMenu" name="menuProcess">
+    <property name="title">
+     <string>Process</string>
+    </property>
+    <addaction name="actionFilter"/>
+    <addaction name="actionEdgeDetector"/>
+    <addaction name="actionLookUpTable"/>
+    <addaction name="actionBinarize"/>
+    <addaction name="actionMorphology"/>
+    <addaction name="actionNoise"/>
+    <addaction name="actionHistogram"/>
+   </widget>
+   <widget class="QMenu" name="menuAnalyze">
+    <property name="title">
+     <string>Analyze</string>
+    </property>
+    <widget class="QMenu" name="menuFreequency">
+     <property name="title">
+      <string>Freequency</string>
+     </property>
+     <addaction name="actionFFT"/>
+     <addaction name="actionWavelet"/>
+    </widget>
+    <addaction name="menuFreequency"/>
+    <addaction name="actionLuminance"/>
+    <addaction name="actionBlob"/>
+   </widget>
+   <widget class="QMenu" name="menuDetector">
+    <property name="title">
+     <string>Detector</string>
+    </property>
+    <widget class="QMenu" name="menuKeyPoints">
+     <property name="title">
+      <string>KeyPoints</string>
+     </property>
+     <addaction name="separator"/>
+     <addaction name="actionHarrisCorner"/>
+     <addaction name="actionKLTCorner"/>
+     <addaction name="actionFASTCorner"/>
+     <addaction name="actionAGASTCorner"/>
+     <addaction name="actionMSERRegion"/>
+    </widget>
+    <widget class="QMenu" name="menuKeyPoints_Detectors">
+     <property name="title">
+      <string>KeyPoints &amp; Detectors</string>
+     </property>
+     <addaction name="actionORB"/>
+     <addaction name="actionBRISK"/>
+     <addaction name="actionAKAZE"/>
+     <addaction name="actionSIFT"/>
+     <addaction name="actionSURF"/>
+    </widget>
+    <widget class="QMenu" name="menuDescriptors">
+     <property name="title">
+      <string>Descriptors</string>
+     </property>
+     <addaction name="actionFREAKDescriptor"/>
+     <addaction name="actionBRIEFDescriptor"/>
+     <addaction name="separator"/>
+     <addaction name="actionHOGDescriptor"/>
+     <addaction name="actionHarrLikeDescriptor"/>
+     <addaction name="actionLBP_Descriptor"/>
+    </widget>
+    <addaction name="actionTemplateMatching"/>
+    <addaction name="separator"/>
+    <addaction name="menuKeyPoints"/>
+    <addaction name="menuKeyPoints_Detectors"/>
+    <addaction name="menuDescriptors"/>
+    <addaction name="separator"/>
+    <addaction name="actionKeyPointsDescriptorsMatching"/>
+    <addaction name="separator"/>
+    <addaction name="actionHough"/>
+    <addaction name="actionFitting"/>
+   </widget>
+   <widget class="QMenu" name="menuMotion">
+    <property name="title">
+     <string>Motion</string>
+    </property>
+    <addaction name="actionOpticalFlow"/>
+    <addaction name="actionMeanShift"/>
+    <addaction name="actionCamShift"/>
+    <addaction name="actionKalman_Filter"/>
+    <addaction name="actionParticle_Filter"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuImage"/>
    <addaction name="menuView"/>
    <addaction name="menuCamera"/>
+   <addaction name="menuProcess"/>
+   <addaction name="menuAnalyze"/>
+   <addaction name="menuDetector"/>
+   <addaction name="menuMotion"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -568,6 +656,193 @@
   <action name="actionRGBToYUV">
    <property name="text">
     <string>RGB -&gt; YUV</string>
+   </property>
+  </action>
+  <action name="actionFilter">
+   <property name="text">
+    <string>Filter</string>
+   </property>
+  </action>
+  <action name="actionEdgeDetector">
+   <property name="text">
+    <string>Edge Detector</string>
+   </property>
+   <property name="toolTip">
+    <string>Edge Detector</string>
+   </property>
+  </action>
+  <action name="actionLookUpTable">
+   <property name="text">
+    <string>LUT</string>
+   </property>
+   <property name="toolTip">
+    <string>LUT</string>
+   </property>
+  </action>
+  <action name="actionBinarize">
+   <property name="text">
+    <string>Binarize</string>
+   </property>
+  </action>
+  <action name="actionMorphology">
+   <property name="text">
+    <string>Morphology</string>
+   </property>
+  </action>
+  <action name="actionNoise">
+   <property name="text">
+    <string>Noise</string>
+   </property>
+  </action>
+  <action name="actionHistogram">
+   <property name="text">
+    <string>Histogram</string>
+   </property>
+  </action>
+  <action name="actionFFT">
+   <property name="text">
+    <string>FFT</string>
+   </property>
+  </action>
+  <action name="actionWavelet">
+   <property name="text">
+    <string>Wavelet</string>
+   </property>
+  </action>
+  <action name="actionLuminance">
+   <property name="text">
+    <string>Luminance</string>
+   </property>
+  </action>
+  <action name="actionBlob">
+   <property name="text">
+    <string>Blob</string>
+   </property>
+  </action>
+  <action name="actionTemplateMatching">
+   <property name="text">
+    <string>Template Matching</string>
+   </property>
+  </action>
+  <action name="actionSIFT">
+   <property name="text">
+    <string>SIFT</string>
+   </property>
+  </action>
+  <action name="actionSURF">
+   <property name="text">
+    <string>SURF</string>
+   </property>
+  </action>
+  <action name="actionBRISK">
+   <property name="text">
+    <string>BRISK</string>
+   </property>
+  </action>
+  <action name="actionORB">
+   <property name="text">
+    <string>ORB</string>
+   </property>
+  </action>
+  <action name="actionAKAZE">
+   <property name="text">
+    <string>AKAZE</string>
+   </property>
+  </action>
+  <action name="actionFREAKDescriptor">
+   <property name="text">
+    <string>FREAK Descriptor</string>
+   </property>
+   <property name="toolTip">
+    <string>FREAK Descriptor</string>
+   </property>
+  </action>
+  <action name="actionHarrisCorner">
+   <property name="text">
+    <string>Harris Corner</string>
+   </property>
+   <property name="toolTip">
+    <string>Harris Corner</string>
+   </property>
+  </action>
+  <action name="actionKLTCorner">
+   <property name="text">
+    <string>KLT Corner</string>
+   </property>
+  </action>
+  <action name="actionFASTCorner">
+   <property name="text">
+    <string>FAST Corner</string>
+   </property>
+  </action>
+  <action name="actionAGASTCorner">
+   <property name="text">
+    <string>AGAST Corner</string>
+   </property>
+  </action>
+  <action name="actionMSERRegion">
+   <property name="text">
+    <string>MSER Region</string>
+   </property>
+  </action>
+  <action name="actionBRIEFDescriptor">
+   <property name="text">
+    <string>BRIEF Descriptor</string>
+   </property>
+  </action>
+  <action name="actionHOGDescriptor">
+   <property name="text">
+    <string>HOG Descriptor</string>
+   </property>
+  </action>
+  <action name="actionHarrLikeDescriptor">
+   <property name="text">
+    <string>HarrLike Descriptor</string>
+   </property>
+  </action>
+  <action name="actionLBP_Descriptor">
+   <property name="text">
+    <string>LBP Descriptor</string>
+   </property>
+  </action>
+  <action name="actionKeyPointsDescriptorsMatching">
+   <property name="text">
+    <string>KeyPoints-Descriptors Matching</string>
+   </property>
+  </action>
+  <action name="actionHough">
+   <property name="text">
+    <string>Hough</string>
+   </property>
+  </action>
+  <action name="actionFitting">
+   <property name="text">
+    <string>Fitting</string>
+   </property>
+  </action>
+  <action name="actionOpticalFlow">
+   <property name="text">
+    <string>Optical Flow</string>
+   </property>
+  </action>
+  <action name="actionMeanShift">
+   <property name="text">
+    <string>MeanShift</string>
+   </property>
+  </action>
+  <action name="actionCamShift">
+   <property name="text">
+    <string>CamShift</string>
+   </property>
+  </action>
+  <action name="actionKalman_Filter">
+   <property name="text">
+    <string>Kalman Filter</string>
+   </property>
+  </action>
+  <action name="actionParticle_Filter">
+   <property name="text">
+    <string>Particle Filter</string>
    </property>
   </action>
  </widget>
