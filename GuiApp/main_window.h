@@ -29,8 +29,6 @@
 #include <QLabel>
 
 
-
-
 QT_BEGIN_NAMESPACE
     namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -39,11 +37,10 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
     Q_DISABLE_COPY(MainWindow)
-    Ui::MainWindow *m_pUi;
-    QLabel* m_pStatusBarLabel;
-    ImageWindow* m_pLastActiveImgWin;
-    QImage m_copyImg;
-    QPointF m_pressPosOnScreen;
+    Ui::MainWindow*  m_pUi;
+    QLabel*          m_pStatusBarLabel;
+    ImageWindow*     m_pLastActiveImgWin;
+    QImage           m_copyImg;
 
 private:
     void menuBarConnection();
@@ -51,12 +48,8 @@ private:
     void uiConnection();
     void customConnection();
 
-    void enableViewMode();
-    void enableFileMode();
-    void startDragProcess(Qt::DropActions *dropActions, QMouseEvent *event);
-
     void helperImgProc(const QString &process, std::function<void(QImage&)> func);
-    void startDrag(Qt::DropAction action, QMouseEvent *event);
+
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
@@ -121,19 +114,15 @@ public slots:
 
     // /* Menu -> Video */
     // void slotActMenuBarVideoWindow();
-
-private slots:
  
-    // /* Menu -> Process */
-    // void slotActMenuBarProcessBlur();
-    // void slotActMenuBarProcessShading();
-    // void slotActMenuBarProcessUnsharpMask();
-    // void slotActMenuBarProcessEdgeDetector();
-    // void slotActMenuBarProcessLut();
-    // void slotActMenuBarProcessBinarize();
-    // void slotActMenuBarProcessMorphology();
-    // void slotActMenuBarProcessNoise();
-    // void slotActMenuBarProcessHistogram();
+    /* Menu -> Process */
+    // void slotActMenuBarFilter();
+    // void slotActMenuBarEdgeDetector();
+    // void slotActMenuBarLut();
+    // void slotActMenuBarBinarize();
+    // void slotActMenuBarMorphology();
+    // void slotActMenuBarNoise();
+    // void slotActMenuBarHistogram();
 
     // /* Menu -> Analyze -> Frequency */
     // void slotActMenuBarAnaFreqFft();

@@ -12,7 +12,6 @@
 #include "ui_MainWindow.h"
 #include "main_window.h"
 
-
 #include <algorithm>
 #include <vector>
 #include <iostream>
@@ -22,13 +21,14 @@ namespace fs = std::filesystem;
 #include <chrono>
 using namespace std::chrono;
 
-
 #include <QApplication>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QImage>
 #include <QRect>
+#include <QMimeData>
+#include <QUrl>
 
 
 //////////////////////////////////////////////////////////
@@ -40,7 +40,6 @@ MainWindow::MainWindow(QWidget *parent)
     , m_pUi(new Ui::MainWindow())
     , m_pStatusBarLabel(new QLabel())
     , m_pLastActiveImgWin(nullptr) {
-
     // UI
     m_pUi->setupUi(this);
 
@@ -108,13 +107,7 @@ void MainWindow::customConnection() {
 
 }
 
-/**
- * @brief ドラッグ開始時の処理
- * 
- */
-void MainWindow::startDragProcess(Qt::DropActions *dropActions, QMouseEvent *event) {
 
-}
 
 
 void MainWindow::helperImgProc(const QString &process, 
@@ -140,28 +133,44 @@ void MainWindow::helperImgProc(const QString &process,
 }
 
 
-/**
- * @brief ドラッグ開始時の処理
- * 
- * @param action 
- * @param event 
- */
-void MainWindow::startDrag(Qt::DropAction action, QMouseEvent *event) {
-    IS_DEBUG_STREAM("startDrag at %d", __LINE__);
-}
-
-
 //////////////////////////////////////////////////////////
 // protected method
 //////////////////////////////////////////////////////////
 
 /**
- * @brief ドラッグ状態でWindowにカーソルが侵入した際のイベント処理
+ * @brief ドラッグ状態でWidgetにカーソルが侵入した際のイベント処理
  * 
  * @param event 
  */
-void MainWindow::dragEnterEvent(QDragEnterEvent *event)
-{}
+void MainWindow::dragEnterEvent(QDragEnterEvent *event) {
+    /*
+        よく使用するMIMEタイプ
+        Tester      Getter      Setter         MIME Types
+        -----------------------------------------------------
+        hasText()   text()      setText()      text/plain
+        hasHtml()   html()      setHtml()      text/html
+        hasUrls()   urls()      setUrls()      text/uri-text
+        hasImages() imageData() setImageData() image/*
+        hasColor()  colorData() setColorData() application/x-color
+        image/* で受け付けるファイル拡張子
+        bmp, fif, gif, ifm, ief, jpe, jpg, jpeg, png, svg, tif, tiff,
+        mcf, rp, wbmp, ras, fh, fh4, fh5, fh7, fhc, ico, jps, pnm, pbm,
+        ppm, rgb, xbm, xpm, swx, xwd
+        QImageで受け付けるファイル拡張子
+        bmp(R/W), gif(R), jpg(R/W), jpeg(R/W), png(R/W), pbm(R), pgm(R),
+        ppm(R/W), xbm(R/W), xpm(R/W) 
+    */
+
+    IS_DEBUG_STREAM("dragEnterEvent\n");
+
+    // mimeDataの種類を調べてドラッグ受付許可
+    if (event->mimeData()->hasUrls()) {
+        event->acceptProposedAction();
+        IS_DEBUG_STREAM("Accept Urls\n");
+    }
+
+    QMainWindow::dragEnterEvent(event);
+}
 
 
 /**
@@ -169,27 +178,65 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *event)
  * 
  * @param event 
  */
-void MainWindow::dragLeaveEvent(QDragLeaveEvent *event)
-{}
+void MainWindow::dragLeaveEvent(QDragLeaveEvent *event) {
+    QMainWindow::dragLeaveEvent(event);
+}
 
-    /**
+/**
  * @brief ドラッグ移動中のイベント処理
  * 
  * @param event 
  */
-    void MainWindow::dragMoveEvent(QDragMoveEvent *event)
-{}
+void MainWindow::dragMoveEvent(QDragMoveEvent *event) {
+    QMainWindow::dragMoveEvent(event);
+}
 
 /**
  * @brief ドロップイベント時の処理
  * 
  * @param event 
  */
-    void MainWindow::dropEvent(QDropEvent *event)
-{}
+void MainWindow::dropEvent(QDropEvent *event) {
 
+    if (event->mimeData()->hasUrls()) {
 
+        std::set<std::string> currImgWinFilenames;
+        for (const auto& p_imgWin : getImgWinRegistry()) {
+            currImgWinFilenames.insert(p_imgWin->filename().toStdString());
+        }
 
+        foreach(QUrl url, event->mimeData()->urls()) {
+            if (!url.isValid()) {
+                auto qStr = url.toString();
+                IS_DEBUG_STREAM("Invalid URL. Given is %s\n", qStr.toStdString().c_str());
+                continue;
+            }
+
+            // URLがローカルPCに存在する場合
+            if (url.isLocalFile()) {
+                auto qStr = url.toString();
+                IS_DEBUG_STREAM("Recieve URL: %s\n", qStr.toStdString().c_str());
+
+                auto localUrl = url.toLocalFile();
+                // IS_DEBUG_STREAM("Recieve local file: %s\n", localUrl.toStdString().c_str());
+
+                // ImageWindowを生成
+                QImage img;
+                if (!img.load(localUrl)) continue;
+
+                auto tokens = localUrl.split(tr("/"));
+                QString filename = tokens[tokens.size() - 1];
+                std::string newFilename = 
+                    getNewSerialNo(filename.toStdString(), currImgWinFilenames);
+                ImageWindow *p_newImgWin = genImgWin(QString::fromStdString(newFilename));
+
+                p_newImgWin->setDibImg(img, true);
+            }
+        }
+    }
+
+    MainWindow::dropEvent(event);
+}
 
 
 
@@ -274,7 +321,7 @@ void MainWindow::slotActMenuBarFileOpen() {
                                                   fileFilter);
 
     std::set<std::string> currImgWinFilenames;
-    for (const auto &p_imgWin : getImgWinRegistry()) {
+    for (const auto& p_imgWin : getImgWinRegistry()) {
         currImgWinFilenames.insert(p_imgWin->filename().toStdString());
     }
 
