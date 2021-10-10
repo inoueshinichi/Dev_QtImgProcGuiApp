@@ -48,7 +48,9 @@ public:
     SceneImage m_editImgIns;
     CrossLine m_crossLine;
     Profile m_profile;
-    Roi m_roi;
+    RoiRect m_roi;
+    RoiEllipse m_ellipse;
+    //RoiLine m_line;
 
     QRectF m_rect;
     QPointF m_anchor;

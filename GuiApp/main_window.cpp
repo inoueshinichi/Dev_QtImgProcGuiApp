@@ -235,7 +235,7 @@ void MainWindow::dropEvent(QDropEvent *event) {
         }
     }
 
-    MainWindow::dropEvent(event);
+    // MainWindow::dropEvent(event);
 }
 
 

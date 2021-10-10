@@ -35,15 +35,15 @@ class ImageWindow : public QMainWindow
 {
     Q_OBJECT
 
-    MainWindow *m_pMainWindow;
-    Ui::ImageWindow *m_pUi;
-    ImageScene *m_pScene;
-    QLabel *m_pStatusBarLabel;
-    QString m_filename;
-    std::string m_posStatus;
+    MainWindow*      m_pMainWindow;
+    Ui::ImageWindow* m_pUi;
+    ImageScene*      m_pScene;
+    QLabel*          m_pStatusBarLabel;
+    QString          m_filename;
+    std::string      m_posStatus;
 
     // Camera
-    QTimer *m_pCamTimer;
+    QTimer*          m_pCamTimer;
     int m_camTimerId {0};
     Qt::TimerType m_camTimerType;
     CameraController m_camCtrl;
@@ -57,9 +57,6 @@ class ImageWindow : public QMainWindow
     void memuBarConnection();
     void toolBarConnection();
     void customConnection();
-
-
-
 
 public:
     explicit ImageWindow(QWidget *parent = nullptr);
@@ -93,6 +90,7 @@ private slots:
     void slotToggleCrossLine(bool checked);
     void slotToggleProfile(bool checked);
     void slotToggleRoi(bool checked);
+    void slotToggleEllipse(bool checked);
 
     // QTimer
     void slotStartCapture();

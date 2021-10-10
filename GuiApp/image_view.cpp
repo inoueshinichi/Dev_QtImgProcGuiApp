@@ -13,8 +13,8 @@
 //////////////////////////////////////////////////////////
 ImageView::ImageView(QWidget *parent)
     : QGraphicsView(parent)
-    , isAcceptDragDrop(false)
-{
+    , isAcceptDragDrop(false) {
+
     /*DragDropの有効化*/
     // ドロップイベントは親から子へ伝播する. 
     // 無効化するとMainWindowでドロップ処理をしなければならない.
@@ -48,56 +48,47 @@ ImageView::ImageView(QWidget *parent)
 }
 
 
-ImageView::~ImageView()
-{
-    
-}
+ImageView::~ImageView() {}
 
 //////////////////////////////////////////////////////////
 // private method
 //////////////////////////////////////////////////////////
 
-void ImageView::updateStatusBar(const QPoint &viewPos)
-{
+void ImageView::updateStatusBar(const QPoint &viewPos) {
     /*ImageWindowのステータスバーを更新する*/
+
     auto scenePos = this->mapToScene(viewPos);
     auto p_scene = qobject_cast<ImageScene *>(this->scene());
-    if (p_scene)
-    {
+    if (p_scene) {
         QGraphicsPixmapItem *p_item = p_scene->getEditImgItem(scenePos);
         QPointF localPos;
-        if (p_item)
-        {
+        if (p_item) {
             localPos = p_item->mapToItem(p_item, scenePos);
         }
         emit emitShowPosToStatusBar(localPos, scenePos, viewPos);
     }
 }
 
-void ImageView::drawCrossLine(const QPoint &viewPos)
-{
-    /* マウスを中心とした十字線をSceneに描画
-    */
+void ImageView::drawCrossLine(const QPoint &viewPos) {
+    /* マウスを中心とした十字線をSceneに描画 */
+
     auto scenePos = this->mapToScene(viewPos);
     auto p_scene = qobject_cast<ImageScene *>(this->scene());
     QGraphicsPixmapItem *p_item = p_scene->getEditImgItem(scenePos);
-    if (p_item)
-    {
+    if (p_item) {
         // DEBUG_STREAM("ScenePos(%.1f, %.1f)\n", scenePos.x(), scenePos.y());
 
         QPointF localPos = p_item->mapToItem(p_item, scenePos);
         QRectF localRect = p_item->boundingRect(); // Local座標における矩形サイズ
         
-        if (localRect.contains(localPos.toPoint()))
-        {
+        if (localRect.contains(localPos.toPoint())) {
             //DEBUG_STREAM("[CrossLine] Detect target item! LocalPos(%.1f, %.1f)\n", localPos.x(), localPos.y());
 
             // 水平線
             qreal y = localPos.y();
             p_scene->m_crossLine.m_pItemLineX->setLine(0, y, localRect.width(), y);
 
-            if (p_scene->m_crossLine.m_pItemLineX->contains(scenePos))
-            {
+            if (p_scene->m_crossLine.m_pItemLineX->contains(scenePos)) {
                 p_scene->removeItem(p_scene->m_crossLine.m_pItemLineX);
             }
             p_scene->addItem(p_scene->m_crossLine.m_pItemLineX);
@@ -105,8 +96,7 @@ void ImageView::drawCrossLine(const QPoint &viewPos)
             // 垂直線
             qreal x = localPos.x();
             p_scene->m_crossLine.m_pItemLineY->setLine(x, 0, x, localRect.height());
-            if (p_scene->m_crossLine.m_pItemLineY->contains(scenePos))
-            {
+            if (p_scene->m_crossLine.m_pItemLineY->contains(scenePos)) {
                 p_scene->removeItem(p_scene->m_crossLine.m_pItemLineY);
             }
             p_scene->addItem(p_scene->m_crossLine.m_pItemLineY);
@@ -116,22 +106,19 @@ void ImageView::drawCrossLine(const QPoint &viewPos)
 
 void ImageView::drawProfile(const QPoint &viewPos,
                             bool isXRed, bool isXGreen, bool isXBlue,
-                            bool isYRed, bool isYGreen, bool isYBlue)
-{
-    /* 画像プロファイルの描画
-    */
+                            bool isYRed, bool isYGreen, bool isYBlue) {
+    /* 画像プロファイルの描画 */
+
     auto scenePos = this->mapToScene(viewPos);
     auto p_scene = qobject_cast<ImageScene *>(this->scene());
     QGraphicsPixmapItem *p_item = p_scene->getEditImgItem(scenePos);
-    if (p_item)
-    {
+    if (p_item) {
         // DEBUG_STREAM("ScenePos(%.1f, %.1f)\n", scenePos.x(), scenePos.y());
 
         QPointF localPos = p_item->mapToItem(p_item, scenePos);
         QRectF localRect = p_item->boundingRect(); // Local座標における矩形サイズ
         
-        if (localRect.contains(localPos.toPoint()))
-        {
+        if (localRect.contains(localPos.toPoint())) {
             IS_DEBUG_STREAM("[Profile] Detect target item! LocalPos(%.1f, %.1f)\n", localPos.x(), localPos.y());
 
             int profileY = (int)localPos.y();
@@ -159,8 +146,7 @@ void ImageView::drawProfile(const QPoint &viewPos,
             p_scene->m_profile.m_directY.m_pathBlue.clear();
 
             // 水平プロファイル
-            for (int x = left.x() + 1; x < right.x(); ++x)
-            {
+            for (int x = left.x() + 1; x < right.x(); ++x) {
                 if (x - 1 <= 0 || x >= width)
                     continue;
 
@@ -184,8 +170,7 @@ void ImageView::drawProfile(const QPoint &viewPos,
             p_scene->m_profile.m_directX.m_pItemPathBlue->setPath(p_scene->m_profile.m_directX.m_pathBlue);
 
             // 垂直プロファイル
-            for (int y = top.y() + 1; y < bottom.y(); ++y)
-            {
+            for (int y = top.y() + 1; y < bottom.y(); ++y) {
                 if (y - 1 <= 0 || y >= height)
                     continue;
 
@@ -208,8 +193,7 @@ void ImageView::drawProfile(const QPoint &viewPos,
             p_scene->m_profile.m_directY.m_pItemPathGreen->setPath(p_scene->m_profile.m_directY.m_pathGreen);
             p_scene->m_profile.m_directY.m_pItemPathBlue->setPath(p_scene->m_profile.m_directY.m_pathBlue);
 
-            if (p_scene->m_editImgIns.m_memDibImg.isGrayscale())
-            {
+            if (p_scene->m_editImgIns.m_memDibImg.isGrayscale()) {
                 /* GRAY */
                 p_scene->m_profile.m_directX.m_pItemPathRed->setPen(QPen(QColor(Qt::green)));
                 p_scene->m_profile.m_directX.m_pItemPathGreen->setPen(QPen(QColor(Qt::green)));
@@ -218,8 +202,7 @@ void ImageView::drawProfile(const QPoint &viewPos,
                 p_scene->m_profile.m_directY.m_pItemPathGreen->setPen(QPen(QColor(Qt::green)));
                 p_scene->m_profile.m_directY.m_pItemPathBlue->setPen(QPen(QColor(Qt::green)));
             }
-            else
-            {
+            else {
                 p_scene->m_profile.m_directX.m_pItemPathRed->setPen(QPen(QColor(Qt::red)));
                 p_scene->m_profile.m_directX.m_pItemPathGreen->setPen(QPen(QColor(Qt::green)));
                 p_scene->m_profile.m_directX.m_pItemPathBlue->setPen(QPen(QColor(Qt::blue)));
@@ -257,10 +240,9 @@ void ImageView::drawProfile(const QPoint &viewPos,
 }
 
 
-void ImageView::drawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSquareDrag)
-{
-    /* 図形(l,t),(r,b)の描画
-    */
+void ImageView::drawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSquareDrag) {
+    /* 図形(l,t),(r,b)の描画 */
+
     auto scenePos = this->mapToScene(viewPos);
     auto p_scene = qobject_cast<ImageScene *>(this->scene());
     QGraphicsPixmapItem *p_item = p_scene->getEditImgItem(scenePos);
@@ -277,10 +259,17 @@ void ImageView::drawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSqua
         }
         else if (m_isMousePressLeft && m_isMouseDrag) {
             if (!m_isGenFigure) {
+
                 // 矩形
-                if (p_scene->m_roi.m_isRoi) {
+                if (p_scene->m_roi.m_isRegionFigure) {
                     p_scene->m_roi.makeRect(p_scene, p_scene->m_rect); // 新規作成
                 }
+
+                // 楕円
+                if (p_scene->m_ellipse.m_isRegionFigure) {
+                    p_scene->m_ellipse.makeRect(p_scene, p_scene->m_rect); // 新規作成
+                }
+
                 m_isGenFigure = true;
             }
 
@@ -310,20 +299,16 @@ void ImageView::drawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSqua
                 qreal l, r, t, b;
 
                 if (ax < lx) {
-                    l = ax;
-                    r = lx;
+                    l = ax; r = lx;
                 }
                 else {
-                    l = lx;
-                    r = ax;
+                    l = lx; r = ax;
                 }
                 if (ay < ly) {
-                    t = ay;
-                    b = ly;
+                    t = ay; b = ly;
                 }
                 else {
-                    t = ly;
-                    b = ay;
+                    t = ly; b = ay;
                 }
                 
                 if (isSquareDrag) {
@@ -357,23 +342,27 @@ void ImageView::drawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSqua
                     }
                 } 
 
-                tl.setX(l);
-                tl.setY(t);
-                br.setX(r);
-                br.setY(b);
+                tl.setX(l); tl.setY(t);
+                br.setX(r); br.setY(b);
             }
 
             p_scene->m_rect.setTopLeft(tl);
             p_scene->m_rect.setBottomRight(br);
 
             // 矩形
-            if (p_scene->m_roi.m_isRoi) {
+            if (p_scene->m_roi.m_isRegionFigure) {
                 p_scene->m_roi.updateRect(p_scene, p_scene->m_rect); // 描画更新
+            }
+
+            // 楕円
+            if (p_scene->m_ellipse.m_isRegionFigure) {
+                p_scene->m_ellipse.updateRect(p_scene, p_scene->m_rect); // 描画更新
             }
         }
         else if (!m_isMousePressLeft && m_isMouseDrag) {
+
             // 矩形
-            if (p_scene->m_roi.m_isRoi) {
+            if (p_scene->m_roi.m_isRegionFigure) {
                 qreal w, h;
                 w = p_scene->m_rect.width();
                 h = p_scene->m_rect.height();
@@ -382,7 +371,25 @@ void ImageView::drawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSqua
                     p_scene->m_roi.updateRect(p_scene, p_scene->m_rect); // 描画更新
                 }
                 else {
-                    p_scene->m_roi.removeRect(p_scene, p_scene->m_roi.m_rois.size() - 1);
+                    p_scene->m_roi.removeRect(p_scene, p_scene->m_roi.m_regionFigures.size() - 1);
+                    p_scene->m_rect.setX(0);
+                    p_scene->m_rect.setY(0);
+                    p_scene->m_rect.setWidth(0);
+                    p_scene->m_rect.setHeight(0);
+                }
+            }
+
+            // 楕円
+              if (p_scene->m_ellipse.m_isRegionFigure) {
+                qreal w, h;
+                w = p_scene->m_rect.width();
+                h = p_scene->m_rect.height();
+                IS_DEBUG_STREAM("w:%d, h:%d\n", (int)w, (int)h);
+                if (w > 2 && h > 2) {
+                    p_scene->m_ellipse.updateRect(p_scene, p_scene->m_rect); // 描画更新
+                }
+                else {
+                    p_scene->m_ellipse.removeRect(p_scene, p_scene->m_ellipse.m_regionFigures.size() - 1);
                     p_scene->m_rect.setX(0);
                     p_scene->m_rect.setY(0);
                     p_scene->m_rect.setWidth(0);
@@ -399,15 +406,21 @@ void ImageView::drawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSqua
 }
 
 void ImageView::removeFigure(const QPoint &viewPos) {
-    /* 図形消去
-    */
+    /* 図形消去 */
+
     auto scenePos = this->mapToScene(viewPos);
     auto p_scene = qobject_cast<ImageScene *>(this->scene());
     auto p_item = p_scene->itemAt(scenePos, QTransform());
     if (p_item) {
+
         // 矩形
-        if (p_scene->m_roi.m_isRoi) {
+        if (p_scene->m_roi.m_isRegionFigure) {
             p_scene->m_roi.removeRect(p_scene, p_item);
+        }
+
+        // 楕円
+        if (p_scene->m_ellipse.m_isRegionFigure) {
+            p_scene->m_ellipse.removeRect(p_scene, p_item);
         }
     }
 }
@@ -416,33 +429,27 @@ void ImageView::removeFigure(const QPoint &viewPos) {
 // protected method
 //////////////////////////////////////////////////////////
 void ImageView::mousePressEvent(QMouseEvent *event) {
-    /* マウスプレスイベント
-    */
+    /* マウスプレスイベント */
 
     updateStatusBar(event->pos());
 
     auto p_scene = qobject_cast<ImageScene *>(this->scene());
     auto mouseButton = event->button();
-    if (mouseButton == Qt::MouseButton::LeftButton)
-    {
+    if (mouseButton == Qt::MouseButton::LeftButton) {
         m_isMousePressLeft = true;
     }
-    else if (mouseButton == Qt::MouseButton::RightButton)
-    {
+    else if (mouseButton == Qt::MouseButton::RightButton) {
         m_isMousePressRight = true;
     }
-    else if (Qt::MouseButton::MiddleButton)
-    {
+    else if (Qt::MouseButton::MiddleButton) {
         m_isMousePressMiddle = true;
     }
-    else
-    {
+    else {
         IS_DEBUG_STREAM("Unknown mouse button in mousePressEvent...\n");
     }
 
     // 十字線@Press
-    if (p_scene->m_crossLine.m_isCrossLine)
-    {
+    if (p_scene->m_crossLine.m_isCrossLine) {
         drawCrossLine(event->pos());
     }
 
@@ -452,8 +459,7 @@ void ImageView::mousePressEvent(QMouseEvent *event) {
         p_scene->m_profile.m_directX.m_isPathBlue ||
         p_scene->m_profile.m_directY.m_isPathRed ||
         p_scene->m_profile.m_directY.m_isPathGreen ||
-        p_scene->m_profile.m_directY.m_isPathBlue)
-    {
+        p_scene->m_profile.m_directY.m_isPathBlue) {
         drawProfile(event->pos(),
                     p_scene->m_profile.m_directX.m_isPathRed,
                     p_scene->m_profile.m_directX.m_isPathGreen,
@@ -464,7 +470,8 @@ void ImageView::mousePressEvent(QMouseEvent *event) {
     }
 
     // 図形
-    if (p_scene->m_roi.m_isRoi) {
+    if (p_scene->m_roi.m_isRegionFigure ||
+        p_scene->m_ellipse.m_isRegionFigure) {
         drawFigure(event->pos(),
                    event->modifiers() & Qt::ControlModifier,
                    event->modifiers() & Qt::ShiftModifier);
@@ -499,8 +506,7 @@ void ImageView::mouseMoveEvent(QMouseEvent *event) {
         p_scene->m_profile.m_directX.m_isPathBlue ||
         p_scene->m_profile.m_directY.m_isPathRed ||
         p_scene->m_profile.m_directY.m_isPathGreen ||
-        p_scene->m_profile.m_directY.m_isPathBlue)
-    {
+        p_scene->m_profile.m_directY.m_isPathBlue) {
         drawProfile(event->pos(),
                     p_scene->m_profile.m_directX.m_isPathRed,
                     p_scene->m_profile.m_directX.m_isPathGreen,
@@ -511,7 +517,8 @@ void ImageView::mouseMoveEvent(QMouseEvent *event) {
     }
 
     // 図形
-    if (p_scene->m_roi.m_isRoi) {
+    if (p_scene->m_roi.m_isRegionFigure ||
+        p_scene->m_ellipse.m_isRegionFigure) {
         drawFigure(event->pos(),
                 event->modifiers() & Qt::ControlModifier,
                 event->modifiers() & Qt::ShiftModifier);
@@ -543,7 +550,8 @@ void ImageView::mouseReleaseEvent(QMouseEvent *event) {
     }
 
     // 図形
-    if (p_scene->m_roi.m_isRoi) {
+    if (p_scene->m_roi.m_isRegionFigure ||
+        p_scene->m_ellipse.m_isRegionFigure) {
         drawFigure(event->pos(),
                    event->modifiers() & Qt::ControlModifier,
                    event->modifiers() & Qt::ShiftModifier);
@@ -574,8 +582,6 @@ void ImageView::mouseDoubleClickEvent(QMouseEvent *event) {
     else {
         IS_DEBUG_STREAM("Unknown mouse button in mouseMoveEvent...\n");
     }
-
-    
 
     QGraphicsView::mouseDoubleClickEvent(event);
 }

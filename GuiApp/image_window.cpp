@@ -227,6 +227,10 @@ void ImageWindow::toolBarConnection()
     // Roi
     connect(m_pUi->actionRoi, &QAction::toggled, 
             this, &ImageWindow::slotToggleRoi);
+
+    // Ellipse
+    connect(m_pUi->actionEllipse, &QAction::toggled,
+            this, &ImageWindow::slotToggleEllipse);
 }
 
 void ImageWindow::customConnection()
@@ -358,8 +362,8 @@ std::map<int, QRectF> ImageWindow::getRectsOnDibImg() const {
     /* シーン上のRoiを取得 */
 
     std::map<int, QRectF> rects;
-    for (auto iter = m_pScene->m_roi.m_rois.begin(); 
-        iter != m_pScene->m_roi.m_rois.end(); ++iter) 
+    for (auto iter = m_pScene->m_roi.m_regionFigures.begin(); 
+        iter != m_pScene->m_roi.m_regionFigures.end(); ++iter) 
     {
         rects[iter->first] = iter->second->rect();
     }
@@ -458,17 +462,32 @@ void ImageWindow::slotToggleProfile(bool checked) {
 }
 
 
-void ImageWindow::slotToggleRoi(bool checked) 
-{
+void ImageWindow::slotToggleRoi(bool checked) {
     /*矩形領域の(非)表示*/
-    m_pScene->m_roi.m_isRoi = checked;
+
+    m_pScene->m_roi.m_isRegionFigure = checked;
 
     if (!checked) {
-        size_t num = m_pScene->m_roi.m_rois.size();
+        size_t num = m_pScene->m_roi.m_regionFigures.size();
         for (size_t i = 0; i < num; ++i) {
             m_pScene->m_roi.removeRect(m_pScene, i);
         }
         m_pScene->m_roi.release();
+    }
+}
+
+
+void ImageWindow::slotToggleEllipse(bool checked) {
+    /* 楕円領域の(非)表示 */
+
+    m_pScene->m_ellipse.m_isRegionFigure = checked;
+
+    if (!checked) {
+        size_t num = m_pScene->m_ellipse.m_regionFigures.size();
+        for (size_t i = 0; i < num; ++i) {
+            m_pScene->m_ellipse.removeRect(m_pScene, i);
+        }
+        m_pScene->m_ellipse.release();
     }
 }
 
