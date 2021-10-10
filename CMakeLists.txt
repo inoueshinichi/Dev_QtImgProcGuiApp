@@ -46,7 +46,11 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 message("CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
 
-
+ # ライブラリフラグ
+ set(CMAKE_RELEASE_POSTFIX "")
+ set(CMAKE_DEBUG_POSTFIX d)
+ set(CMAKE_MINSIZEREL_POSTFIX _minsizerel)
+ set(CMAKE_RELWITHDEBINFO_POSTFIX _relwithdebinfo)
 
 # プラットフォーム毎のコンパイラオプション(マルチ・コンフィギュレーションに対応)
 if (MSVC)
