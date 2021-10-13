@@ -209,6 +209,10 @@ message(STATUS "========== [START] C++ Build Components ==========")
 # https://github.com/inoueshinichi/IsLibrary/archive/refs/heads/main.zip
 include (${CMAKE_CURRENT_SOURCE_DIR}/build_tool/cmake/download_third-party.cmake)
 set(IS_LIBRARY_DIRNAME IsLibrary-main)
+set(IS_COMMON_TARGET_NAME "")
+set(IS_NDARRAY_TARGET_NAME "")
+set(IS_COMPUTERVISION_TARGET_NAME "")
+
 if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${IS_LIBRARY_DIRNAME})
         # Download
         message(STATUS "Downloading ${IS_LIBRARY_DIRNAME}")
