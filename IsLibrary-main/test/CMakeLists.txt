@@ -4,27 +4,15 @@ cmake_minimum_required(VERSION 3.14.6)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../build-tool/cmake/googletest.cmake)
 BuildGoogleTest("GoogleTest" ON ON)
 
-if ((NOT TARGET GTest::gtest)     OR 
-   (NOT TARGET GTest::gmock)      OR
-   (NOT TARGET GTest::gtest_main) OR
-   (NOT TARGET GTest::gmock_main))
-   message(STATUS "Return CMakeLists.txt of test because GoogleTest is not built.")
-   return()
+if((TARGET GTest::gtest)      AND
+   (TARGET GTest::gmock)      AND
+   (TARGET GTest::gtest_main) AND
+   (TARGET GTest::gmock_main))
+   message(STATUS "Enter each test projects... bacause of exsising googletest library.")
+
+   include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
+   add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tutorial_googletest)
+   add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test_nnabla)
+   add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test_imgproc)
 endif()
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-
-add_subdirectory(tutorial_googletest)
-add_subdirectory(test_nnabla)
-add_subdirectory(test_imgproc)
-
-
-
-
-
-
-
-
-
-
-

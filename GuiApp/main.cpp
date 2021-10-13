@@ -1,6 +1,6 @@
 #include "main_window.h"
 
-#include "camera_controller.h"
+#include <IsComputerVision/camera/camera_controller.hpp>
 
 #include <memory>
 #include <thread>

@@ -38,19 +38,10 @@ if(MSVC)
     # if(BUILD_CPP_MSVC_DEFAULT_LOCALE_UTF8)
     #     list(APPEND LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../../build_tool/ansi_system_locale_utf8-manifext.xml)
     # endif()
-
-
-    # # msvc does not append 'lib' - do it here to have consistent name
-    # set_target_properties(${LIB_NAME} PROPERTIES PREFIX "lib")
-    # set_target_properties(${LIB_NAME} PROPERTIES IMPORT_PREFIX "lib")
-
-
-    # ここにDebugサフィックス`d`を付与する構文をいれること.
-
 endif()
 
 # EXPORTS or dbg_EXPORTS 定義済みマクロを設定 for windows *.dll
-target_compile_definitions(${LIB_TARGET_NAME} PRIVATE
+target_compile_definitions(${LIB_TARGET_NAME} PUBLIC
     $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:Release>>:${LIB_TARGET_NAME}_EXPORTS>
     $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:Debug>>:${LIB_TARGET_NAME}_dbg_EXPORTS>
     $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:MinSizeRel>>:${LIB_TARGET_NAME}_EXPORTS>

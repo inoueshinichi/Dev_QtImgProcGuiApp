@@ -14,6 +14,8 @@ file(GLOB LIB_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
     ./*.cpp
     ./io/*.cpp
     ./filter/*.cpp
+    ./camera/*.cpp
+    ./camera/general/*.cpp
 )
 
 # Library
@@ -42,25 +44,20 @@ if(MSVC)
     # if(BUILD_CPP_MSVC_DEFAULT_LOCALE_UTF8)
     #     list(APPEND LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../../build_tool/ansi_system_locale_utf8-manifext.xml)
     # endif()
-
-    # msvc does not append 'lib' - do it here to have consistent name
-    # set_target_properties(${LIB_NAME} PROPERTIES PREFIX "lib")
-    # set_target_properties(${LIB_NAME} PROPERTIES IMPORT_PREFIX "lib")
-
 endif()
 
 # EXPORTS or dbg_EXPORTS 定義済みマクロを設定 for windows *.dll
-target_compile_definitions(${LIB_TARGET_NAME} PRIVATE
+target_compile_definitions(${LIB_TARGET_NAME} PUBLIC
     $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:Release>>:${LIB_TARGET_NAME}_EXPORTS>
     $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:Debug>>:${LIB_TARGET_NAME}_dbg_EXPORTS>
     $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:MinSizeRel>>:${LIB_TARGET_NAME}_EXPORTS>
     $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:RelWithDebgInfo>>:${LIB_TARGET_NAME}_dbg_EXPORTS>
 )
 
+
 ################################################################################
 # リンク
 ################################################################################
-
 target_link_libraries(${LIB_TARGET_NAME} PUBLIC
     ${IS_COMMON_TARGET_NAME}
     ${IS_NDARRAY_TARGET_NAME}
@@ -77,6 +74,19 @@ add_dependencies(${LIB_TARGET_NAME}
 #     COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:myzlib> $<TARGET_FILE_DIR:${LIB_TARGET_NAME}>
 #     COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:mylibpng> $<TARGET_FILE_DIR:${LIB_TARGET_NAME}>
 # )
+
+###############################################################################
+# OpenCVライブラリのリンク
+###############################################################################
+find_package(OpenCV REQUIRED)
+if(OpenCV_FOUND)
+    target_include_directories(${LIB_TARGET_NAME} PUBLIC 
+        ${OpenCV_INCLUDE_DIRS}
+    )
+    target_link_libraries(${LIB_TARGET_NAME} PUBLIC 
+        ${OpenCV_LIBS}
+    )
+endif()
 
 
 set(IS_COMPUTERVISION_TARGET_NAME ${LIB_TARGET_NAME} PARENT_SCOPE)

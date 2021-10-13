@@ -9,7 +9,7 @@ namespace is
         using uchar = unsigned char;
 
 
-        NdArrayPtr averageFilter(NdArrayPtr src, const Size &ksize)
+        NdArrayPtr avg_filter(NdArrayPtr src, const Size &ksize)
         {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
             IS_DEBUG_CHECK_NDARRAY_STATE(IS_DEBUG_FLAG, src);
@@ -50,7 +50,7 @@ namespace is
         }
 
 
-        NdArrayPtr gaussianFilter(NdArrayPtr src, int ksize, double sigma)
+        NdArrayPtr gaussian_filter(NdArrayPtr src, int ksize, double sigma)
         {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
             IS_DEBUG_CHECK_NDARRAY_STATE(IS_DEBUG_FLAG, src);
@@ -111,7 +111,7 @@ namespace is
             return dst;
         }
 
-        NdArrayPtr medianFilter(NdArrayPtr src, int ksize)
+        NdArrayPtr median_filter(NdArrayPtr src, int ksize)
         {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
             IS_DEBUG_CHECK_NDARRAY_STATE(IS_DEBUG_FLAG, src);

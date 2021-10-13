@@ -1,4 +1,4 @@
-# IsNdArrayLibrary
+# IsLibrary
 
 Image Processing & Recognition Standard Library  
 

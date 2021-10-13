@@ -230,7 +230,7 @@ void MainWindow::dropEvent(QDropEvent *event) {
                     getNewSerialNo(filename.toStdString(), currImgWinFilenames);
                 ImageWindow *p_newImgWin = genImgWin(QString::fromStdString(newFilename));
 
-                p_newImgWin->setDibImg(img, true);
+                p_newImgWin->setDibImg(img, true, true);
             }
         }
     }
@@ -338,7 +338,7 @@ void MainWindow::slotActMenuBarFileOpen() {
                                                      currImgWinFilenames);
             ImageWindow *p_newImgWin = genImgWin(QString::fromStdString(newFilename));
 
-            p_newImgWin->setDibImg(img, true);
+            p_newImgWin->setDibImg(img, true, true);
         }
     }
 }
@@ -817,7 +817,7 @@ void MainWindow::slotActMenuBarImageCrop() {
 
         QImage cropedImg = img.copy(roi.second.toRect());
 
-        p_newImgWin->setDibImg(cropedImg, true);
+        p_newImgWin->setDibImg(cropedImg, true, true);
     }
 }
 
@@ -851,7 +851,7 @@ void MainWindow::slotActMenuBarImageDuplicate() {
     std::string newFilename = getNewSerialNo(filename.toStdString(), currImgWinFilenames);
     ImageWindow *p_newImgWin = genImgWin(QString::fromStdString(newFilename));
 
-    p_newImgWin->setDibImg(img, true);
+    p_newImgWin->setDibImg(img, true, true);
 }
 
 

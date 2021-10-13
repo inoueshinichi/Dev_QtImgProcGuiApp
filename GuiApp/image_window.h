@@ -15,7 +15,8 @@
 #include "ui_ImageWindow.h"
 #include "image_view.h"
 #include "image_scene.h"
-#include "camera_controller.h"
+
+#include <IsComputerVision/camera/camera_controller.hpp>
 
 #include <QMainWindow>
 #include <QEvent>
@@ -46,7 +47,7 @@ class ImageWindow : public QMainWindow
     QTimer*          m_pCamTimer;
     int m_camTimerId {0};
     Qt::TimerType m_camTimerType;
-    CameraController m_camCtrl;
+    is::imgproc::CameraController m_camCtrl;
     QImage::Format m_camFormat;
     int m_camWidth {0};
     int m_camHeight {0};
@@ -68,7 +69,7 @@ public:
     Ui::ImageWindow *ui() const;
     void resetDibImg();
     QImage getDibImg();
-    bool setDibImg(QImage& img, bool isSceneClear = false);
+    bool setDibImg(QImage& img, bool isSceneClear = false, bool isRaw = false);
     std::map<int, QRectF> getRectsOnDibImg() const;
 
 protected:

@@ -30,7 +30,7 @@ message(STATUS "========== [START] C++ All Target Options ==========")
 
 # Switching Option
 option(BUILD_CPP_OPENMP "Enable/Disable: OpenMP" ON)
-option(BUILD_CPP_TEST "Enable/Disable: Building Test" OFF)
+option(BUILD_CPP_TEST "Enable/Disable: Building Test" ON)
 option(BUILD_CPP_SHARED_LIBS "Enable/Disable: Shared Libraries" ON)
 option(BUILD_CPP_ZERO_CHECK "Enable/Disable: ZERO_CHECK" OFF)
 option(BUILD_CPP_MSVC_DEFAULT_LOCALE_UTF8 "Enable/Disable utf-8 default locale" OFF) # ANSI: ShiftJIS -> UTF8 @ Windows OS
@@ -249,7 +249,7 @@ if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${IS_LIBRARY_DIRNAME})
         )
 endif()
 
-add_subdirectory(${IS_LIBRARY_DIRNAME})
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/${IS_LIBRARY_DIRNAME})
 
 
 

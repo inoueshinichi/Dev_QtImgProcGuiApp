@@ -26,7 +26,7 @@ namespace is
          * @param ksize_y 
          * @return NdArrayPtr
          */
-        IS_IMGPROC_API NdArrayPtr averageFilter(NdArrayPtr src, const Size &ksize);
+        IS_IMGPROC_API NdArrayPtr avg_filter(NdArrayPtr src, const Size &ksize);
 
         /**
          * @brief ガウシアンフィルタ
@@ -38,7 +38,7 @@ namespace is
          * @param sigma_y
          * @return NdArrayPtr 
          */
-        IS_IMGPROC_API NdArrayPtr gaussianFilter(NdArrayPtr src, int ksize, double sigma = 0);
+        IS_IMGPROC_API NdArrayPtr gaussian_filter(NdArrayPtr src, int ksize, double sigma = 0);
 
         /**
          * @brief メディアンフィルタ
@@ -48,6 +48,6 @@ namespace is
          * @param ksize_y 
          * @return NdArrayPtr 
          */
-        IS_IMGPROC_API NdArrayPtr medianFilter(NdArrayPtr src, int ksize);
+        IS_IMGPROC_API NdArrayPtr median_filter(NdArrayPtr src, int ksize);
     }
 }

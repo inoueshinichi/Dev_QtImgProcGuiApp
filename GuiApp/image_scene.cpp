@@ -68,13 +68,13 @@ void ImageScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
  * @return true
  * @return false
  */
-bool ImageScene::setDibImg(const QImage& img) {
+bool ImageScene::setDibImg(const QImage& img, bool isRaw) {
     if (img.isNull()) {
         return false;
     }
 
     m_editImgIns.m_memDibImg = img.copy(); // ここのcopy必要!
-    if (m_rawDibImg.isNull())
+    if (isRaw)
     {
         m_rawDibImg = m_editImgIns.m_memDibImg.copy();
     }

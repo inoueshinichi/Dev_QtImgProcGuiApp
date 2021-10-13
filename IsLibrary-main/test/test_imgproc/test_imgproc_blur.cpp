@@ -25,7 +25,7 @@ namespace plt = matplotlibcpp;
 
 using uchar = unsigned char;
 using namespace is::nbla;
-using namespace is::utils;
+using namespace is::common;
 using namespace is::imgproc;
 
 #define PADDING_ZERO 0
@@ -103,7 +103,7 @@ namespace {
     }
 
     // AverageFilter
-    TEST(imgproc_func, averageFilter)
+    TEST(imgproc_func, avg_filter)
     {
         const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
         std::cout << "GlobalContext after load: " << ctx.to_string() << std::endl;
@@ -122,7 +122,7 @@ namespace {
 
         int ksize_x = 15;
         int ksize_y = 15;
-        auto filtered = invoke_tm_chrono_ms_ret(averageFilter, src, Size(ksize_x, ksize_y));
+        auto filtered = invoke_tm_chrono_ms_ret(avg_filter, src, Size(ksize_x, ksize_y));
         // show_ndarray_property(filtered);
 
         dummy_filename = format_string("/home/inoue/Desktop/average_Lenna_%dx%d.bmp", 
@@ -131,7 +131,7 @@ namespace {
     }
 
     // GaussianFilter
-    TEST(imgproc_func, gaussianFilter)
+    TEST(imgproc_func, gaussian_filter)
     {
         const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
         std::cout << "GlobalContext after load: " << ctx.to_string() << std::endl;
@@ -149,7 +149,7 @@ namespace {
         // show_ndarray_property(src);
 
         int ksize = 9;
-        auto filtered = invoke_tm_chrono_ms_ret(gaussianFilter, src, ksize, 0);
+        auto filtered = invoke_tm_chrono_ms_ret(gaussian_filter, src, ksize, 0);
         // show_ndarray_property(filtered);
 
         dummy_filename = format_string("/home/inoue/Desktop/gaussian_Lenna_size%dx%d.bmp",
@@ -158,7 +158,7 @@ namespace {
     }
 
     // MedianFilter
-    TEST(imgproc_func, medianFilter)
+    TEST(imgproc_func, median_filter)
     {
         const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
         std::cout << "GlobalContext after load: " << ctx.to_string() << std::endl;
@@ -176,7 +176,7 @@ namespace {
         // show_ndarray_property(src);
 
         int ksize = 15;
-        auto filtered = invoke_tm_chrono_ms_ret(medianFilter, src, ksize);
+        auto filtered = invoke_tm_chrono_ms_ret(median_filter, src, ksize);
         // show_ndarray_property(filtered);
 
         dummy_filename = format_string("/home/inoue/Desktop/median_Lenna_%dx%d.bmp", 

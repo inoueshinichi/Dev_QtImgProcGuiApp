@@ -3,14 +3,14 @@
 #include "matplotlibcpp.h"
 namespace plt = matplotlibcpp;
 
-#include <utils/time_measure.hpp>
+#include <IsCommon/tm.hpp>
 
 // imgproc
-#include <imgproc/io/img_io.hpp>
+#include <IsComputerVision/io/img_io.hpp>
 
 // nnabla
-#include <nbla/nd_array.hpp>
-#include <nbla/nd_array_extra.hpp>
+#include <IsNdArray/nd_array.hpp>
+#include <IsNdArray/nd_array_extra.hpp>
 
 #include <string>
 #include <cstdio>
@@ -23,7 +23,7 @@ namespace
         using namespace is::imgproc;
         using namespace is::imgproc::format;
         using namespace is::nbla;
-        using namespace is::utils;
+        using namespace is::common;
         using byte = unsigned char;
         const auto &ctx_cpu = SingletonManager::get<GlobalContext>()->get_current_context();
 

@@ -57,7 +57,7 @@ namespace is
                 } 
                 else
                 {
-                    throw std::runtime_error(utils::format_string(
+                    throw std::runtime_error(common::format_string(
                         "Unmatch shape of ndarray for bitmap file format. Given is %d", ndarray->ndim()));
                 }
                 

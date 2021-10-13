@@ -18,8 +18,9 @@ function(make_test_case SOURCE_CODE TEST_TARGET_EXE)
 
     # Libarary-link
     target_link_libraries(${TEST_TARGET_EXE} PRIVATE
-        IsNdArray
-        IsComputerVision
+        ${IS_COMMON_TARGET_NAME}
+        ${IS_NDARRAY_TARGET_NAME}
+        ${IS_COMPUTERVISION_TARGET_NAME}
         GTest::gtest
         GTest::gmock
         Python3::Python
@@ -27,17 +28,19 @@ function(make_test_case SOURCE_CODE TEST_TARGET_EXE)
     )
 
     # Build-order
-    add_dependencies(${TEST_TARGET_EXE} 
-        IsNdArray
-        IsComputerVision
+    add_dependencies(${TEST_TARGET_EXE}
+        ${IS_COMMON_TARGET_NAME}
+        ${IS_NDARRAY_TARGET_NAME}
+        ${IS_COMPUTERVISION_TARGET_NAME}
         GTest::gtest 
         GTest::gmock
     )
 
     # dllファイルを実行ファイルと同じフォルダにコピー
     add_custom_command(TARGET ${TEST_TARGET_EXE} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:nnabla> $<TARGET_FILE_DIR:${TEST_TARGET_EXE}>
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:imgproc> $<TARGET_FILE_DIR:${TEST_TARGET_EXE}>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${IS_COMMON_TARGET_NAME}> $<TARGET_FILE_DIR:${TEST_TARGET_EXE}>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${IS_NDARRAY_TARGET_NAME}> $<TARGET_FILE_DIR:${TEST_TARGET_EXE}>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${IS_COMPUTERVISION_TARGET_NAME}> $<TARGET_FILE_DIR:${TEST_TARGET_EXE}>
     )
 
 endfunction()

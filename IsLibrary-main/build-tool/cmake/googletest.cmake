@@ -129,6 +129,11 @@ function(BuildGoogleTest GTEST_TARGET GTEST_SHARED_LIB GTEST_BUILD_ALWAYS)
     find_package(Threads REQUIRED)
 
 
+    if (NOT EXISTS ${INSTALL_DIR}/include)
+        message(STATUS "Return googletest.cmake because not make install/include yet.")
+        return()
+    endif()
+
     # ---------------------------------------------------------------------- #
     # ビルド成果物である下記をそれぞれCMakeにおけるターゲットに昇華させる
     # IMPORTED TARGETの生成

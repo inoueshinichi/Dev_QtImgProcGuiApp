@@ -313,7 +313,7 @@ QImage ImageWindow::getDibImg() {
     return m_pScene->getDibImg();
 }
 
-bool ImageWindow::setDibImg(QImage& img, bool isSceneClear) {
+bool ImageWindow::setDibImg(QImage& img, bool isSceneClear, bool isRaw) {
     /* シーン上の編集画像に設定 */
 
     auto format = getFormatStr(img);
@@ -353,7 +353,7 @@ bool ImageWindow::setDibImg(QImage& img, bool isSceneClear) {
          m_pScene->clear();
     }
 
-    return m_pScene->setDibImg(img);
+    return m_pScene->setDibImg(img, isRaw);
 }
 
 
@@ -537,7 +537,6 @@ void ImageWindow::slotStartCapture() {
         // 1 : Qt::CoarseTimer
         // 2 : Qt::VeryCoarseTimer
         m_camTimerType = m_pCamTimer->timerType(); // default: Qt::CoarseTimer
-
         IS_DEBUG_STREAM("TimerId: %d, TimerType: %d\n", m_camTimerId, m_camTimerType);
 
         m_pCamTimer->start(30);
@@ -575,5 +574,5 @@ void ImageWindow::slotTimerHandler() {
     QImage frameImg(frame.data(), m_camWidth, m_camHeight, 
                     (int)m_camMemSizePerLine, m_camFormat);
 
-   m_pScene->setDibImg(frameImg);
+   setDibImg(frameImg, false, true);
 }

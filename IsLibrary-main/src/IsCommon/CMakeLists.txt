@@ -47,7 +47,7 @@ endif()
 
 
 # EXPORTS or dbg_EXPORTS 定義済みマクロを設定 for windows *.dll
-target_compile_definitions(${LIB_TARGET_NAME} PRIVATE
+target_compile_definitions(${LIB_TARGET_NAME} PUBLIC
     $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:Release>>:${LIB_TARGET_NAME}_EXPORTS>
     $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:Debug>>:${LIB_TARGET_NAME}_dbg_EXPORTS>
     $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:MinSizeRel>>:${LIB_TARGET_NAME}_EXPORTS>

@@ -3,16 +3,16 @@
 #include "matplotlibcpp.h"
 namespace plt = matplotlibcpp;
 
-#include <utils/time_measure.hpp>
+#include <IsCommon/tm.hpp>
 
 // imgproc
-#include <imgproc/common.hpp>
-#include <imgproc/io/img_io.hpp>
+#include <IsComputerVision/common.hpp>
+#include <IsComputerVision/io/img_io.hpp>
 
 // filter
-#include <imgproc/filter/utils/utils_filter.hpp>
-#include <imgproc/filter/blur.hpp>
-#include <imgproc/filter/edge_detector.hpp>
+#include <IsComputerVision/filter/utils/utils_filter.hpp>
+#include <IsComputerVision/filter/blur.hpp>
+#include <IsComputerVision/filter/edge_detector.hpp>
 
 // utility
 #include <test_utils.hpp>
@@ -22,12 +22,12 @@ namespace plt = matplotlibcpp;
 
 using uchar = unsigned char;
 using namespace is::nbla;
-using namespace is::utils;
+using namespace is::common;
 using namespace is::imgproc;
 
 namespace
 {
-    TEST(imgproc_func, sobel) {
+    TEST(imgproc_func, sobel_edge_detector) {
         const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
         std::cout << "GlobalContext after load: " << ctx.to_string() << std::endl;
 
@@ -44,7 +44,7 @@ namespace
         // show_ndarray_property(src);
 
         int direction = 0;
-        auto filtered = invoke_tm_chrono_ms_ret(sobelFilter, src, direction);
+        auto filtered = invoke_tm_chrono_ms_ret(sobel_edge_detector, src, direction);
         double *dst_data = filtered->cast_data_and_get_pointer<double>(ctx);
 
         // 基準輝度を128にする
@@ -72,7 +72,7 @@ namespace
         io_bmp.save(dummy_filename, filtered, false);
     }
 
-    TEST(imgproc_func, laplacian) {
+    TEST(imgproc_func, laplacian_edge_detector) {
       const auto &ctx =
           SingletonManager::get<GlobalContext>()->get_current_context();
       std::cout << "GlobalContext after load: " << ctx.to_string() << std::endl;
@@ -92,7 +92,7 @@ namespace
       // show_ndarray_property(src);
 
       int direction = 0;
-      auto filtered = invoke_tm_chrono_ms_ret(laplacianFilter, src, true);
+      auto filtered = invoke_tm_chrono_ms_ret(laplacian_edge_detector, src, true);
       double *dst_data = filtered->cast_data_and_get_pointer<double>(ctx);
 
       // 基準輝度を128にする
@@ -117,7 +117,7 @@ namespace
       io_bmp.save(dummy_filename, filtered, false);
     }
 
-    TEST(imgproc_func, log) {
+    TEST(imgproc_func, log_edge_detector) {
         const auto &ctx =
             SingletonManager::get<GlobalContext>()->get_current_context();
         std::cout << "GlobalContext after load: " << ctx.to_string() << std::endl;
@@ -136,7 +136,7 @@ namespace
         auto st = src->strides();
         // show_ndarray_property(src);
 
-        auto filtered = invoke_tm_chrono_ms_ret(logFilter, src, 0);
+        auto filtered = invoke_tm_chrono_ms_ret(log_edge_detector, src, 0);
         double *dst_data = filtered->cast_data_and_get_pointer<double>(ctx);
 
         // 基準輝度を128にする

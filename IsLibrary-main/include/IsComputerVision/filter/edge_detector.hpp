@@ -24,7 +24,7 @@ namespace is
          * @param direction 
          * @return NdArrayPtr 
          */
-        IS_IMGPROC_API NdArrayPtr sobelFilter(NdArrayPtr src, int direction);
+        IS_IMGPROC_API NdArrayPtr sobel_edge_detector(NdArrayPtr src, int direction);
 
         /**
          * @brief Laplacian
@@ -33,7 +33,7 @@ namespace is
          * @param is_elem_8
          * @return NdArrayPtr
          */
-        IS_IMGPROC_API NdArrayPtr laplacianFilter(NdArrayPtr src, bool is_elem_8 = true);
+        IS_IMGPROC_API NdArrayPtr laplacian_edge_detector(NdArrayPtr src, bool is_elem_8 = true);
 
         /**
          * @brief LoG (Laplacian of Gaussian)
@@ -42,7 +42,7 @@ namespace is
          * @param sigma
          * @return NdArrayPtr
          */
-        IS_IMGPROC_API NdArrayPtr logFilter(NdArrayPtr src, double sigma = 0);
+        IS_IMGPROC_API NdArrayPtr log_edge_detector(NdArrayPtr src, double sigma = 0);
 
     } // imgproc
 }

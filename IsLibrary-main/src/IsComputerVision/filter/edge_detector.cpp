@@ -8,7 +8,7 @@ namespace is
     {
         using namespace nbla;
 
-        NdArrayPtr sobelFilter(NdArrayPtr src, int direction)
+        NdArrayPtr sobel_edge_detector(NdArrayPtr src, int direction)
         {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
             IS_DEBUG_CHECK_NDARRAY_STATE(IS_DEBUG_FLAG, src);
@@ -101,7 +101,7 @@ namespace is
         }
 
 
-        NdArrayPtr laplacianFilter(NdArrayPtr src, bool is_elem_8) {
+        NdArrayPtr laplacian_edge_detector(NdArrayPtr src, bool is_elem_8) {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
             IS_DEBUG_CHECK_NDARRAY_STATE(IS_DEBUG_FLAG, src);
 
@@ -144,7 +144,7 @@ namespace is
             return dst;
         }
 
-        NdArrayPtr logFilter(NdArrayPtr src, double sigma) {
+        NdArrayPtr log_edge_detector(NdArrayPtr src, double sigma) {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
             IS_DEBUG_CHECK_NDARRAY_STATE(IS_DEBUG_FLAG, src);
 
