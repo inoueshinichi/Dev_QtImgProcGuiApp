@@ -46,7 +46,11 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 message("CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
 
-
+ # ライブラリフラグ
+set(CMAKE_RELEASE_POSTFIX "")
+set(CMAKE_DEBUG_POSTFIX d)
+set(CMAKE_MINSIZEREL_POSTFIX _minsizerel)
+set(CMAKE_RELWITHDEBINFO_POSTFIX _relwithdebinfo)
 
 # プラットフォーム毎のコンパイラオプション(マルチ・コンフィギュレーションに対応)
 if (MSVC)
@@ -198,10 +202,60 @@ message(STATUS "========== [END] C++ All Target Options ==========")
 # C++ core
 ###############################################################################
 message(STATUS "========== [START] C++ Build Components ==========")
+
+
 # ========== Library File ==========
-add_subdirectory(IsLibrary)
+# https://github.com/inoueshinichi/IsLibrary
+# https://github.com/inoueshinichi/IsLibrary/archive/refs/heads/main.zip
+include (${CMAKE_CURRENT_SOURCE_DIR}/build_tool/cmake/download_third-party.cmake)
+set(IS_LIBRARY_DIRNAME IsLibrary-main)
+if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${IS_LIBRARY_DIRNAME})
+        # Download
+        message(STATUS "Downloading ${IS_LIBRARY_DIRNAME}")
+        file(DOWNLOAD
+            https://github.com/inoueshinichi/IsLibrary/archive/refs/heads/main.zip
+            ${CMAKE_CURRENT_SOURCE_DIR}/${IS_LIBRARY_DIRNAME}.zip
+            SHOW_PROGRESS
+            STATUS status
+            LOG log)
+        list(GET status 0 status_code)
+        list(GET status 1 status_string)
+        if (NOT status_code EQUAL 0)
+            if (UNIX OR APPLE)
+                message("Failed to download ${IS_LIBRARY_DIRNAME}. Try to download with wget.")
+                execute_process(
+                    COMMAND wget https://github.com/inoueshinichi/IsLibrary/archive/refs/heads/main.zip
+                    -O ${CMAKE_CURRENT_SOURCE_DIR}/${IS_LIBRARY_DIRNAME}.zip
+                )
+            else()
+                message(FATAL_ERROR "Failed to download ${IS_LIBRARY_DIRNAME}. 
+                        Please check network connection and proxy settings.
+                        status_code: ${status_code}
+                        status_string: ${status_string}
+                        log: ${log}")
+                error() # Place Unknown command to stop cmake process here.
+            endif()
+        endif()
+
+        # Extract
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} -E
+            chdir ${CMAKE_CURRENT_SOURCE_DIR}
+            ${CMAKE_COMMAND} -E tar xf ${IS_LIBRARY_DIRNAME}.zip
+        )
+endif()
+
+add_subdirectory(${IS_LIBRARY_DIRNAME})
+
+
+
 # ========== Executable File ==========
-add_subdirectory(GuiApp)
+if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${IS_LIBRARY_DIRNAME})
+    message(STATUS ">>>>>>>>>>>>>>>>>>>> Target GuiApp! <<<<<<<<<<<<<<<<<<<<")
+    add_subdirectory(GuiApp)
+endif()
+
+
 message(STATUS "========== [END] C++ Build Components ==========")
 
 

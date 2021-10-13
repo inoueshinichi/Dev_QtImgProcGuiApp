@@ -282,24 +282,32 @@ target_link_libraries(${APP_TARGET_NAME} PRIVATE
 
 # Include
 target_include_directories(${APP_TARGET_NAME} PRIVATE 
-    ${CMAKE_SOURCE_DIR}/IsLibrary/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../${IS_LIBRARY_DIRNAME}/include
 )
+
+set(${IS_COMMON_TARGET} IsCommon)
+set(${IS_NDARRAY_TARGET} IsNdArray)
+set(${IS_COMPUTERVISION_TARGET} IsComputerVision)
 
 # Link
 target_link_libraries(${APP_TARGET_NAME} PRIVATE
-    IsCommon
+    ${IS_COMMON_TARGET}
+    # ${IS_NDARRAY_TARGET}
+    # ${IS_COMPUTERVISION_TARGET}
 )
 
-# Dependency
-add_dependencies(${APP_TARGET_NAME} 
-    IsCommon
-)
+# # Dependency
+# add_dependencies(${APP_TARGET_NAME}
+#     ${IS_COMMON_TARGET}
+#     # ${IS_NDARRAY_TARGET}
+#     # ${IS_COMPUTERVISION_TARGET}
+# )
 
 # Copy
 add_custom_command(TARGET ${APP_TARGET_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:IsCommon> $<TARGET_FILE_DIR:${APP_TARGET_NAME}>
-    # COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:> $<TARGET_FILE_DIR:${APP_TARGET_NAME}>
-    # COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:> $<TARGET_FILE_DIR:${APP_TARGET_NAME}>
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${IS_COMMON_TARGET}> $<TARGET_FILE_DIR:${APP_TARGET_NAME}>
+    # COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${IS_NDARRAY_TARGET}> $<TARGET_FILE_DIR:${APP_TARGET_NAME}>
+    # COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${IS_COMPUTERVISION_TARGET}> $<TARGET_FILE_DIR:${APP_TARGET_NAME}>
 )
 
 
