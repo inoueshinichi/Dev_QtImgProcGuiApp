@@ -11,7 +11,7 @@ namespace is
         NdArrayPtr sobel_edge_detector(NdArrayPtr src, int direction)
         {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
-            IS_DEBUG_CHECK_NDARRAY_STATE(IS_DEBUG_FLAG, src);
+            IS_DEBUG_CHECK_NDARRAY_STATE(sobel_edge_detector, IS_DEBUG_FLAG, src);
 
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             auto sh = src->shape();
@@ -103,7 +103,7 @@ namespace is
 
         NdArrayPtr laplacian_edge_detector(NdArrayPtr src, bool is_elem_8) {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
-            IS_DEBUG_CHECK_NDARRAY_STATE(IS_DEBUG_FLAG, src);
+            IS_DEBUG_CHECK_NDARRAY_STATE(laplacian_edge_detector, IS_DEBUG_FLAG, src);
 
             const auto &ctx =
                 SingletonManager::get<GlobalContext>()->get_current_context();
@@ -146,7 +146,7 @@ namespace is
 
         NdArrayPtr log_edge_detector(NdArrayPtr src, double sigma) {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
-            IS_DEBUG_CHECK_NDARRAY_STATE(IS_DEBUG_FLAG, src);
+            IS_DEBUG_CHECK_NDARRAY_STATE(log_edge_detector, IS_DEBUG_FLAG, src);
 
             const auto &ctx =
                 SingletonManager::get<GlobalContext>()->get_current_context();

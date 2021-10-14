@@ -42,36 +42,37 @@
 #endif
 
 
-#define IS_DEBUG_CHECK_NDARRAY_STATE(flag, ndarray) \
-  if (flag > 0) {                                   \
-    auto ndim = ndarray->ndim();                    \
-    auto shape = ndarray->shape();                  \
-    auto strides = ndarray->strides();              \
-    auto dtype = ndarray->dtype();                  \
-    auto type = nbla::dtype_to_string(dtype);       \
-    std::ostringstream oss;                         \
-    oss << "Type: " << type << ", ";                \
-    oss << "ndim: " << ndim << ", ";                \
-    oss << "shape: (";                              \
-    for (int d = 0; d < ndim; ++d) {                \
-      oss << shape[d];                              \
-      if (d != ndim - 1) {                          \
-        oss << ",";                                 \
-      } else {                                      \
-        oss << "), ";                               \
-      }                                             \
-    }                                               \
-                                                    \
-    oss << "strides: (";                            \
-    for (int d = 0; d < ndim; ++d) {                \
-      oss << strides[d];                            \
-      if (d != ndim - 1) {                          \
-        oss << ",";                                 \
-      } else {                                      \
-        oss << ")";                                 \
-      }                                             \
-    }                                               \
-    std::cout << oss.str() << std::endl;            \
+#define IS_DEBUG_CHECK_NDARRAY_STATE(func, flag, ndarray) \
+  if (flag > 0) {                                         \
+    auto ndim = ndarray->ndim();                          \
+    auto shape = ndarray->shape();                        \
+    auto strides = ndarray->strides();                    \
+    auto dtype = ndarray->dtype();                        \
+    auto type = nbla::dtype_to_string(dtype);             \
+    std::ostringstream oss;                               \
+    oss << #func << ", ";                                 \
+    oss << "Type: " << type << ", ";                      \
+    oss << "ndim: " << ndim << ", ";                      \
+    oss << "shape: (";                                    \
+    for (int d = 0; d < ndim; ++d) {                      \
+      oss << shape[d];                                    \
+      if (d != ndim - 1) {                                \
+        oss << ",";                                       \
+      } else {                                            \
+        oss << "), ";                                     \
+      }                                                   \
+    }                                                     \
+                                                          \
+    oss << "strides: (";                                  \
+    for (int d = 0; d < ndim; ++d) {                      \
+      oss << strides[d];                                  \
+      if (d != ndim - 1) {                                \
+        oss << ",";                                       \
+      } else {                                            \
+        oss << ")";                                       \
+      }                                                   \
+    }                                                     \
+    std::cout << oss.str() << std::endl;                  \
   }
 
 

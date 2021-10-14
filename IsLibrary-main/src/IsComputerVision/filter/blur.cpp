@@ -12,7 +12,7 @@ namespace is
         NdArrayPtr avg_filter(NdArrayPtr src, const Size &ksize)
         {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
-            IS_DEBUG_CHECK_NDARRAY_STATE(IS_DEBUG_FLAG, src);
+            IS_DEBUG_CHECK_NDARRAY_STATE(avg_filter, IS_DEBUG_FLAG, src);
 
             const auto& ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             auto sh = src->shape();
@@ -53,7 +53,7 @@ namespace is
         NdArrayPtr gaussian_filter(NdArrayPtr src, int ksize, double sigma)
         {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
-            IS_DEBUG_CHECK_NDARRAY_STATE(IS_DEBUG_FLAG, src);
+            IS_DEBUG_CHECK_NDARRAY_STATE(gaussian_filter, IS_DEBUG_FLAG, src);
             using ubyte = uchar;
 
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
@@ -114,7 +114,7 @@ namespace is
         NdArrayPtr median_filter(NdArrayPtr src, int ksize)
         {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
-            IS_DEBUG_CHECK_NDARRAY_STATE(IS_DEBUG_FLAG, src);
+            IS_DEBUG_CHECK_NDARRAY_STATE(median_filter, IS_DEBUG_FLAG, src);
             using ubyte = uchar;
 
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
