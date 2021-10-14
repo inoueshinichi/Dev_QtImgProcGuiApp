@@ -40,9 +40,15 @@ namespace is
             
             // 演算結果
             auto dst = zeros<uchar>(sh);
-            
+
+            auto start = std::chrono::high_resolution_clock::now();
+
             // 畳み込み演算
             convolution<uchar>(dst, extend, Size(ksize_x, ksize_y), p_kernel);
+
+            auto end = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+            std::cout << "Convolution: " << duration << "[ms]" << std::endl;
 
             delete[] p_kernel;
 
@@ -98,15 +104,14 @@ namespace is
             // 演算結果
             auto dst = zeros<ubyte>(sh);
 
-            // auto start = std::chrono::high_resolution_clock::now();
+            auto start = std::chrono::high_resolution_clock::now();
 
             // 畳み込み演算
             convolution<ubyte>(dst, extend, Size(ksize, ksize), p_kernel);
 
-            // auto end = std::chrono::high_resolution_clock::now();
-            // auto duration = end - start;
-            // double duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
-            // std::cout << "Gaussian Kernel: " << duration_ms << "[ms]" << std::endl;
+            auto end = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+            std::cout << "Convolution: " << duration << "[ms]" << std::endl;
             delete[] p_kernel; p_kernel = nullptr;
             return dst;
         }
