@@ -189,6 +189,12 @@ void ImageWindow::memuBarConnection() {
         m_pMainWindow, &MainWindow::slotActMenuBarCameraWindow);
     connect(m_pUi->actionCameraCognex, &QAction::triggered,
         m_pMainWindow, &MainWindow::slotActMenuBarCameraWindow);
+
+
+    /* Menu -> Process */
+    // Filter
+    connect(m_pUi->actionFilter, &QAction::triggered,
+        m_pMainWindow, &MainWindow::slotActMenuBarFilter);
 }
 
 void ImageWindow::toolBarConnection()
@@ -316,7 +322,7 @@ QImage ImageWindow::getDibImg() {
 bool ImageWindow::setDibImg(QImage& img, bool isSceneClear, bool isRaw) {
     /* シーン上の編集画像に設定 */
 
-    auto format = getFormatStr(img);
+    
     int width = img.width();
     int height = img.height();
     int depth = img.depth();
@@ -339,6 +345,8 @@ bool ImageWindow::setDibImg(QImage& img, bool isSceneClear, bool isRaw) {
             "No support image format. Given depth is %d", depth);
         throw std::runtime_error(msg.c_str());
     }
+
+    auto format = getFormatStr(img);
     
     std::string status = is::common::format_string("%dx%d@%s, %d-bits, %ld[bytes]", 
                                 width, height, 

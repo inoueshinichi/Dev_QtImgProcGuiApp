@@ -11,15 +11,9 @@
 
 #include "ui_MainWindow.h"
 #include "main_window.h"
+#include "filter_dialog.h"
 
-#include <algorithm>
-#include <vector>
-#include <iostream>
-#include <cstdio>
-#include <filesystem>
-namespace fs = std::filesystem;
-#include <chrono>
-using namespace std::chrono;
+
 
 #include <QApplication>
 #include <QMessageBox>
@@ -29,6 +23,15 @@ using namespace std::chrono;
 #include <QRect>
 #include <QMimeData>
 #include <QUrl>
+
+#include <algorithm>
+#include <vector>
+#include <iostream>
+#include <cstdio>
+#include <filesystem>
+namespace fs = std::filesystem;
+#include <chrono>
+using namespace std::chrono;
 
 
 //////////////////////////////////////////////////////////
@@ -40,6 +43,7 @@ MainWindow::MainWindow(QWidget *parent)
     , m_pUi(new Ui::MainWindow())
     , m_pStatusBarLabel(new QLabel())
     , m_pLastActiveImgWin(nullptr) {
+
     // UI
     m_pUi->setupUi(this);
 
@@ -852,6 +856,17 @@ void MainWindow::slotActMenuBarImageDuplicate() {
     ImageWindow *p_newImgWin = genImgWin(QString::fromStdString(newFilename));
 
     p_newImgWin->setDibImg(img, true, true);
+}
+
+
+/**
+ * @brief Menu -> Process -> Filter
+ * 
+ */
+void MainWindow::slotActMenuBarFilter() {
+    auto p_filter_dlg = new FilterDialog(m_pLastActiveImgWin);
+    p_filter_dlg->show();
+    p_filter_dlg->activateWindow();
 }
 
 

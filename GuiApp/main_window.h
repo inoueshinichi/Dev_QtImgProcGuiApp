@@ -13,8 +13,6 @@
 #include "GuiApp.h"
 #include "image_window.h"
 
-#include <functional>
-
 #include <QMainWindow>
 #include <Qt>
 #include <QDrag>
@@ -27,6 +25,9 @@
 #include <QImage>
 #include <QString>
 #include <QLabel>
+
+#include <functional>
+
 
 
 QT_BEGIN_NAMESPACE
@@ -116,7 +117,7 @@ public slots:
     // void slotActMenuBarVideoWindow();
  
     /* Menu -> Process */
-    // void slotActMenuBarFilter();
+    void slotActMenuBarFilter();
     // void slotActMenuBarEdgeDetector();
     // void slotActMenuBarLut();
     // void slotActMenuBarBinarize();
