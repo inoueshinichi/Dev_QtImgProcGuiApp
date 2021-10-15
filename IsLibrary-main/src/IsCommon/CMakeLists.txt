@@ -20,18 +20,22 @@ else()
     add_library(${LIB_TARGET_NAME} STATIC ${LIB_SOURCES})
 endif()
 
-
 if(MSVC)
-    # Sources
-    file(GLOB LIB_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
-        win32/*.cpp
+    # Win32 sources
+    file(GLOB LIB_WIN32_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+        ./win32/*.cpp
+    )
+    message(STATUS "Win32 Sources: ${LIB_WIN32_SOURCES}")
+    
+    target_sources(${LIB_TARGET_NAME} PRIVATE 
+        ${LIB_WIN32_SOURCES}
     )
 
     # PDBファイルを出力する
     set_target_properties(${LIB_TARGET_NAME} PROPERTIES
         COMPILE_PDB_NAME ${LIB_TARGET_NAME}
     )
-    
+
     # Window(10以降)の場合で, デフォルト(ANSI)コードページ(FileIOなどのエンコード)を強制的にUTF-8にする.
     # プログラム内部からはsetlocale(LC_ALL, ""), std::locale::global(std::locale(""))などで, 
     # システムのデフォルトコードページにすると, OS側でANSIコードページがUTF-8の場合、プログラムに反映できる.
@@ -39,11 +43,10 @@ if(MSVC)
     # if(BUILD_CPP_MSVC_DEFAULT_LOCALE_UTF8)
     #     list(APPEND LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../../build_tool/ansi_system_locale_utf8-manifext.xml)
     # endif()
-
-
-    # ここにDebugサフィックス`d`を付与する構文をいれること.
-
 endif()
+
+
+
 
 
 # EXPORTS or dbg_EXPORTS 定義済みマクロを設定 for windows *.dll
