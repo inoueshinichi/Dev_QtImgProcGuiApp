@@ -2,7 +2,9 @@
 /.vscode
 /build
 /data
-/third-party/*
+/third-party/eigen-3.3.7
+/third-party/opencv_contrib-4.5.3
+/third-party/opencv_contrib-4.5.3.zip
 
 # File
 *.bmp
