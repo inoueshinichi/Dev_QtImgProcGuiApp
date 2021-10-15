@@ -15,6 +15,7 @@
 
 #include "directx12_widget.h"
 
+
 #include <QPalette>
 #include <QEvent>
 #include <QMouseEvent>
@@ -56,6 +57,7 @@ DirectX12Widget::DirectX12Widget(QWidget* parent)
     , m_bRenderActive(false)
     , m_bStarted(false)
     , m_BackColor{0.0f, 0.135f, 0.481f, 1.0f}
+    , m_pConsole(nullptr)
 {
     std::cout << "[DirectX12Widget::DirectX12Widget] - Widget Handle: " << m_hWnd << std::endl;
 
@@ -71,6 +73,9 @@ DirectX12Widget::DirectX12Widget(QWidget* parent)
     // tells Qt that we'll handle all drawing and updating the widget ourselves.
     this->setAttribute(Qt::WA_PaintOnScreen);       // paintEngineイベントを無効
     this->setAttribute(Qt::WA_NoSystemBackground);  // このWidget自身で描画とUpdateを行う
+
+    // Console
+    m_pConsole = std::make_shared<is::common::win32::Win32Console>();
 }
 
 DirectX12Widget::~DirectX12Widget() {}
@@ -112,7 +117,7 @@ void DirectX12Widget::create3DDevice()
     }
 #endif
 
-    DXCall(CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&m_pFactory)));
+    DX_CALL(CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&m_pFactory)));
 
 
     //////////////////////////////////////////////////////////////////////////////
@@ -120,9 +125,9 @@ void DirectX12Widget::create3DDevice()
     //////////////////////////////////////////////////////////////////////////////
     ComPtr<IDXGIAdapter1> adapter;
     getHardwareAdapter(m_pFactory, adapter.GetAddressOf());
-    if (!adapter) DXCall(m_pFactory->EnumWarpAdapter(IID_PPV_ARGS(&adapter)));
+    if (!adapter) DX_CALL(m_pFactory->EnumWarpAdapter(IID_PPV_ARGS(&adapter)));
 
-    DXCall(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_pDevice)));
+    DX_CALL(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_pDevice)));
 
 
     //////////////////////////////////////////////////////////////////////////////
@@ -131,7 +136,7 @@ void DirectX12Widget::create3DDevice()
     D3D12_COMMAND_QUEUE_DESC queueDesc = {};
     queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
     queueDesc.Type  = D3D12_COMMAND_LIST_TYPE_DIRECT;
-    DXCall(m_pDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&m_pCommandQueue)));
+    DX_CALL(m_pDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&m_pCommandQueue)));
 
 
     //////////////////////////////////////////////////////////////////////////////
@@ -157,9 +162,9 @@ void DirectX12Widget::create3DDevice()
         fsSd.Windowed = TRUE;
 
         ComPtr<IDXGISwapChain1> swapChain1;
-        DXCall(m_pFactory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, &fsSd,
+        DX_CALL(m_pFactory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, &fsSd,
                                                  nullptr, swapChain1.GetAddressOf()));
-        DXCall(swapChain1->QueryInterface(IID_PPV_ARGS(&m_pSwapChain)));
+        DX_CALL(swapChain1->QueryInterface(IID_PPV_ARGS(&m_pSwapChain)));
         m_iCurrentFrameIndex = m_pSwapChain->GetCurrentBackBufferIndex();
     }
 
@@ -171,7 +176,7 @@ void DirectX12Widget::create3DDevice()
     rtvDesc.NumDescriptors               = FRAME_COUNT;
     rtvDesc.Type                         = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
     rtvDesc.Flags                        = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-    DXCall(m_pDevice->CreateDescriptorHeap(&rtvDesc, IID_PPV_ARGS(&m_pRTVDescHeap)));
+    DX_CALL(m_pDevice->CreateDescriptorHeap(&rtvDesc, IID_PPV_ARGS(&m_pRTVDescHeap)));
     m_iRTVDescSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
     CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_pRTVDescHeap->GetCPUDescriptorHandleForHeapStart());
@@ -179,7 +184,7 @@ void DirectX12Widget::create3DDevice()
     for (UINT i = 0; i < FRAME_COUNT; ++i)
     {
         m_RTVDescriptors[i] = rtvHandle;
-        DXCall(m_pSwapChain->GetBuffer(i, IID_PPV_ARGS(&m_pRTVResources[i])));
+        DX_CALL(m_pSwapChain->GetBuffer(i, IID_PPV_ARGS(&m_pRTVResources[i])));
         m_pDevice->CreateRenderTargetView(m_pRTVResources[i], nullptr, m_RTVDescriptors[i]);
         rtvHandle.Offset(1, m_iRTVDescSize);
     }
@@ -192,7 +197,7 @@ void DirectX12Widget::create3DDevice()
     srvDesc.NumDescriptors = 1;
     srvDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
     srvDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-    DXCall(m_pDevice->CreateDescriptorHeap(&srvDesc, IID_PPV_ARGS(&m_pSrvDescHeap)));
+    DX_CALL(m_pDevice->CreateDescriptorHeap(&srvDesc, IID_PPV_ARGS(&m_pSrvDescHeap)));
 
 
     //////////////////////////////////////////////////////////////////////////////
@@ -200,7 +205,7 @@ void DirectX12Widget::create3DDevice()
     //////////////////////////////////////////////////////////////////////////////
     for (UINT i = 0; i < FRAME_COUNT; ++i)
     {
-        DXCall(m_pDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, 
+        DX_CALL(m_pDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, 
                                                  IID_PPV_ARGS(&m_pCommandAllocators[i])));
     }
 
@@ -210,23 +215,23 @@ void DirectX12Widget::create3DDevice()
     // use the default PSO. Command list by default set on recording state when
     // created, therefore we close it for now.
     //////////////////////////////////////////////////////////////////////////////
-    DXCall(m_pDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,
+    DX_CALL(m_pDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,
                                         m_pCommandAllocators[m_iCurrentFrameIndex],
                                         nullptr, IID_PPV_ARGS(&m_pCommandList)));
-    DXCall(m_pCommandList->Close());
+    DX_CALL(m_pCommandList->Close());
 
 
     //////////////////////////////////////////////////////////////////////////////
     // Create synchronized objects.
     //////////////////////////////////////////////////////////////////////////////
-    DXCall(m_pDevice->CreateFence(m_iFenceValues[m_iCurrentFrameIndex],
+    DX_CALL(m_pDevice->CreateFence(m_iFenceValues[m_iCurrentFrameIndex],
                                   D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_pFence)));
 
     m_iFenceValues[m_iCurrentFrameIndex]++;
     m_hFenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-    if (!m_hFenceEvent) DXCall(HRESULT_FROM_WIN32(GetLastError()));
+    if (!m_hFenceEvent) DX_CALL(HRESULT_FROM_WIN32(GetLastError()));
 
-    // DXCall(m_pSwapChain->SetMaximumFrameLatency(FRAME_COUNT));
+    // DX_CALL(m_pSwapChain->SetMaximumFrameLatency(FRAME_COUNT));
     // m_hSwapChainEvent = m_pSwapChain->GetFrameLatencyWaitableObject();
 
     
@@ -273,7 +278,7 @@ void DirectX12Widget::resizeSwapChain(int width, int height)
     cleanupRenderTarget();
 
     if (m_pSwapChain) {
-        DXCall(m_pSwapChain->ResizeBuffers(FRAME_COUNT, width, height,
+        DX_CALL(m_pSwapChain->ResizeBuffers(FRAME_COUNT, width, height,
                                            DXGI_FORMAT_R8G8B8A8_UNORM, 0));
     }
     else {
@@ -296,11 +301,11 @@ void DirectX12Widget::resizeSwapChain(int width, int height)
         fsSd.Windowed                        = TRUE;
 
         ComPtr<IDXGISwapChain1> swapChain;
-        DXCall(m_pFactory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, &fsSd,
+        DX_CALL(m_pFactory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, &fsSd,
                                                   nullptr, swapChain.GetAddressOf()));
-        DXCall(swapChain->QueryInterface(IID_PPV_ARGS(&m_pSwapChain)));
+        DX_CALL(swapChain->QueryInterface(IID_PPV_ARGS(&m_pSwapChain)));
 
-        // DXCall(m_pSwapChain->SetMaximumFrameLatency(FRAME_COUNT));
+        // DX_CALL(m_pSwapChain->SetMaximumFrameLatency(FRAME_COUNT));
         // m_hSwapChainEvent = m_pSwapChain->GetFrameLatencyWaitableObject();
     }
 
@@ -316,7 +321,7 @@ void DirectX12Widget::cleanupRenderTarget()
 
     for (UINT i = 0; i < FRAME_COUNT; ++i)
     {
-        ReleaseObject(m_pRTVResources[i]);
+        RELEASE_OBJECT(m_pRTVResources[i]);
         m_iFenceValues[i] = m_iFenceValues[m_iCurrentFrameIndex];
     }
 }
@@ -326,7 +331,7 @@ void DirectX12Widget::createRenderTarget()
 {
     for (UINT i = 0; i < FRAME_COUNT; ++i)
     {
-        DXCall(m_pSwapChain->GetBuffer(i, IID_PPV_ARGS(&m_pRTVResources[i])));
+        DX_CALL(m_pSwapChain->GetBuffer(i, IID_PPV_ARGS(&m_pRTVResources[i])));
         m_pDevice->CreateRenderTargetView(m_pRTVResources[i], nullptr, m_RTVDescriptors[i]);
     }
 }
@@ -334,8 +339,8 @@ void DirectX12Widget::createRenderTarget()
 
 void DirectX12Widget::beginScene() 
 {
-    DXCall(m_pCommandAllocators[m_iCurrentFrameIndex]->Reset());
-    DXCall(m_pCommandList->Reset(m_pCommandAllocators[m_iCurrentFrameIndex], nullptr));
+    DX_CALL(m_pCommandAllocators[m_iCurrentFrameIndex]->Reset());
+    DX_CALL(m_pCommandList->Reset(m_pCommandAllocators[m_iCurrentFrameIndex], nullptr));
 
     const auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(
         m_pRTVResources[m_iCurrentFrameIndex], 
@@ -355,9 +360,9 @@ void DirectX12Widget::endScene()
 
     m_pCommandList->ResourceBarrier(1, &barrier);
 
-    DXCall(m_pCommandList->Close());
+    DX_CALL(m_pCommandList->Close());
     m_pCommandQueue->ExecuteCommandLists(1, reinterpret_cast<ID3D12CommandList * const *>(&m_pCommandList));
-    DXCall(m_pSwapChain->Present(1, 0));
+    DX_CALL(m_pSwapChain->Present(1, 0));
 
     moveToNextFrame();
 }
@@ -398,9 +403,9 @@ void DirectX12Widget::render()
 
 void DirectX12Widget::waitForGpu() 
 {
-    DXCall(m_pCommandQueue->Signal(m_pFence, m_iFenceValues[m_iCurrentFrameIndex]));
+    DX_CALL(m_pCommandQueue->Signal(m_pFence, m_iFenceValues[m_iCurrentFrameIndex]));
 
-    DXCall(m_pFence->SetEventOnCompletion(m_iFenceValues[m_iCurrentFrameIndex], m_hFenceEvent));
+    DX_CALL(m_pFence->SetEventOnCompletion(m_iFenceValues[m_iCurrentFrameIndex], m_hFenceEvent));
 
     WaitForSingleObject(m_hFenceEvent, INFINITE);
 
@@ -412,12 +417,12 @@ void DirectX12Widget::moveToNextFrame()
 {
     const UINT64 currentFenceValue = m_iFenceValues[m_iCurrentFrameIndex];
     
-    DXCall(m_pCommandQueue->Signal(m_pFence, currentFenceValue));
+    DX_CALL(m_pCommandQueue->Signal(m_pFence, currentFenceValue));
 
     m_iCurrentFrameIndex = m_pSwapChain->GetCurrentBackBufferIndex();
     if (m_pFence->GetCompletedValue() < m_iFenceValues[m_iCurrentFrameIndex])
     {
-        DXCall(m_pFence->SetEventOnCompletion(m_iFenceValues[m_iCurrentFrameIndex], m_hFenceEvent));
+        DX_CALL(m_pFence->SetEventOnCompletion(m_iFenceValues[m_iCurrentFrameIndex], m_hFenceEvent));
         WaitForSingleObject(m_hFenceEvent, INFINITE);
     }
 
@@ -496,7 +501,7 @@ void DirectX12Widget::showEvent(QShowEvent* event)
         // 描画設定開始のエントリーポイント(Widgetが開いてから1回だけ実行)
         // MFCで云うところのOnInitialUpdate()
         m_bDeviceInitialized = init(); // ここで一回だけinit()が呼ばれる.
-        emit deviceInitialized(m_bDeviceInitialized);
+        emit initialized(m_bDeviceInitialized);
     }
     return QWidget::showEvent(event);
 }
@@ -569,18 +574,18 @@ void DirectX12Widget::release()
 
     waitForGpu();
 
-    for (UINT i = 0; i < FRAME_COUNT; ++i) ReleaseObject(m_pRTVResources[i]);
-    ReleaseObject(m_pSwapChain);
-    ReleaseHandle(m_hSwapChainEvent);
-    ReleaseObject(m_pCommandQueue);
-    for (UINT i = 0; i < FRAME_COUNT; ++i) ReleaseObject(m_pCommandAllocators[i]);
-    ReleaseObject(m_pCommandList);
-    ReleaseObject(m_pRTVDescHeap);
-    ReleaseObject(m_pSrvDescHeap);
-    ReleaseObject(m_pFence);
-    ReleaseHandle(m_hFenceEvent);
-    ReleaseObject(m_pDevice);
-    ReleaseObject(m_pFactory);
+    for (UINT i = 0; i < FRAME_COUNT; ++i) RELEASE_OBJECT(m_pRTVResources[i]);
+    RELEASE_OBJECT(m_pSwapChain);
+    RELEASE_HANDLE(m_hSwapChainEvent);
+    RELEASE_OBJECT(m_pCommandQueue);
+    for (UINT i = 0; i < FRAME_COUNT; ++i) RELEASE_OBJECT(m_pCommandAllocators[i]);
+    RELEASE_OBJECT(m_pCommandList);
+    RELEASE_OBJECT(m_pRTVDescHeap);
+    RELEASE_OBJECT(m_pSrvDescHeap);
+    RELEASE_OBJECT(m_pFence);
+    RELEASE_HANDLE(m_hFenceEvent);
+    RELEASE_OBJECT(m_pDevice);
+    RELEASE_OBJECT(m_pFactory);
 }
 
 void DirectX12Widget::resetEnvironment() 
@@ -654,3 +659,20 @@ void DirectX12Widget::onReset()
 // public slots
 /////////////////////////////////////////////////////////////////
 
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////
+// DirectX12魔導書でコーディングされている中からPickupした部分
+///////////////////////////////////////////////////////////////////////
+void DebugOutputFormatString(const char* format, ...) {
+#ifdef _DEBUG
+    va_list valist;
+    va_start(valist, format);
+    vprintf(format, valist);
+    va_end(valist);
+#endif
+}

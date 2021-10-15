@@ -40,7 +40,7 @@ protected:
     virtual void closeEvent(QCloseEvent* event) override;
 
 private slots:
-    void slotDeviceInitialize(bool isSuccess);
+    void slotInitialize(bool isSuccess);
     void slotTick();
     void slotRender();
 };

@@ -17,8 +17,8 @@ DirectX12MainWindow::DirectX12MainWindow(QWidget* parent)
 
  
 
-    connect(m_pUi->directX12Widget, &DirectX12Widget::deviceInitialized,
-        this, &DirectX12MainWindow::slotDeviceInitialize);
+    connect(m_pUi->directX12Widget, &DirectX12Widget::initialized,
+        this, &DirectX12MainWindow::slotInitialize);
     connect(m_pUi->directX12Widget, &DirectX12Widget::ticked,
         this, &DirectX12MainWindow::slotTick);
     connect(m_pUi->directX12Widget, &DirectX12Widget::rendered,
@@ -49,7 +49,7 @@ void DirectX12MainWindow::closeEvent(QCloseEvent *event)
 	event->accept();
 }
 
-void DirectX12MainWindow::slotDeviceInitialize(bool isSuccess)
+void DirectX12MainWindow::slotInitialize(bool isSuccess)
 {
     QTimer::singleShot(500, this, [&] { m_pUi->directX12Widget->run(); });
 }
