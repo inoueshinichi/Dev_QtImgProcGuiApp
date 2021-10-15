@@ -189,6 +189,24 @@ target_include_directories(${APP_TARGET_NAME} PRIVATE
 )
 
 ###############################################################################
+# 自作ライブラリのリンク
+###############################################################################
+target_include_directories(${APP_TARGET_NAME} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../IsLibrary-main/include
+)
+
+target_link_libraries(${APP_TARGET_NAME} PRIVATE
+    IsCommon
+)
+
+add_dependencies(${APP_TARGET_NAME} IsCommon)
+
+# Copy
+add_custom_command(TARGET ${APP_TARGET_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:IsCommon> $<TARGET_FILE_DIR:${APP_TARGET_NAME}>
+)
+
+###############################################################################
 # DirectXのリンク
 ###############################################################################
 target_link_libraries(${APP_TARGET_NAME} PRIVATE
