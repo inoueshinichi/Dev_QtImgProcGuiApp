@@ -42,14 +42,14 @@ namespace is {
 
             /* std::string型をconst char*に変換 */
             template <typename T, typename std::enable_if_t<std::is_same<std::remove_cv_t<std::remove_reference_t<T>>, \
-                        std::string>::value>::type * = nullptr>
+                        std::string>::value>* = nullptr>
             auto convert(T &&value) {
                 return std::forward<T>(value).c_str();
             }
 
             /* std::string型以外は、そのまま出力 */
             template <typename T, typename std::enable_if_t<!std::is_same<std::remove_cv_t<std::remove_reference_t<T>>, \
-                        std::string>::value>::type * = nullptr>
+                        std::string>::value>* = nullptr>
             auto convert(T &&value) {
                 return std::forward<T>(value);
             }
