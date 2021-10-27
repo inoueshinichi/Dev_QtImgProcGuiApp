@@ -253,18 +253,18 @@ if (MSVC)
 endif()
 
 
-###############################################################################
-# OpenCVライブラリのリンク
-###############################################################################
-find_package(OpenCV REQUIRED)
-if(OpenCV_FOUND)
-    target_include_directories(${APP_TARGET_NAME} PRIVATE 
-        ${OpenCV_INCLUDE_DIRS}
-    )
-    target_link_libraries(${APP_TARGET_NAME} PRIVATE 
-        ${OpenCV_LIBS}
-    )
-endif()
+# ###############################################################################
+# # OpenCVライブラリのリンク
+# ###############################################################################
+# find_package(OpenCV REQUIRED)
+# if(OpenCV_FOUND)
+#     target_include_directories(${APP_TARGET_NAME} PRIVATE 
+#         ${OpenCV_INCLUDE_DIRS}
+#     )
+#     target_link_libraries(${APP_TARGET_NAME} PRIVATE 
+#         ${OpenCV_LIBS}
+#     )
+# endif()
 
 
 ###############################################################################
