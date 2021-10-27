@@ -26,6 +26,7 @@ namespace is {
                 , m_hOut(NULL)
                 , m_hErr(NULL)
                 , m_inputConsoleMode(0)
+                , m_outputConsoleMode(0)
                 , m_isStartUp(false) {
 
                 // 初期化
@@ -91,6 +92,7 @@ namespace is {
 
                 if (m_hWnd != NULL) {
                     // コンソール入力バッファのモードを取得
+                    m_inputConsoleMode = 0;
                     if (!GetConsoleMode(m_hIn, &m_inputConsoleMode)) {
                         // 失敗
                         CString msg = win32_api_error(); // Win32 API エラーメッセージを取得
@@ -99,6 +101,7 @@ namespace is {
                     }
 
                     // コンソールスクリーンバッファのモードを取得
+                    m_outputConsoleMode = 0;
                     if (!GetConsoleMode(m_hOut, &m_outputConsoleMode)) {
                         // 失敗
                         CString msg = win32_api_error(); // Win32 API エラーメッセージを取得
@@ -125,7 +128,7 @@ namespace is {
                 if (m_hWnd != NULL) {
                     /*
                     ANSIエスケープを有効にするために
-                    GetConsoleModeのmodeに定数ENABLE_VIRTUAL_TERMINAL_PROCESSING / ENABLE_VIRTUAL_TERMINAL_INPUTを指定する
+                    SetConsoleModeのmodeに定数ENABLE_VIRTUAL_TERMINAL_PROCESSING / ENABLE_VIRTUAL_TERMINAL_INPUTを指定する
                     新しいWindowsコンソールではANSIエスケープシーケンスが有効になる
                     古いWindowsコンソールではAPI呼び出しが失敗し、GetLastError()はERROR_INVALID_PARAMETER(0x57)を返す
                     */
@@ -133,51 +136,62 @@ namespace is {
                     // 標準入力に繋がっているかチェック
                     if (_isatty(m_fdIn)) {
                         if (!SetConsoleMode(m_hIn, m_inputConsoleMode | ENABLE_VIRTUAL_TERMINAL_INPUT)) {
-                            // 成功
-                            full_msg.Format("[Success] Input: Enable ANSI-Escape Sequence\n");
-                        }
-                        else {
                             // 失敗
                             CString msg = win32_api_error(); // Win32 API エラーメッセージを取得
                             full_msg.Format(_T("[Error] 入力バッファモードのANSI ESCAPEの有効化失敗: %s\n"), (LPCTSTR)msg);
-                            iRet = CNSL_ERR_ANSI_ESCAPE_INPUT;
+                            ::OutputDebugString(full_msg);
+                            return CNSL_ERR_ANSI_ESCAPE_INPUT; 
+                        }
+                        else {
+                            // 成功
+                            full_msg.Format("[Success] Input: Enable ANSI-Escape Sequence\n");
+                            ::OutputDebugString(full_msg);
                         }
                     }
                     else {
                         // 標準入力につながっていない
                         CString msg = win32_api_error(); // Win32 API エラーメッセージを取得
                         full_msg.Format(_T("標準入力に未接続: %s\n"), (LPCTSTR)msg);
-                        iRet = CNSL_ERR_NO_STD_INPUT;
+                        ::OutputDebugString(full_msg);
+
+                        return CNSL_ERR_NO_STD_INPUT;
                     }
 
                     // 標準出力に繋がっているかチェック
                     if (_isatty(m_fdOut)) {
                         // ANSI Escape Sequenceを有効化
                         if (!SetConsoleMode(m_hOut, m_outputConsoleMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING)) {
-                            // 成功
-                            full_msg.Format(_T("[Success] Output: Enable ANSI-Escape Sequence\n"));
-                        }
-                        else {
                             // 失敗
                             CString msg = win32_api_error(); // Win32 API エラーメッセージを取得
                             full_msg.Format(_T("[Error] スクリーンバッファモードのANSI ESCAPEの有効化失敗: %s\n"), (LPCTSTR)msg);
-                            iRet = CNSL_ERR_ANSI_ESCAPE_SCREEN;
+                            ::OutputDebugString(full_msg);
+
+                            return CNSL_ERR_ANSI_ESCAPE_SCREEN;
+                        }
+                        else {
+                            // 成功
+                            full_msg.Format(_T("[Success] Output: Enable ANSI-Escape Sequence\n"));
+                            ::OutputDebugString(full_msg);
+
                         }
                     }
                     else {
                         // 標準出力につながっていない
                         CString msg = win32_api_error(); // Win32 API エラーメッセージを取得
                         full_msg.Format(_T("標準出力に未接続: %s\n"), (LPCTSTR)msg);
-                        iRet = CNSL_ERR_NO_STD_OUTPUT;
+                        ::OutputDebugString(full_msg);
+
+                        return CNSL_ERR_NO_STD_OUTPUT;
                     }
                 }
                 else {
                     CString msg = win32_api_error(); // Win32 API エラーメッセージを取得
                     full_msg.Format(_T("Windows Handle Error: %s\n"), (LPCTSTR)msg);
-                    iRet = CNSL_ERR_WINDOW_HANDLE;
+                    ::OutputDebugString(full_msg);
+
+                    return CNSL_ERR_WINDOW_HANDLE;
                 }
 
-                ::OutputDebugString(full_msg);
                 return iRet;
             }
 
