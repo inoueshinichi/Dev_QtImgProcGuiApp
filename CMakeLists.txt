@@ -126,7 +126,6 @@ elseif(APPLE)
         link_libraries(${OpenMP_LIBRARIES})
         add_compile_options("$<$<C_COMPILER_ID:GCC>:-fopenmp>")
         add_compile_options("$<$<CXX_COMPILER_ID:GCC>:-fopenmp>")
-        add_compile_definitions(_OPENMP)
     endif()
 
     # C++標準に準拠しない拡張機能を無効化
@@ -156,7 +155,6 @@ else()
         link_libraries(${OpenMP_LIBRARIES})
         add_compile_options("$<$<C_COMPILER_ID:GCC>:-fopenmp>")
         add_compile_options("$<$<CXX_COMPILER_ID:GCC>:-fopenmp>")
-        add_compile_definitions(_OPENMP)
     endif()
 
     # C++標準に準拠しない拡張機能を無効化
