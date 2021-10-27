@@ -18,6 +18,7 @@ file(GLOB LIB_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
     ./camera/general/*.cpp
 )
 
+
 # Library
 if(BUILD_CPP_SHARED_LIBS)
     add_library(${LIB_TARGET_NAME} SHARED ${LIB_SOURCES})
@@ -27,9 +28,14 @@ endif()
 
 
 if(MSVC)
-    # Sources
-    file(GLOB LIB_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
-        win32/*.cpp
+    # Win32 sources
+    file(GLOB LIB_WIN32_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+        ./win32/*.cpp
+    )
+    message(STATUS "Win32 Sources: ${LIB_WIN32_SOURCES}")
+    
+    target_sources(${LIB_TARGET_NAME} PRIVATE 
+        ${LIB_WIN32_SOURCES}
     )
 
     # PDBファイルを出力する
@@ -45,6 +51,10 @@ if(MSVC)
     #     list(APPEND LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../../build_tool/ansi_system_locale_utf8-manifext.xml)
     # endif()
 endif()
+
+
+
+
 
 # EXPORTS or dbg_EXPORTS 定義済みマクロを設定 for windows *.dll
 target_compile_definitions(${LIB_TARGET_NAME} PUBLIC

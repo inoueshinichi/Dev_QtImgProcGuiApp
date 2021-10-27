@@ -10,25 +10,31 @@
  */
 #pragma once
 
-#include <QWidget>
-#include <QTimer>
+// Windows関連
+#include<tchar.h>
 
 
 #include <wrl.h>
 #include <d3d12.h>
-#include <dxgi1_4.h>
+#include <dxgi1_6.h> // 1_6: SwapChain4, 1_4: SwapChain3
 #include <D3Dcompiler.h>
 
 #include "d3dx12.h" // Microsoftオリジナルのヘルパー
 
-#include "format_string.hpp"
+#include "IsCommon/format_string.hpp"
+#include "IsCommon/win32/win32_console.hpp"
+
+#include <QWidget>
+#include <QTimer>
 
 #include <stdexcept>
-
+#include <memory>
 
 class DirectX12Widget : public QWidget
 {
     Q_OBJECT
+
+    std::shared_ptr<is::common::win32::Win32Console> m_pConsole;
 
 public:
     DirectX12Widget(QWidget* parent);
@@ -88,7 +94,7 @@ private:
 
     ID3D12Device* m_pDevice;
     IDXGIFactory4* m_pFactory;
-    IDXGISwapChain3* m_pSwapChain;
+    IDXGISwapChain4* m_pSwapChain;
     ID3D12CommandQueue* m_pCommandQueue;
     ID3D12CommandAllocator* m_pCommandAllocators[FRAME_COUNT];
     ID3D12GraphicsCommandList* m_pCommandList;
@@ -117,7 +123,7 @@ private:
 
 
 signals:
-    void deviceInitialized(bool isSuccess);
+    void initialized(bool isSuccess);
     void eventHandled();
     void widgetResized();
     void ticked();
@@ -134,13 +140,13 @@ private slots:
 };
 
 
-#define ReleaseObject(object)                                 \
+#define RELEASE_OBJECT(object)                                \
     if ((object) != nullptr) {                                \
         object->Release();                                    \
         object = nullptr;                                     \
     }
 
-#define ReleaseHandle(handle)                                 \
+#define RELEASE_HANDLE(handle)                                \
     if ((handle) != nullptr) {                                \
         CloseHandle(handle);                                  \
         handle = NULL;                                        \
@@ -229,4 +235,4 @@ public:
     }
 
 
-#define DXCall(func) HR_CHECK(func, #func)
+#define DX_CALL(func) HR_CHECK(func, #func)

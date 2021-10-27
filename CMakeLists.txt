@@ -80,7 +80,7 @@ if (MSVC)
         link_libraries(${OpenMP_LIBRARIES})
         add_compile_options("$<$<C_COMPILER_ID:MSVC>:/openmp>")
         add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/openmp>")
-        add_compile_definitions(_OPENMP)
+        # add_compile_definitions(_OPENMP)
     endif()
 
     # ソースコードでUTF-8を使う(MSVC)

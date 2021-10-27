@@ -1,4 +1,4 @@
-#pragma ocne
+#pragma once
 
 #include <Windows.h>
 #include <atlstr.h> // CString
