@@ -106,7 +106,7 @@ private:
     D3D12_CPU_DESCRIPTOR_HANDLE m_RTVDescriptors[FRAME_COUNT];
     ID3D12DescriptorHeap* m_pSrvDescHeap;
 
-    // Synchronization Object
+    // Synchronization Object (VSYNC:垂直同期 for Display)
     HANDLE m_hSwapChainEvent;
     HANDLE m_hFenceEvent;
     ID3D12Fence* m_pFence;

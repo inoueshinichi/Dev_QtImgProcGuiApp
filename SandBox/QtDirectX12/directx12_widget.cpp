@@ -99,11 +99,11 @@ bool DirectX12Widget::init()
 
 void DirectX12Widget::create3DDevice() 
 {
+
     //////////////////////////////////////////////////////////////////////////////
-    // Get Factory
+    // DebugLayer & Factory
     //////////////////////////////////////////////////////////////////////////////
     UINT factoryFlags = 0;
-
 #ifdef _DEBUG
     {
         ComPtr<ID3D12Debug> dx12Debug;
@@ -115,11 +115,13 @@ void DirectX12Widget::create3DDevice()
             factoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
         }
     }
+
+    DX_CALL(CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&m_pFactory)));    
+#else
+    DX_CALL(CreateDXGIFactory1(IID_PPV_ARGS(&m_pFactory)));
 #endif
 
-    DX_CALL(CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&m_pFactory)));
-
-
+    
     //////////////////////////////////////////////////////////////////////////////
     // Try and get hardware adapter compatible with d3d12, if not found, use warp.
     //////////////////////////////////////////////////////////////////////////////
@@ -128,76 +130,6 @@ void DirectX12Widget::create3DDevice()
     if (!adapter) DX_CALL(m_pFactory->EnumWarpAdapter(IID_PPV_ARGS(&adapter)));
 
     DX_CALL(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_pDevice)));
-
-
-    //////////////////////////////////////////////////////////////////////////////
-    // Describe and create the command queue.
-    //////////////////////////////////////////////////////////////////////////////
-    D3D12_COMMAND_QUEUE_DESC queueDesc = {};
-    queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-    queueDesc.Type  = D3D12_COMMAND_LIST_TYPE_DIRECT;
-    DX_CALL(m_pDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&m_pCommandQueue)));
-
-
-    //////////////////////////////////////////////////////////////////////////////
-    // Describe and create the swap-chain.
-    //////////////////////////////////////////////////////////////////////////////
-    {
-        DXGI_SWAP_CHAIN_DESC1 sd = {};
-        sd.BufferCount                 = FRAME_COUNT;
-        sd.Width                        = width();
-        sd.Height                       = height();
-        sd.Format                       = DXGI_FORMAT_R8G8B8A8_UNORM;
-        //sd.Flags = DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
-        sd.Flags                        = 0;
-        sd.BufferUsage                  = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-        sd.SampleDesc.Count             = 1;
-        sd.SampleDesc.Quality           = 0;
-        sd.SwapEffect                   = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-        sd.AlphaMode                    = DXGI_ALPHA_MODE_UNSPECIFIED;
-        sd.Scaling                      = DXGI_SCALING_NONE;
-        sd.Stereo                       = FALSE;
-
-        DXGI_SWAP_CHAIN_FULLSCREEN_DESC fsSd = {};
-        fsSd.Windowed = TRUE;
-
-        ComPtr<IDXGISwapChain1> swapChain1;
-        DX_CALL(m_pFactory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, &fsSd,
-                                                 nullptr, swapChain1.GetAddressOf()));
-        DX_CALL(swapChain1->QueryInterface(IID_PPV_ARGS(&m_pSwapChain)));
-        m_iCurrentFrameIndex = m_pSwapChain->GetCurrentBackBufferIndex();
-    }
-
-
-    //////////////////////////////////////////////////////////////////////////////
-    // Create render target view(RTV) descriptor heaps and handles.
-    //////////////////////////////////////////////////////////////////////////////
-    D3D12_DESCRIPTOR_HEAP_DESC rtvDesc = {};
-    rtvDesc.NumDescriptors               = FRAME_COUNT;
-    rtvDesc.Type                         = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-    rtvDesc.Flags                        = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-    DX_CALL(m_pDevice->CreateDescriptorHeap(&rtvDesc, IID_PPV_ARGS(&m_pRTVDescHeap)));
-    m_iRTVDescSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-
-    CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_pRTVDescHeap->GetCPUDescriptorHandleForHeapStart());
-    
-    for (UINT i = 0; i < FRAME_COUNT; ++i)
-    {
-        m_RTVDescriptors[i] = rtvHandle;
-        DX_CALL(m_pSwapChain->GetBuffer(i, IID_PPV_ARGS(&m_pRTVResources[i])));
-        m_pDevice->CreateRenderTargetView(m_pRTVResources[i], nullptr, m_RTVDescriptors[i]);
-        rtvHandle.Offset(1, m_iRTVDescSize);
-    }
-
-
-    //////////////////////////////////////////////////////////////////////////////
-    // Create shader resource view(SRV) descriptor heap.
-    //////////////////////////////////////////////////////////////////////////////
-    D3D12_DESCRIPTOR_HEAP_DESC srvDesc = {};
-    srvDesc.NumDescriptors = 1;
-    srvDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-    srvDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-    DX_CALL(m_pDevice->CreateDescriptorHeap(&srvDesc, IID_PPV_ARGS(&m_pSrvDescHeap)));
 
 
     //////////////////////////////////////////////////////////////////////////////
@@ -219,6 +151,79 @@ void DirectX12Widget::create3DDevice()
                                         m_pCommandAllocators[m_iCurrentFrameIndex],
                                         nullptr, IID_PPV_ARGS(&m_pCommandList)));
     DX_CALL(m_pCommandList->Close());
+
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Describe and create the command queue.
+    //////////////////////////////////////////////////////////////////////////////
+    D3D12_COMMAND_QUEUE_DESC queueDesc = {};
+    queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+    queueDesc.Type  = D3D12_COMMAND_LIST_TYPE_DIRECT;
+    DX_CALL(m_pDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&m_pCommandQueue)));
+
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Describe and create the swap-chain.
+    //////////////////////////////////////////////////////////////////////////////
+    {
+        DXGI_SWAP_CHAIN_DESC1 sd = {};
+        sd.BufferCount                 = FRAME_COUNT; // 3: トリプルバッファー
+        sd.Width                        = width();
+        sd.Height                       = height();
+        sd.Format                       = DXGI_FORMAT_R8G8B8A8_UNORM;
+        //sd.Flags = DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
+        sd.Flags                        = 0; // DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH : ウィンドウ↔フルスクリーン切り替え可能
+        sd.BufferUsage                  = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+        sd.SampleDesc.Count             = 1;
+        sd.SampleDesc.Quality           = 0;
+        sd.SwapEffect                   = DXGI_SWAP_EFFECT_FLIP_DISCARD; // フリップ後は速やかに破棄
+        sd.AlphaMode                    = DXGI_ALPHA_MODE_UNSPECIFIED;
+        sd.Scaling                      = DXGI_SCALING_NONE; // DXGI_SCALING_STRETCH
+        sd.Stereo                       = FALSE;
+
+        DXGI_SWAP_CHAIN_FULLSCREEN_DESC fsSd = {};
+        fsSd.Windowed = TRUE;
+
+        ComPtr<IDXGISwapChain1> swapChain1;
+        DX_CALL(m_pFactory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, &fsSd,
+                                                 nullptr, swapChain1.GetAddressOf()));
+        DX_CALL(swapChain1->QueryInterface(IID_PPV_ARGS(&m_pSwapChain)));
+        m_iCurrentFrameIndex = m_pSwapChain->GetCurrentBackBufferIndex(); // 現在のバックバッファのインデックス
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Create descriptorHeap
+    //////////////////////////////////////////////////////////////////////////////
+    D3D12_DESCRIPTOR_HEAP_DESC rtvDesc = {};
+    rtvDesc.NumDescriptors               = FRAME_COUNT; // トリプルバッファ用
+    rtvDesc.Type                         = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+    rtvDesc.Flags                        = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+    DX_CALL(m_pDevice->CreateDescriptorHeap(&rtvDesc, IID_PPV_ARGS(&m_pRTVDescHeap)));
+
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Create render target view(RTV)
+    //////////////////////////////////////////////////////////////////////////////
+    CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_pRTVDescHeap->GetCPUDescriptorHandleForHeapStart());
+    m_iRTVDescSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+    for (UINT i = 0; i < FRAME_COUNT; ++i)
+    {
+        m_RTVDescriptors[i] = rtvHandle;
+        DX_CALL(m_pSwapChain->GetBuffer(i, IID_PPV_ARGS(&m_pRTVResources[i])));
+        m_pDevice->CreateRenderTargetView(m_pRTVResources[i], nullptr, m_RTVDescriptors[i]);
+        rtvHandle.Offset(1, m_iRTVDescSize);
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Create shader resource view(SRV) descriptor heap.
+    //////////////////////////////////////////////////////////////////////////////
+    D3D12_DESCRIPTOR_HEAP_DESC srvDesc = {};
+    srvDesc.NumDescriptors = 1;
+    srvDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+    srvDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+    DX_CALL(m_pDevice->CreateDescriptorHeap(&srvDesc, IID_PPV_ARGS(&m_pSrvDescHeap)));
 
 
     //////////////////////////////////////////////////////////////////////////////
@@ -339,30 +344,41 @@ void DirectX12Widget::createRenderTarget()
 
 void DirectX12Widget::beginScene() 
 {
+    /* 描画準備 */
+
+    // 1) コマンドアロケータとコマンドリストを初期化する.
     DX_CALL(m_pCommandAllocators[m_iCurrentFrameIndex]->Reset());
     DX_CALL(m_pCommandList->Reset(m_pCommandAllocators[m_iCurrentFrameIndex], nullptr));
 
-    const auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+    // 2) 現在のRTVが指すバックバッファにバリアを設定する(GPU内部)
+    const auto barrierDesc = CD3DX12_RESOURCE_BARRIER::Transition(
         m_pRTVResources[m_iCurrentFrameIndex], 
-        D3D12_RESOURCE_STATE_PRESENT,
-        D3D12_RESOURCE_STATE_RENDER_TARGET);
-
-    m_pCommandList->ResourceBarrier(1, &barrier);
+        D3D12_RESOURCE_STATE_PRESENT,            // 状態遷移前
+        D3D12_RESOURCE_STATE_RENDER_TARGET);     // 状態遷移後
+    m_pCommandList->ResourceBarrier(1, &barrierDesc);
 }
 
 
 void DirectX12Widget::endScene() 
 {
-    const auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+    /* 描画指令(to GPU) */
+
+    // 1) 現在のRTVへのバリアを設定.
+    const auto barrierDesc = CD3DX12_RESOURCE_BARRIER::Transition(
         m_pRTVResources[m_iCurrentFrameIndex], 
-        D3D12_RESOURCE_STATE_RENDER_TARGET,
-        D3D12_RESOURCE_STATE_PRESENT);
+        D3D12_RESOURCE_STATE_RENDER_TARGET,    // 状態遷移前
+        D3D12_RESOURCE_STATE_PRESENT);         // 状態遷移後
+    m_pCommandList->ResourceBarrier(1, &barrierDesc);
 
-    m_pCommandList->ResourceBarrier(1, &barrier);
-
+    // 2) コマンドリストの受付終了.
     DX_CALL(m_pCommandList->Close());
-    m_pCommandQueue->ExecuteCommandLists(1, reinterpret_cast<ID3D12CommandList * const *>(&m_pCommandList));
-    DX_CALL(m_pSwapChain->Present(1, 0));
+
+    // 3) GPUに描画指令.
+    m_pCommandQueue->ExecuteCommandLists(1, 
+        reinterpret_cast<ID3D12CommandList* const*>(&m_pCommandList)); // ID3D12CommandList* cmdLists[] = { cmdList }; ExecuteCommandLists(1, cmdLists);
+
+    // 4) バックバッファを画面に描画.
+    DX_CALL(m_pSwapChain->Present(1, 0)); // 第一引数:1で垂直同期を待つ(描画中の画面表示が終了してから、画面バッファをスワップする)
 
     moveToNextFrame();
 }
@@ -379,17 +395,19 @@ void DirectX12Widget::tick()
 
 void DirectX12Widget::render() 
 {
-    // Start recording the render commands.
+    // 1) スワップチェインが指すバックバッファ用のRTVを初期化する.
     m_pCommandList->ClearRenderTargetView(m_RTVDescriptors[m_iCurrentFrameIndex],
-                                          reinterpret_cast<const float *>(&m_BackColor),
+                                          reinterpret_cast<const float *>(&m_BackColor), // 指定色で初期化
                                           0,
                                           nullptr);
 
-    m_pCommandList->OMSetRenderTargets(1,
+    // 2) 描画で使用するRTVを指定する.
+    m_pCommandList->OMSetRenderTargets(1, 
                                        &m_RTVDescriptors[m_iCurrentFrameIndex],
                                        FALSE,
                                        nullptr);
     
+    // 3) SRVを指定する.
     m_pCommandList->SetDescriptorHeaps(1, &m_pSrvDescHeap);
 
     // TODO: Present your scene here. For aesthetics reasons,
@@ -397,7 +415,7 @@ void DirectX12Widget::render()
     // otherwise do it in the MainWindow.
     // m_pCamera->Apply();
 
-    emit rendered(m_pCommandList);
+    emit rendered(m_pCommandList); // Slot側関数内で描画コマンドをコマンドリスト(アロケータ)に貯める.
 }
 
 
@@ -415,12 +433,16 @@ void DirectX12Widget::waitForGpu()
 
 void DirectX12Widget::moveToNextFrame() 
 {
+    /* 次のバックバッファとRTVに切り替える */
+
+    // 1) GPU側の処理が完了したときになっているべき値(フェンス値)
     const UINT64 currentFenceValue = m_iFenceValues[m_iCurrentFrameIndex];
     
-    DX_CALL(m_pCommandQueue->Signal(m_pFence, currentFenceValue));
+    DX_CALL(m_pCommandQueue->Signal(m_pFence, currentFenceValue)); // GPUにフェンス値を送信
 
-    m_iCurrentFrameIndex = m_pSwapChain->GetCurrentBackBufferIndex();
-    if (m_pFence->GetCompletedValue() < m_iFenceValues[m_iCurrentFrameIndex])
+    m_iCurrentFrameIndex = m_pSwapChain->GetCurrentBackBufferIndex(); // GPUの処理が完了する前に画面描画後(現在の)画面バッファのインデックスを取得？
+
+    if (m_pFence->GetCompletedValue() < m_iFenceValues[m_iCurrentFrameIndex]) // ここ難しい.
     {
         DX_CALL(m_pFence->SetEventOnCompletion(m_iFenceValues[m_iCurrentFrameIndex], m_hFenceEvent));
         WaitForSingleObject(m_hFenceEvent, INFINITE);
