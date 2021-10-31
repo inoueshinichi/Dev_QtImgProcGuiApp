@@ -167,7 +167,11 @@ void DirectX12Widget::create3DDevice()
     //////////////////////////////////////////////////////////////////////////////
     {
         DXGI_SWAP_CHAIN_DESC1 sd = {};
+<<<<<<< HEAD
         sd.BufferCount                 = FRAME_COUNT; // 3: トリプルバッファー
+=======
+        sd.BufferCount                  = FRAME_COUNT;
+>>>>>>> 708cbeb0004c21026ea4b91a54152dc86350a45c
         sd.Width                        = width();
         sd.Height                       = height();
         sd.Format                       = DXGI_FORMAT_R8G8B8A8_UNORM;
