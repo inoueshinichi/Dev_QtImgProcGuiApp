@@ -1,7 +1,6 @@
 #include <IsComputerVision/filter/utils/utils_filter.hpp>
 #include <IsComputerVision/filter/blur.hpp>
 
-
 namespace is
 {
     namespace imgproc
@@ -266,6 +265,43 @@ namespace is
             delete[] pp_hists; pp_hists = nullptr;
 
             return dst;
+        }
+
+
+        NdArrayPtr mozic_filter(NdArrayPtr src, int block) {
+            IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
+            IS_DEBUG_CHECK_NDARRAY_STATE(mozic_filter, IS_DEBUG_FLAG, src);
+            using ubyte = uchar;
+
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            auto sh = src->shape();
+            auto st = src->strides();
+            int channels = sh.at(0);
+            int height = sh.at(1);
+            int width = sh.at(2);
+
+            if (ksize % 2 == 0)
+                ksize += 1;
+
+            int hlf_ks = (int)(ksize / 2);
+
+            int block_mod_y = height % block;
+            int block_mod_x = width % block;
+            int diff_y = 0;
+            int diff_x = 0;
+
+            if (block_mod_y > 0) {
+                diff_y = block - block_mod_y;
+                // auto bottom_array = zeros<ubyte>({channels, diff_y, width});
+                bottom_array = slice<ubyte>(src, {0, 0, 0}, {channels - 1, height - diff_y - 1, width - 1}, {1, 1, 1});
+            }
+
+            if (block_mod_x > 0) {
+                diff_x = block - block_mod_x;
+            }
+            
+            
+
         }
     } // imgproc
 }

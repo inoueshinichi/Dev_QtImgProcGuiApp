@@ -8,6 +8,17 @@
     //omp_set_num_threads(8);
 #endif
 
+/**
+ * @todo
+ * [OK] Padding
+ * [] Border
+ * [OK] Convolution
+ * [] im2col_2d
+ * [] col2im_2d
+ * [] im2col_3d
+ * [] col2im_3d
+ */
+
 namespace is
 {
     namespace imgproc

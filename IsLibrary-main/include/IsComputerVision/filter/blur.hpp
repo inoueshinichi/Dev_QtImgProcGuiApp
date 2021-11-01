@@ -4,12 +4,14 @@
 
 /**
  * @todo
- * [OK] Avarage
- * [OK] Gaussian
- * Median
- * Birateral
- * Mosic
- * Gabol
+ * [OK] Avarage Filter
+ * [OK] Gaussian Filter
+ * [OK] Median Filter
+ * [] Mosic Filter
+ * [] Birateral Filter
+ * [] Gabol Filter
+ * [] Variance Filter
+ * [] MaxMin Filter
  */
 
 namespace is
@@ -49,5 +51,15 @@ namespace is
          * @return NdArrayPtr 
          */
         IS_IMGPROC_API NdArrayPtr median_filter(NdArrayPtr src, int ksize);
+
+
+        /**
+         * @brief モザイクフィルタ
+         * 
+         * @param src 
+         * @param block 
+         * @return NdArrayPtr
+         */
+        IS_IMGPROC_API NdArrayPtr mozic_filter(NdArrayPtr src, int block);
     }
 }
