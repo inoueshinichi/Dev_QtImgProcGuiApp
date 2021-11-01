@@ -162,12 +162,15 @@ namespace is
             // https://qiita.com/YVT/items/7734b342894c2f8247b3
 
             int mid = (ksize * ksize / 2) + 1; // 1スタート 3x3=9個なら1,2,3,4,5,6,7,8,9の5番
+            int xt;
             for (int c = 0; c < channels; ++c) {
-              for (int y = 0, ex_y = hlf_ks; y < height; ++y, ++ex_y) {
-                for (int x = 0, ex_x = hlf_ks; x < width; ++x, ++ex_x) {
+              for (int y = 0; y < height; ++y) {
+                for (int x = 0; x < width; ++x) {
+
+                    if (y % 2 == 0) xt = x;
+                    else xt = width - 1 - x;
                     
-                    if (x == 0) {
-                        
+                    if (xt == 0 && y == 0) {
                         // ヒストグラム初期化
                         for (int k = 0, range = 256; k < HIST_NUM; ++k, range /= 2) {
                             IS_ZERO_MEMORY(pp_hists[k], sizeof(int) * range);
@@ -176,7 +179,7 @@ namespace is
                         // 階層bin別のヒストグラムを求める
                         for (int j = 0; j < ksize; ++j) {
                             for (int i = 0; i < ksize; ++i) {
-                                const auto& lum = ex_data[c * exst[0] + (y + j) * exst[1] + i * exst[2]];
+                                const auto& lum = ex_data[c * exst[0] + j * exst[1] + i * exst[2]];
                                 for (int k = 0; k < HIST_NUM; ++k) {
                                     pp_hists[k][lum / p_bins[k]] += 1;
                                 }
@@ -184,27 +187,45 @@ namespace is
                         }
 
                     }
-                    else {
-                        // 減らす
-                        int l = x - 1;
-                        for (int j = 0; j < ksize; ++j) {
-                            const auto& lum = ex_data[c * exst[0] + (y + j) * exst[1] + l * exst[2]];
+                    else if ((xt == 0 && y % 2 == 0) || (xt == width - 1 && y % 2 == 1)) { // 両端
+                        int t = y - 1;
+                        int b = t + ksize;
+                        for (int i = 0; i < ksize; ++i) {
+                            const auto& lum_upside = ex_data[c * exst[0] + t * exst[1] + (xt + i) * exst[2]];
+                            const auto& lum_downside = ex_data[c * exst[0] + b * exst[1] + (xt + i) * exst[2]];
 
                             // 各階層のhist
                             for (int k = 0; k < HIST_NUM; ++k) {
-                                int index = lum / p_bins[k];
-                                pp_hists[k][index] -= 1;
+                                pp_hists[k][lum_upside / p_bins[k]] -= 1; // 減らす
+                                pp_hists[k][lum_downside / p_bins[k]] += 1; // 増やす
                             }
                         }
-                        // 増やす
-                        int r = l + ksize;
+                    }
+                    else {
+                        int l, r;
+                        if (y % 2 == 0) {
+                            l = xt - 1;
+                            r = l + ksize;
+                        }
+                        else {
+                            l = xt;
+                            r = l + ksize;
+                        }
+
                         for (int j = 0; j < ksize; ++j) {
-                            const auto& lum = ex_data[c * exst[0] + (y + j) * exst[1] + r * exst[2]];
+                            const auto& lum_left = ex_data[c * exst[0] + (y + j) * exst[1] + l * exst[2]];
+                            const auto& lum_right = ex_data[c * exst[0] + (y + j) * exst[1] + r * exst[2]];
 
                             // 各階層のhist
                             for (int k = 0; k < HIST_NUM; ++k) {
-                                int index = lum / p_bins[k];
-                                pp_hists[k][index] += 1;
+                                if (y % 2 == 0) { // 偶数行
+                                    pp_hists[k][lum_left / p_bins[k]] -= 1; 
+                                    pp_hists[k][lum_right / p_bins[k]] += 1;
+                                }
+                                else { // 奇数行
+                                    pp_hists[k][lum_left / p_bins[k]] += 1; 
+                                    pp_hists[k][lum_right / p_bins[k]] -= 1;
+                                }
                             }
                         }
                     }
@@ -232,8 +253,7 @@ namespace is
                         hierarchy_idx--;
                     }
                     
-                    dst_data[c * st[0] + y * st[1] + x * st[2]] = index;
-                    
+                    dst_data[c * st[0] + y * st[1] + xt * st[2]] = index;
                 }
               }
             }

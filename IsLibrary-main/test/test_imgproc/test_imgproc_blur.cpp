@@ -175,7 +175,7 @@ namespace {
         auto in_strides = src->strides();
         // show_ndarray_property(src);
 
-        int ksize = 5;
+        int ksize = 9;
         auto filtered = invoke_tm_chrono_ms_ret(median_filter, src, ksize);
         // show_ndarray_property(filtered);
 
