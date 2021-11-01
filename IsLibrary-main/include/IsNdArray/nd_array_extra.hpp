@@ -9,15 +9,19 @@
 #include <IsNdArray/function/randn.hpp>
 #include <IsNdArray/function/arange.hpp>
 
-// Operation
+// Pointwise
 #include <IsNdArray/function/add_scalar.hpp>
 #include <IsNdArray/function/mul_scalar.hpp>
 
 #include <IsNdArray/function/transpose.hpp>
-#include <IsNdArray/function/sum.hpp>
 #include <IsNdArray/function/broadcast.hpp>
 #include <IsNdArray/function/reshape.hpp>
 #include <IsNdArray/function/slice.hpp>
+
+// Reduce
+#include <IsNdArray/function/sum.hpp>
+#include <IsNdArray/function/mean.hpp>
+
 
 #include <memory>
 
@@ -208,6 +212,19 @@ namespace is
         {
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             Sum<T> operation(ctx, {axis}, keep_dims);
+            auto output = NdArray::create();
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+
+        // mean
+        template <typename T>
+        NdArrayPtr mean(NdArrayPtr input, int axis = 0, bool keep_dims = false) 
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Mean<T> operation(ctx, {axis}, keep_dims);
             auto output = NdArray::create();
             operation.setup({input}, {output});
             operation.execute({input}, {output});
