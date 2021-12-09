@@ -12,13 +12,27 @@
 
 #include <IsComputerVision/common.hpp>
 
-#include <numbers>
+//#include <numbers>
+#include <cmath>
 #include <tuple>
+
+/**
+ * [OK] 許容錯乱円
+ * [OK] 35mmフィルム換算の焦点距離
+ * [OK] レンズカテゴリ
+ * [OK] 画角
+ * [OK] 有効口径
+ * [OK] 開口数(NA)
+ * [] 被写界深度
+ * [] 分解能
+ * [] F値
+ * [] 焦点深度
+ * []
+ */
 
 
 namespace is {
     namespace imgproc {
-
 
         /**
          * @brief 許容錯乱円
@@ -66,12 +80,12 @@ namespace is {
          * @brief 画角
          * 
          * @param focus_length 
-         * @param distance 
+         * @param diag_dist 撮像素子の対角距離
          * @return double 
          */
-        inline double angle_of_view(double focus_length, double distance) {
-            double r2d = 180.0 / std::numbers::pi;
-            return 2 * std::atan2(0.5 * distance, focus_length) * r2d;
+        inline double angle_of_view(double focus_length, double diag_dist) {
+            double r2d = 180.0 / /*std::numbers::pi*/ M_PI;
+            return 2 * std::atan2(diag_dist, 2 * focus_length) * r2d;
         }
 
 
@@ -84,6 +98,32 @@ namespace is {
          */
         inline double effective_aperture(double focus_length, double f_number) {
             return focus_length / f_number;
+        }
+
+
+        /**
+         * @brief 開口数(NA)
+         * NAが大きいほど明るいレンズ
+         * 0 < NA < 1
+         * 
+         * @param focus_length 
+         * @param diag_dist 
+         * @param reflective_index 
+         * @return double 
+         */
+        inline double lens_na(double focus_length, double diag_dist, double reflective_index = 1.000292)
+        {
+            /**
+             * @brief 屈折率 
+             * 空気       1.000292 (0℃ 1気圧)
+             * 二酸化炭素 1.00045
+             * 氷         1.309    (0℃)
+             * 水         1.3334   (20℃)
+             * ダイアモンド 2.417
+             */
+            double aov = angle_of_view(focus_length, diag_dist);
+            double na = reflective_index * std::sin(aov * M_PI / 180.0);
+            return na;
         }
 
 

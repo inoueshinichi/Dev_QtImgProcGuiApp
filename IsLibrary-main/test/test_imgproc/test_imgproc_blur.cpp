@@ -183,6 +183,32 @@ namespace {
                                         ksize, ksize);
         io_bmp.save(dummy_filename, filtered, false);
     }
+
+    // MozicFilter
+    TEST(imgproc_func, mozic_filter)
+    {
+        const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+        std::cout << "GlobalContext after load: " << ctx.to_string() << std::endl;
+
+        std::string dummy_filename = "/home/inoue/Images/Color/Lenna.bmp";
+
+        // io
+        ImageIo<format::BmpFile> io_bmp;
+        auto src = io_bmp.load(dummy_filename, false);
+
+        // src
+        auto in_shape = src->shape();
+        auto in_strides = src->strides();
+        // show_ndarray_property(src);
+
+        int block = 50;
+        auto filtered = invoke_tm_chrono_ms_ret(mozic_filter, src, block);
+        // show_ndarray_property(filtered);
+
+        dummy_filename = format_string("/home/inoue/Desktop/mozic_Lenna_%dx%d.bmp", 
+                                        block, block);
+        io_bmp.save(dummy_filename, filtered, false);
+    }
 }       
 
 int main(int, char**)

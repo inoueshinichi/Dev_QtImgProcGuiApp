@@ -7,9 +7,10 @@
  * [OK] Avarage Filter
  * [OK] Gaussian Filter
  * [OK] Median Filter
- * [] Mosic Filter
+ * [OK] Mosic Filter
  * [] Birateral Filter
  * [] Gabol Filter
+ * @note
  * [] Variance Filter
  * [] MaxMin Filter
  */

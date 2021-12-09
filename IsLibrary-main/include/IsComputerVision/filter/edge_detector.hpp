@@ -4,11 +4,11 @@
 
 /**
  * @todo
- * ○ Sobel
- * ○ Laplacian
- * Laplacian Of Gaussian(LOG)
- * DOG
- * Canny
+ * [OK] Sobel
+ * [OK] Laplacian
+ * [] Laplacian Of Gaussian(LOG)
+ * [] DOG
+ * [] Canny
  */
 
 namespace is
