@@ -4,6 +4,6 @@ namespace is
 {
     namespace nbla
     {
-        NBLA_REGISTER_FUNCTION_SOURCE(RDivScalar, double)
+        NBLA_REGISTER_FUNCTION_SOURCE(RDivScalar, double, bool)
     }
 }

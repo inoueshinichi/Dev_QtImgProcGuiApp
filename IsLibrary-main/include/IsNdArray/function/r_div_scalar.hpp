@@ -21,6 +21,6 @@ namespace is
          * @param T Data type for computation.
          * @param val Value of the scalar.
          */
-        NBLA_DEFINE_TRANSFORM_UNARY_1(RDivScalar, (T)a0 / x, double)
+        NBLA_DEFINE_TRANSFORM_UNARY_1_INPLACE(RDivScalar, (T)a0 / x, double)
     }
 }

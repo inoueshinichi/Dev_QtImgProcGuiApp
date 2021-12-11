@@ -35,6 +35,7 @@ namespace is
             stride_x_.reshape({ ndim }, true);
             shape_y_.reshape({ ndim }, true);
             Context cpu = Context().set_array_class("CpuCachedArray");
+            // Context cpu = Context().set_array_class("CpuArray");
             int* stride_x = stride_x_.cast_data_and_get_pointer<int>(cpu, true);
             int* shape_y = shape_y_.cast_data_and_get_pointer<int>(cpu, true);
             auto stride_x_in = inputs[0]->strides();

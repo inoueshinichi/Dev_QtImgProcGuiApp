@@ -94,13 +94,14 @@ void show_ndarray_contents(NdArrayPtr ndarray)
     Stride_t strides = ndarray->strides();
     Size_t ndim = ndarray->ndim();
     const T *data = ndarray->cast_data_and_get_pointer<T>(ctx);
+    //auto dtype = get_dtype<T>();
 
     if (ndim == 1)
     {
         std::cout << "[";
         for (int i = 0; i < shape[0]; ++i)
         {
-            std::cout << data[i * strides[0]];
+            std::cout << (T)data[i * strides[0]];
             if (i != shape[0] - 1)
                 std::cout << " ";
         }
@@ -114,9 +115,9 @@ void show_ndarray_contents(NdArrayPtr ndarray)
             std::cout << "[";
             for (int j = 0; j < shape[1]; ++j)
             {
-                T tmp = data[i * strides[0] + j * strides[1]];
-                std::string elem = format_string("%3f", (float)tmp);
-                std::cout << elem;
+                // T tmp = data[i * strides[0] + j * strides[1]];
+                // std::string elem = format_string("%3f", (float)tmp);
+                std::cout << (T)data[i * strides[0] + j * strides[1]];//tmp;//elem;
 
                 if (j != shape[1] - 1)
                     std::cout << "  ";
@@ -141,9 +142,9 @@ void show_ndarray_contents(NdArrayPtr ndarray)
                 std::cout << "[";
                 for (int i = 0; i < shape[2]; ++i)
                 {
-                    T tmp = data[c * strides[0] + j * strides[1] + i * strides[2]];
-                    std::string elem = format_string("%.2f", (float)tmp);
-                    std::cout << elem;
+                    // T tmp = data[c * strides[0] + j * strides[1] + i * strides[2]];
+                    // std::string elem = format_string("%.2f", (float)tmp);
+                    std::cout << (T)data[c * strides[0] + j * strides[1] + i * strides[2]];//tmp;//elem;
                     if (i != shape[2] - 1)
                         std::cout << " ";
                 }

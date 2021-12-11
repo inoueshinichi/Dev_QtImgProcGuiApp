@@ -10,7 +10,7 @@ if((TARGET GTest::gtest)      AND
    (TARGET GTest::gmock_main))
    message(STATUS "Enter each test projects... bacause of exsising googletest library.")
 
-   include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+   include_directories(${CMAKE_CURRENT_SOURCE_DIR}) # include test_utils.hpp
 
    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tutorial_googletest)
    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test_nnabla)

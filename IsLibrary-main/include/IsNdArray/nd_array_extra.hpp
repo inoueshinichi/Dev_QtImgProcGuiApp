@@ -11,7 +11,12 @@
 
 // Pointwise
 #include <IsNdArray/function/add_scalar.hpp>
+#include <IsNdArray/function/pow_scalar.hpp>
 #include <IsNdArray/function/mul_scalar.hpp>
+#include <IsNdArray/function/r_div_scalar.hpp>
+#include <IsNdArray/function/r_pow_scalar.hpp>
+#include <IsNdArray/function/r_sub_scalar.hpp>
+
 
 #include <IsNdArray/function/transpose.hpp>
 #include <IsNdArray/function/broadcast.hpp>
@@ -120,6 +125,7 @@ namespace is
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             Arange<T> operation(ctx, start, stop, step);
             auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
             operation.setup({}, {output});
             operation.execute({}, {output});
             return output;
@@ -129,29 +135,125 @@ namespace is
 
         // add_scalar
         template <typename T>
-        NdArrayPtr add_scalar(NdArrayPtr input, double val)
+        NdArrayPtr add_scalar(NdArrayPtr input, double val, bool inplace = true)
         {
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
-            AddScalar<T> operation(ctx, val, true);
-            auto output = NdArray::create();
-            operation.setup({input}, {output});
-            operation.execute({input}, {output});
-            return output;
+            AddScalar<T> operation(ctx, val, inplace);
+            if (inplace) {
+                operation.setup({input}, {input});
+                operation.execute({input}, {input});
+                return input;
+            }
+            else {
+                auto output = NdArray::create();
+                output->cast_data_and_get_pointer<T>(ctx);
+                operation.setup({input}, {output});
+                operation.execute({input}, {output});
+                return output;
+            }
         }
 
+        // pow_scalar
+        template <typename T>
+        NdArrayPtr pow_scalar(NdArrayPtr input, double val, bool inplace = true)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            PowScalar<T> operation(ctx, val, inplace);
+            if (inplace) {
+                operation.setup({input}, {input});
+                operation.execute({input}, {input});
+                return input;
+            }
+            else {
+                auto output = NdArray::create();
+                output->cast_data_and_get_pointer<T>(ctx);
+                operation.setup({input}, {output});
+                operation.execute({input}, {output});
+                return output;
+            }
+        }
 
         // mul_scalar
         template <typename T>
-        NdArrayPtr mul_scalar(NdArrayPtr input, double val)
+        NdArrayPtr mul_scalar(NdArrayPtr input, double val, bool inplace = true)
         {
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
-            MulScalar<T> operation(ctx, val);
-            auto output = NdArray::create();
-            operation.setup({input}, {output});
-            operation.execute({input}, {output});
-            return output;
+            MulScalar<T> operation(ctx, val, inplace);
+            if (inplace) {
+                operation.setup({input}, {input});
+                operation.execute({input}, {input});
+                return input;
+            }
+            else {
+                auto output = NdArray::create();
+                output->cast_data_and_get_pointer<T>(ctx);
+                operation.setup({input}, {output});
+                operation.execute({input}, {output});
+                return output;
+            }
         }
 
+        // r_div_scalar
+        template <typename T>
+        NdArrayPtr r_div_scalar(NdArrayPtr input, double val, bool inplace = true)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            RDivScalar<T> operation(ctx, val, inplace);
+            if (inplace) {
+                operation.setup({input}, {input});
+                operation.execute({input}, {input});
+                return input;
+            }
+            else {
+                auto output = NdArray::create();
+                output->cast_data_and_get_pointer<T>(ctx);
+                operation.setup({input}, {output});
+                operation.execute({input}, {output});
+                return output;
+            }
+        }
+
+        // r_pow_scalar
+        template <typename T>
+        NdArrayPtr r_pow_scalar(NdArrayPtr input, double val, bool inplace = true)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            RPowScalar<T> operation(ctx, val, inplace);
+            if (inplace) {
+                operation.setup({input}, {input});
+                operation.execute({input}, {input});
+                return input;
+            }
+            else {
+                auto output = NdArray::create();
+                output->cast_data_and_get_pointer<T>(ctx);
+                operation.setup({input}, {output});
+                operation.execute({input}, {output});
+                return output;
+            }
+        }
+
+        // r_sub_scalar
+        template <typename T>
+        NdArrayPtr r_sub_scalar(NdArrayPtr input, double val, bool inplace = true)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            RSubScalar<T> operation(ctx, val, inplace);
+            if (inplace) {
+                operation.setup({input}, {input});
+                operation.execute({input}, {input});
+                return input;
+            }
+            else {
+                auto output = NdArray::create();
+                output->cast_data_and_get_pointer<T>(ctx);
+                operation.setup({input}, {output});
+                operation.execute({input}, {output});
+                return output;
+            }
+        }
+
+        // -------------------------------------------------------
         
         // transpose
         template <typename T>
@@ -164,7 +266,6 @@ namespace is
             operation.execute({input}, {output});
             return output;
         }
-
 
         // broadcast
         template <typename T>

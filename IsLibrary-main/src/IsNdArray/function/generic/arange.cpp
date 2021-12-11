@@ -44,7 +44,7 @@ namespace is
         template <typename T>
         void Arange<T>::execute_impl(const NdArrays& inputs, const NdArrays& outputs)
         {
-            auto y = outputs[0];
+            auto& y = outputs[0];
             T *y_data = y->cast_data_and_get_pointer<T>(this->ctx_, true);
             auto value = this->start_;
 
@@ -59,17 +59,17 @@ namespace is
          * @brief テンプレートの明示的インスタンス化
          * nbla.dllの外部にエクスポートする.
          */
-        NBLA_INSTANTIATE_CLASS(Arange, bool)
-        NBLA_INSTANTIATE_CLASS(Arange, char)
-        NBLA_INSTANTIATE_CLASS(Arange, unsigned char)
-        NBLA_INSTANTIATE_CLASS(Arange, short)
-        NBLA_INSTANTIATE_CLASS(Arange, unsigned short)
-        NBLA_INSTANTIATE_CLASS(Arange, int)
-        NBLA_INSTANTIATE_CLASS(Arange, unsigned int)
-        NBLA_INSTANTIATE_CLASS(Arange, long)
-        NBLA_INSTANTIATE_CLASS(Arange, unsigned long)
-        NBLA_INSTANTIATE_CLASS(Arange, long long)
-        NBLA_INSTANTIATE_CLASS(Arange, unsigned long long)
+        // NBLA_INSTANTIATE_CLASS(Arange, bool)
+        // NBLA_INSTANTIATE_CLASS(Arange, char)
+        // NBLA_INSTANTIATE_CLASS(Arange, unsigned char)
+        // NBLA_INSTANTIATE_CLASS(Arange, short)
+        // NBLA_INSTANTIATE_CLASS(Arange, unsigned short)
+        // NBLA_INSTANTIATE_CLASS(Arange, int)
+        // NBLA_INSTANTIATE_CLASS(Arange, unsigned int)
+        // NBLA_INSTANTIATE_CLASS(Arange, long)
+        // NBLA_INSTANTIATE_CLASS(Arange, unsigned long)
+        // NBLA_INSTANTIATE_CLASS(Arange, long long)
+        // NBLA_INSTANTIATE_CLASS(Arange, unsigned long long)
         NBLA_INSTANTIATE_CLASS(Arange, float)
         NBLA_INSTANTIATE_CLASS(Arange, double)
         NBLA_INSTANTIATE_CLASS(Arange, long double)
