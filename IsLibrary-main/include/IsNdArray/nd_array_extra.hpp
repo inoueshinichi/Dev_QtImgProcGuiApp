@@ -9,7 +9,11 @@
 #include <IsNdArray/function/randn.hpp>
 #include <IsNdArray/function/arange.hpp>
 
-// Pointwise
+// PointWise-1
+#include <IsNdArray/function/abs.hpp>
+#include <IsNdArray/function/sin.hpp>
+
+// Pointwise-2
 #include <IsNdArray/function/add_scalar.hpp>
 #include <IsNdArray/function/pow_scalar.hpp>
 #include <IsNdArray/function/mul_scalar.hpp>
@@ -130,6 +134,35 @@ namespace is
             operation.execute({}, {output});
             return output;
         }
+
+        // -------------------------------------------------------
+
+        // abs
+        template <typename T>
+        NdArrayPtr abs(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Abs<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // sin
+        template <typename T>
+        NdArrayPtr sin(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Sin<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
 
         // -------------------------------------------------------
 

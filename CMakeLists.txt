@@ -80,7 +80,8 @@ if (MSVC)
         link_libraries(${OpenMP_LIBRARIES})
         add_compile_options("$<$<C_COMPILER_ID:MSVC>:/openmp>")
         add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/openmp>")
-        # add_compile_definitions(_OPENMP)
+        # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+        # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
     endif()
 
     # ソースコードでUTF-8を使う(MSVC)
@@ -126,6 +127,8 @@ elseif(APPLE)
         link_libraries(${OpenMP_LIBRARIES})
         add_compile_options("$<$<C_COMPILER_ID:GCC>:-fopenmp>")
         add_compile_options("$<$<CXX_COMPILER_ID:GCC>:-fopenmp>")
+        # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+        # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
     endif()
 
     # C++標準に準拠しない拡張機能を無効化
@@ -155,6 +158,8 @@ else()
         link_libraries(${OpenMP_LIBRARIES})
         add_compile_options("$<$<C_COMPILER_ID:GCC>:-fopenmp>")
         add_compile_options("$<$<CXX_COMPILER_ID:GCC>:-fopenmp>")
+        # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+        # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
     endif()
 
     # C++標準に準拠しない拡張機能を無効化

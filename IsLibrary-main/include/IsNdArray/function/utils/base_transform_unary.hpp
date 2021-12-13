@@ -4,6 +4,10 @@
 #include <IsNdArray/function.hpp>
 #include <IsNdArray/function_registry.hpp>
 
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
 namespace is
 {
     namespace nbla
@@ -100,7 +104,7 @@ namespace is
         template <typename T, typename UnaryOp>
         void transform_unary(Size_t size, const T* x, T* y, UnaryOp op)
         {
-#if _OPENMP
+#ifdef _OPENMP
     #pragma omp parallel for schedule(static)
 #endif
             for (Size_t idx = 0; idx < size; ++idx)

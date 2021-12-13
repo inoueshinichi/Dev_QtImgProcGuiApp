@@ -19,3 +19,6 @@ make_test_case(test_nnabla_func_mul_scalar.cpp TEST_NNABLA_FUNC_MUL_SCALAR)
 make_test_case(test_nnabla_func_r_div_scalar.cpp TEST_NNABLA_FUNC_R_DIV_SCALAR)
 make_test_case(test_nnabla_func_r_pow_scalar.cpp TEST_NNABLA_FUNC_R_POW_SCALAR)
 make_test_case(test_nnabla_func_r_sub_scalar.cpp TEST_NNABLA_FUNC_R_SUB_SCALAR)
+
+make_test_case(test_nnabla_func_abs.cpp TEST_NNABLA_FUNC_ABS)
+make_test_case(test_nnabla_func_sin.cpp TEST_NNABLA_FUNC_SIN)

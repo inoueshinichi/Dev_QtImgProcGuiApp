@@ -1,8 +1,11 @@
+#include <IsCommon/tm.hpp> // 時間計測
+
 #include <iostream>
 #include <string>
 #include <cstdio>
 #include <iomanip>
 #include <cstring>
+
 
 using namespace is::nbla;
 

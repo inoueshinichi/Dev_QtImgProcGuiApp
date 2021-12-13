@@ -181,7 +181,7 @@ namespace is
             using longdouble = long double;
 
             /*abs*/
-            NBLA_REGISTER_FUNCTION_IMPL(Abs, Abs<bool>, "cpu:bool")
+            // NBLA_REGISTER_FUNCTION_IMPL(Abs, Abs<bool>, "cpu:bool")
             // NBLA_REGISTER_FUNCTION_IMPL(Abs, Abs<uchar>, "cpu:ubyte")
             NBLA_REGISTER_FUNCTION_IMPL(Abs, Abs<char>, "cpu:byte")
             // NBLA_REGISTER_FUNCTION_IMPL(Abs, Abs<ushort>, "cpu:ushort")
