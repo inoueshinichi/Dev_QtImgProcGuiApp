@@ -28,7 +28,7 @@ namespace
         const auto& ctx_cpu = SingletonManager::get<GlobalContext>()->get_current_context();
 
         // zero
-        auto ndarray_zeros = zeros<float>(Shape_t{512, 512});
+        auto ndarray_zeros = zeros<float>(Shape_t{16, 16});
         auto st = ndarray_zeros->strides();
         auto sh = ndarray_zeros->shape();
         float* data = ndarray_zeros->cast_data_and_get_pointer<float>(ctx_cpu);
@@ -52,7 +52,7 @@ namespace
         const auto& ctx_cpu = SingletonManager::get<GlobalContext>()->get_current_context();
 
         // zero
-        auto ndarray_zeros = zeros<float>(Shape_t{512, 512});
+        auto ndarray_zeros = zeros<float>(Shape_t{16, 16});
         auto st = ndarray_zeros->strides();
         auto sh = ndarray_zeros->shape();
         float* data = ndarray_zeros->cast_data_and_get_pointer<float>(ctx_cpu);
@@ -65,9 +65,9 @@ namespace
 
         cout << "---" <<endl;
 
-        for (int y = 0; y < sh[1]; ++y)
+        for (int y = 0; y < sh[0]; ++y)
         {
-            for (int x = 0; x < sh[2]; ++x)
+            for (int x = 0; x < sh[1]; ++x)
             {
                 auto& v = data[y * st[0] + x * st[1]];
                 v = sin(v);

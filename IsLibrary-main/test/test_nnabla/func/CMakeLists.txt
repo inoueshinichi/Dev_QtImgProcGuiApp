@@ -2,17 +2,31 @@ cmake_minimum_required(VERSION 3.14.6)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/test_case.cmake)
 
-
+# generate
 make_test_case(test_nnabla_func_rand.cpp TEST_NNABLA_FUNC_RAND)
 make_test_case(test_nnabla_func_randint.cpp TEST_NNABLA_FUNC_RANDINT)
 make_test_case(test_nnabla_func_randn.cpp TEST_NNABLA_FUNC_RANDN)
+
+# ope1
 make_test_case(test_nnabla_func_transpose.cpp TEST_NNABLA_FUNC_TRANSPOSE)
 make_test_case(test_nnabla_func_reshape.cpp TEST_NNABLA_FUNC_RESHAPE)
 make_test_case(test_nnabla_func_slice.cpp TEST_NNABLA_FUNC_SLICE)
 make_test_case(test_nnabla_func_arange.cpp TEST_NNABLA_FUNC_ARANGE)
 make_test_case(test_nnabla_func_broadcast.cpp TEST_NNABLA_FUNC_BROADCAST) # バグあり
+
+# reduce
 make_test_case(test_nnabla_func_sum.cpp TEST_NNABLA_FUNC_SUM)
 make_test_case(test_nnabla_func_mean.cpp TEST_NNABLA_FUNC_MEAN)
+make_test_case(test_nnabla_func_max.cpp TEST_NNABLA_FUNC_MAX)
+make_test_case(test_nnabla_func_min.cpp TEST_NNABLA_FUNC_MIN)
+make_test_case(test_nnabla_func_prod.cpp TEST_NNABLA_FUNC_PROD)
+
+# ope2
+make_test_case(test_nnabla_func_sort.cpp TEST_NNABLA_FUNC_SORT)
+make_test_case(test_nnabla_func_cumsum.cpp TEST_NNABLA_FUNC_CUMSUM)
+make_test_case(test_nnabla_func_cumprod.cpp TEST_NNABLA_FUNC_CUMPROD)
+
+# point-wise scalar
 make_test_case(test_nnabla_func_add_scalar.cpp TEST_NNABLA_FUNC_ADD_SCALAR)
 make_test_case(test_nnabla_func_pow_scalar.cpp TEST_NNABLA_FUNC_POW_SCALAR)
 make_test_case(test_nnabla_func_mul_scalar.cpp TEST_NNABLA_FUNC_MUL_SCALAR)
@@ -20,5 +34,12 @@ make_test_case(test_nnabla_func_r_div_scalar.cpp TEST_NNABLA_FUNC_R_DIV_SCALAR)
 make_test_case(test_nnabla_func_r_pow_scalar.cpp TEST_NNABLA_FUNC_R_POW_SCALAR)
 make_test_case(test_nnabla_func_r_sub_scalar.cpp TEST_NNABLA_FUNC_R_SUB_SCALAR)
 
+# point-wise
 make_test_case(test_nnabla_func_abs.cpp TEST_NNABLA_FUNC_ABS)
+make_test_case(test_nnabla_func_acos.cpp TEST_NNABLA_FUNC_ACOS)
 make_test_case(test_nnabla_func_sin.cpp TEST_NNABLA_FUNC_SIN)
+make_test_case(test_nnabla_func_asin.cpp TEST_NNABLA_FUNC_ASIN)
+make_test_case(test_nnabla_func_tan.cpp TEST_NNABLA_FUNC_TAN)
+make_test_case(test_nnabla_func_atan.cpp TEST_NNABLA_FUNC_ATAN)
+make_test_case(test_nnabla_func_exp.cpp TEST_NNABLA_FUNC_EXP)
+make_test_case(test_nnabla_func_sinc.cpp TEST_NNABLA_FUNC_SINC)

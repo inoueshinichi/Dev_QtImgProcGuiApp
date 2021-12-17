@@ -11,7 +11,15 @@
 
 // PointWise-1
 #include <IsNdArray/function/abs.hpp>
+#include <IsNdArray/function/exp.hpp>
+#include <IsNdArray/function/acos.hpp>
 #include <IsNdArray/function/sin.hpp>
+#include <IsNdArray/function/asin.hpp>
+#include <IsNdArray/function/tan.hpp>
+#include <IsNdArray/function/atan.hpp>
+#include <IsNdArray/function/sinc.hpp>
+
+
 
 // Pointwise-2
 #include <IsNdArray/function/add_scalar.hpp>
@@ -21,7 +29,7 @@
 #include <IsNdArray/function/r_pow_scalar.hpp>
 #include <IsNdArray/function/r_sub_scalar.hpp>
 
-
+// Ope1
 #include <IsNdArray/function/transpose.hpp>
 #include <IsNdArray/function/broadcast.hpp>
 #include <IsNdArray/function/reshape.hpp>
@@ -30,6 +38,17 @@
 // Reduce
 #include <IsNdArray/function/sum.hpp>
 #include <IsNdArray/function/mean.hpp>
+#include <IsNdArray/function/max.hpp>
+#include <IsNdArray/function/min.hpp>
+#include <IsNdArray/function/prod.hpp>
+
+// Ope2
+#include <IsNdArray/function/sort.hpp>
+#include <IsNdArray/function/cumsum.hpp>
+#include <IsNdArray/function/cumprod.hpp>
+
+
+
 
 
 #include <memory>
@@ -150,6 +169,32 @@ namespace is
             return output;
         }
 
+        // exp
+        template <typename T>
+        NdArrayPtr exp(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Exp<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // acos
+        template <typename T>
+        NdArrayPtr acos(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            ACos<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
         // sin
         template <typename T>
         NdArrayPtr sin(NdArrayPtr input)
@@ -163,12 +208,51 @@ namespace is
             return output;
         }
 
+        // asin
+        template <typename T>
+        NdArrayPtr asin(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            ASin<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // tan
+        template <typename T>
+        NdArrayPtr tan(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Tan<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // atan
+        template <typename T>
+        NdArrayPtr atan(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            ATan<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
 
         // -------------------------------------------------------
 
         // add_scalar
         template <typename T>
-        NdArrayPtr add_scalar(NdArrayPtr input, double val, bool inplace = true)
+        NdArrayPtr add_scalar(NdArrayPtr input, double val, bool inplace = false)
         {
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             AddScalar<T> operation(ctx, val, inplace);
@@ -188,7 +272,7 @@ namespace is
 
         // pow_scalar
         template <typename T>
-        NdArrayPtr pow_scalar(NdArrayPtr input, double val, bool inplace = true)
+        NdArrayPtr pow_scalar(NdArrayPtr input, double val, bool inplace = false)
         {
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             PowScalar<T> operation(ctx, val, inplace);
@@ -208,7 +292,7 @@ namespace is
 
         // mul_scalar
         template <typename T>
-        NdArrayPtr mul_scalar(NdArrayPtr input, double val, bool inplace = true)
+        NdArrayPtr mul_scalar(NdArrayPtr input, double val, bool inplace = false)
         {
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             MulScalar<T> operation(ctx, val, inplace);
@@ -228,7 +312,7 @@ namespace is
 
         // r_div_scalar
         template <typename T>
-        NdArrayPtr r_div_scalar(NdArrayPtr input, double val, bool inplace = true)
+        NdArrayPtr r_div_scalar(NdArrayPtr input, double val, bool inplace = false)
         {
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             RDivScalar<T> operation(ctx, val, inplace);
@@ -248,7 +332,7 @@ namespace is
 
         // r_pow_scalar
         template <typename T>
-        NdArrayPtr r_pow_scalar(NdArrayPtr input, double val, bool inplace = true)
+        NdArrayPtr r_pow_scalar(NdArrayPtr input, double val, bool inplace = false)
         {
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             RPowScalar<T> operation(ctx, val, inplace);
@@ -268,7 +352,7 @@ namespace is
 
         // r_sub_scalar
         template <typename T>
-        NdArrayPtr r_sub_scalar(NdArrayPtr input, double val, bool inplace = true)
+        NdArrayPtr r_sub_scalar(NdArrayPtr input, double val, bool inplace = false)
         {
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             RSubScalar<T> operation(ctx, val, inplace);
@@ -339,6 +423,7 @@ namespace is
             return output;
         }
 
+        // ---
 
         // sum
         template <typename T>
@@ -363,6 +448,114 @@ namespace is
             operation.setup({input}, {output});
             operation.execute({input}, {output});
             return output;
+        }
+
+        // max
+        template <typename T>
+        vector<NdArrayPtr> max(NdArrayPtr input, int axis = 0, bool keep_dims = false, bool with_index = false, bool only_index = false) 
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Max<T> operation(ctx, {axis}, keep_dims, with_index, only_index);
+
+            if (!with_index)
+            {
+                auto output = NdArray::create();
+                operation.setup({input}, {output});
+                operation.execute({input}, {output});
+                return {output};
+            }
+            else
+            {
+                auto output = NdArray::create();
+                auto output_index = NdArray::create();
+                operation.setup({input}, {output, output_index});
+                operation.execute({input}, {output, output_index});
+                return {output, output_index};
+            }
+        }
+
+        // min
+        template <typename T>
+        vector<NdArrayPtr> min(NdArrayPtr input, int axis = 0, bool keep_dims = false, bool with_index = false, bool only_index = false) 
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Min<T> operation(ctx, {axis}, keep_dims, with_index, only_index);
+
+            if (!with_index)
+            {
+                auto output = NdArray::create();
+                operation.setup({input}, {output});
+                operation.execute({input}, {output});
+                return {output};
+            }
+            else
+            {
+                auto output = NdArray::create();
+                auto output_index = NdArray::create();
+                operation.setup({input}, {output, output_index});
+                operation.execute({input}, {output, output_index});
+                return {output, output_index};
+            }
+        }
+
+        // prod
+        template <typename T>
+        NdArrayPtr prod(NdArrayPtr input, vector<int64_t>& axes, bool keep_dims = false) 
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Prod<T> operation(ctx, axes, keep_dims);
+            auto output = NdArray::create();
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return {output};
+        }
+
+        // sort
+        template <typename T>
+        vector<NdArrayPtr> sort(NdArrayPtr input, int axis = 0, bool reverse = false, bool with_index = false, bool only_index = false) 
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Sort<T> operation(ctx, {axis}, reverse, with_index, only_index);
+
+            if (!with_index)
+            {
+                auto output = NdArray::create();
+                operation.setup({input}, {output});
+                operation.execute({input}, {output});
+                return {output};
+            }
+            else
+            {
+                auto output = NdArray::create();
+                auto output_index = NdArray::create();
+                operation.setup({input}, {output, output_index});
+                operation.execute({input}, {output, output_index});
+                return {output, output_index};
+            }
+        }
+
+        // cumsum
+        template <typename T>
+        NdArrayPtr cumsum(NdArrayPtr input, int axis = 0, bool exclusive = false, bool reverse = false) 
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            CumSum<T> operation(ctx, axis, exclusive, reverse);
+            auto output = NdArray::create();
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return {output};           
+        }
+
+        // cumprod
+        template <typename T>
+        NdArrayPtr cumprod(NdArrayPtr input, int axis = 0, bool exclusive = false, bool reverse = false) 
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            CumProd<T> operation(ctx, axis, exclusive, reverse);
+            auto output = NdArray::create();
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return {output};           
         }
     }
 }
