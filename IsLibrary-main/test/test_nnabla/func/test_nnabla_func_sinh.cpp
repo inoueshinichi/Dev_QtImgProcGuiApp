@@ -1,13 +1,15 @@
 /**
- * @file test_nnabla_func_tan.cpp
+ * @file test_nnabla_func_sinh.cpp
  * @author your name (you@domain.com)
- * @brief [Test] Nnabla tan-func
+ * @brief [Test] Nnabla sinh-func
  * @version 0.1
- * @date 2021-12-17
+ * @date 2021-12-14
  * 
  * @copyright Copyright (c) 2021
  * 
  */
+
+
 // googletest
 #include <gtest/gtest.h>
 
@@ -17,9 +19,10 @@
 // test utils
 #include <test_utils.hpp>
 
+
 namespace 
 {
-    TEST(nnabla_func, tan_1)
+    TEST(nnabla_func, sinh_1)
     {
         using namespace std;
         const auto& ctx_cpu = SingletonManager::get<GlobalContext>()->get_current_context();
@@ -38,13 +41,12 @@ namespace
 
         cout << "---" <<endl;
 
-        auto out_ndarray = is::common::invoke_tm_chrono_ms_ret(tan<float>, ndarray_zeros);
+        auto out_ndarray = is::common::invoke_tm_chrono_ms_ret(sinh<float>, ndarray_zeros);
 
         show_ndarray_contents<float>(out_ndarray);
     }
 
-
-    TEST(nnabla_func, tan_2)
+    TEST(nnabla_func, sinh_2)
     {
         using namespace std;
         const auto& ctx_cpu = SingletonManager::get<GlobalContext>()->get_current_context();
@@ -68,14 +70,16 @@ namespace
             for (int x = 0; x < sh[1]; ++x)
             {
                 auto& v = data[y * st[0] + x * st[1]];
-                v = tan(v);
+                v = sinh(v);
             }
         }
     
+
+
         show_ndarray_contents<float>(ndarray_zeros);
     }
-
 }
+
 
 int main(int, char**)
 {
@@ -83,4 +87,3 @@ int main(int, char**)
     testing::InitGoogleTest();
     return RUN_ALL_TESTS();
 }
-

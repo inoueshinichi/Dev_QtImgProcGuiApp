@@ -12,7 +12,8 @@ make_test_case(test_nnabla_func_transpose.cpp TEST_NNABLA_FUNC_TRANSPOSE)
 make_test_case(test_nnabla_func_reshape.cpp TEST_NNABLA_FUNC_RESHAPE)
 make_test_case(test_nnabla_func_slice.cpp TEST_NNABLA_FUNC_SLICE)
 make_test_case(test_nnabla_func_arange.cpp TEST_NNABLA_FUNC_ARANGE)
-make_test_case(test_nnabla_func_broadcast.cpp TEST_NNABLA_FUNC_BROADCAST) # バグあり
+make_test_case(test_nnabla_func_broadcast.cpp TEST_NNABLA_FUNC_BROADCAST)
+make_test_case(test_nnabla_func_split.cpp TEST_NNABLA_FUNC_SPLIT)
 
 # reduce
 make_test_case(test_nnabla_func_sum.cpp TEST_NNABLA_FUNC_SUM)
@@ -36,10 +37,17 @@ make_test_case(test_nnabla_func_r_sub_scalar.cpp TEST_NNABLA_FUNC_R_SUB_SCALAR)
 
 # point-wise
 make_test_case(test_nnabla_func_abs.cpp TEST_NNABLA_FUNC_ABS)
+make_test_case(test_nnabla_func_cos.cpp TEST_NNABLA_FUNC_COS)
+make_test_case(test_nnabla_func_cosh.cpp TEST_NNABLA_FUNC_COSH)
 make_test_case(test_nnabla_func_acos.cpp TEST_NNABLA_FUNC_ACOS)
+make_test_case(test_nnabla_func_acosh.cpp TEST_NNABLA_FUNC_ACOSH)
 make_test_case(test_nnabla_func_sin.cpp TEST_NNABLA_FUNC_SIN)
+make_test_case(test_nnabla_func_sinh.cpp TEST_NNABLA_FUNC_SINH)
 make_test_case(test_nnabla_func_asin.cpp TEST_NNABLA_FUNC_ASIN)
+make_test_case(test_nnabla_func_asinh.cpp TEST_NNABLA_FUNC_ASINH)
 make_test_case(test_nnabla_func_tan.cpp TEST_NNABLA_FUNC_TAN)
+make_test_case(test_nnabla_func_tanh.cpp TEST_NNABLA_FUNC_TANH)
 make_test_case(test_nnabla_func_atan.cpp TEST_NNABLA_FUNC_ATAN)
+make_test_case(test_nnabla_func_atanh.cpp TEST_NNABLA_FUNC_ATANH)
 make_test_case(test_nnabla_func_exp.cpp TEST_NNABLA_FUNC_EXP)
 make_test_case(test_nnabla_func_sinc.cpp TEST_NNABLA_FUNC_SINC)

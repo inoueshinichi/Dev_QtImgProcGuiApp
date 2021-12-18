@@ -1,7 +1,7 @@
 /**
- * @file test_nnabla_func_tan.cpp
+ * @file test_nnabla_func_tanh.cpp
  * @author your name (you@domain.com)
- * @brief [Test] Nnabla tan-func
+ * @brief [Test] Nnabla tanh-func
  * @version 0.1
  * @date 2021-12-17
  * 
@@ -19,7 +19,7 @@
 
 namespace 
 {
-    TEST(nnabla_func, tan_1)
+    TEST(nnabla_func, tanh_1)
     {
         using namespace std;
         const auto& ctx_cpu = SingletonManager::get<GlobalContext>()->get_current_context();
@@ -38,13 +38,13 @@ namespace
 
         cout << "---" <<endl;
 
-        auto out_ndarray = is::common::invoke_tm_chrono_ms_ret(tan<float>, ndarray_zeros);
+        auto out_ndarray = is::common::invoke_tm_chrono_ms_ret(tanh<float>, ndarray_zeros);
 
         show_ndarray_contents<float>(out_ndarray);
     }
 
 
-    TEST(nnabla_func, tan_2)
+    TEST(nnabla_func, tanh_2)
     {
         using namespace std;
         const auto& ctx_cpu = SingletonManager::get<GlobalContext>()->get_current_context();
@@ -68,7 +68,7 @@ namespace
             for (int x = 0; x < sh[1]; ++x)
             {
                 auto& v = data[y * st[0] + x * st[1]];
-                v = tan(v);
+                v = tanh(v);
             }
         }
     

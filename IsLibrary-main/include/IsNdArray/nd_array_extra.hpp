@@ -8,18 +8,34 @@
 #include <IsNdArray/function/randint.hpp>
 #include <IsNdArray/function/randn.hpp>
 #include <IsNdArray/function/arange.hpp>
+#include <IsNdArray/function/constant.hpp>
 
 // PointWise-1
 #include <IsNdArray/function/abs.hpp>
 #include <IsNdArray/function/exp.hpp>
-#include <IsNdArray/function/acos.hpp>
-#include <IsNdArray/function/sin.hpp>
-#include <IsNdArray/function/asin.hpp>
-#include <IsNdArray/function/tan.hpp>
-#include <IsNdArray/function/atan.hpp>
 #include <IsNdArray/function/sinc.hpp>
-
-
+#include <IsNdArray/function/cos.hpp>
+#include <IsNdArray/function/cosh.hpp>
+#include <IsNdArray/function/acos.hpp>
+#include <IsNdArray/function/acosh.hpp>
+#include <IsNdArray/function/sin.hpp>
+#include <IsNdArray/function/sinh.hpp>
+#include <IsNdArray/function/asin.hpp>
+#include <IsNdArray/function/asinh.hpp>
+#include <IsNdArray/function/atan.hpp>
+#include <IsNdArray/function/tan.hpp>
+#include <IsNdArray/function/tanh.hpp>
+#include <IsNdArray/function/atanh.hpp>
+#include <IsNdArray/function/sqrt.hpp>
+#include <IsNdArray/function/ceil.hpp>
+#include <IsNdArray/function/floor.hpp>
+#include <IsNdArray/function/round.hpp>
+#include <IsNdArray/function/log.hpp>
+#include <IsNdArray/function/log1p.hpp>
+#include <IsNdArray/function/log2.hpp>
+#include <IsNdArray/function/log10.hpp>
+#include <IsNdArray/function/sigmoid.hpp>
+#include <IsNdArray/function/sign.hpp>
 
 // Pointwise-2
 #include <IsNdArray/function/add_scalar.hpp>
@@ -28,12 +44,16 @@
 #include <IsNdArray/function/r_div_scalar.hpp>
 #include <IsNdArray/function/r_pow_scalar.hpp>
 #include <IsNdArray/function/r_sub_scalar.hpp>
+#include <IsNdArray/function/maximum_scalar.hpp>
+#include <IsNdArray/function/minimum_scalar.hpp>
 
 // Ope1
 #include <IsNdArray/function/transpose.hpp>
 #include <IsNdArray/function/broadcast.hpp>
 #include <IsNdArray/function/reshape.hpp>
 #include <IsNdArray/function/slice.hpp>
+#include <IsNdArray/function/split.hpp>
+#include <IsNdArray/function/concatenate.hpp>
 
 // Reduce
 #include <IsNdArray/function/sum.hpp>
@@ -46,10 +66,6 @@
 #include <IsNdArray/function/sort.hpp>
 #include <IsNdArray/function/cumsum.hpp>
 #include <IsNdArray/function/cumprod.hpp>
-
-
-
-
 
 #include <memory>
 
@@ -154,6 +170,19 @@ namespace is
             return output;
         }
 
+        // constant
+        template <typename T>
+        NdArrayPtr constant(const Shape_t& shape, float val)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Arange<T> operation(ctx, val, shape);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({}, {output});
+            operation.execute({}, {output});
+            return output;
+        }
+
         // -------------------------------------------------------
 
         // abs
@@ -182,12 +211,51 @@ namespace is
             return output;
         }
 
+        // cos
+        template <typename T>
+        NdArrayPtr cos(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Cos<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // cosh
+        template <typename T>
+        NdArrayPtr cosh(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Cosh<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
         // acos
         template <typename T>
         NdArrayPtr acos(NdArrayPtr input)
         {
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             ACos<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // acosh
+        template <typename T>
+        NdArrayPtr acosh(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            ACosh<T> operation(ctx);
             auto output = NdArray::create();
             output->cast_data_and_get_pointer<T>(ctx);
             operation.setup({input}, {output});
@@ -208,12 +276,38 @@ namespace is
             return output;
         }
 
+        // sinh
+        template <typename T>
+        NdArrayPtr sinh(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Sinh<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
         // asin
         template <typename T>
         NdArrayPtr asin(NdArrayPtr input)
         {
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             ASin<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // asinh
+        template <typename T>
+        NdArrayPtr asinh(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            ASinh<T> operation(ctx);
             auto output = NdArray::create();
             output->cast_data_and_get_pointer<T>(ctx);
             operation.setup({input}, {output});
@@ -234,12 +328,168 @@ namespace is
             return output;
         }
 
+        // tanh
+        template <typename T>
+        NdArrayPtr tanh(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Tanh<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
         // atan
         template <typename T>
         NdArrayPtr atan(NdArrayPtr input)
         {
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             ATan<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // atanh
+        template <typename T>
+        NdArrayPtr atanh(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            ATanh<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // sqrt
+        template <typename T>
+        NdArrayPtr sqrt(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Sqrt<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // ceil
+        template <typename T>
+        NdArrayPtr ceil(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Ceil<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // floor
+        template <typename T>
+        NdArrayPtr floor(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Floor<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // round
+        template <typename T>
+        NdArrayPtr round(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Round<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // log
+        template <typename T>
+        NdArrayPtr log(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Log<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // log1p
+        template <typename T>
+        NdArrayPtr log1p(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Log1p<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // log2
+        template <typename T>
+        NdArrayPtr log2(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Log2<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // log10
+        template <typename T>
+        NdArrayPtr log10(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Log10<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // sigmoid
+        template <typename T>
+        NdArrayPtr sigmoid(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Sigmoid<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // sign
+        template <typename T>
+        NdArrayPtr sign(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Sign<T> operation(ctx);
             auto output = NdArray::create();
             output->cast_data_and_get_pointer<T>(ctx);
             operation.setup({input}, {output});
@@ -370,6 +620,32 @@ namespace is
             }
         }
 
+        // maximum_scalar
+        template <typename T>
+        NdArrayPtr maximum_scalar(NdArrayPtr input, double val)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            MaximumScalar<T> operation(ctx, val);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // minimum_scalar
+        template <typename T>
+        NdArrayPtr minimum_scalar(NdArrayPtr input, double val)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            MinimumScalar<T> operation(ctx, val);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
         // -------------------------------------------------------
         
         // transpose
@@ -423,7 +699,40 @@ namespace is
             return output;
         }
 
-        // ---
+
+        // split
+        template <typename T>
+        vector<NdArrayPtr> split(NdArrayPtr input, int axis) 
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Split<T> operation(ctx, axis);
+            auto sh = input->shape();
+            int num = sh.at(axis);
+            vector<NdArrayPtr> outputs(num);
+            for (int i = 0; i < num; ++i)
+            {
+                outputs[i] = NdArray::create();
+            }
+            operation.setup({input}, outputs);
+            operation.execute({input}, outputs);
+            return outputs;
+        }
+
+
+        // concatenate
+        template <typename T>
+        NdArrayPtr concatenate(vector<NdArrayPtr> inputs, int axis)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Concatenate<T> operation(ctx, axis);
+            auto output = NdArray::create();
+            operation.setup(inputs, {output});
+            operation.execute(inputs, {output});
+            return output;
+        }
+
+        // -------------------------------------------------------
+        
 
         // sum
         template <typename T>

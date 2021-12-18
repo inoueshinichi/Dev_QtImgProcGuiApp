@@ -17,8 +17,6 @@ namespace is
         void Broadcast<T>::setup_impl(const NdArrays& inputs,
                                       const NdArrays& outputs)
         {
-            // 入力Tensor
-            auto inshape = inputs[0]->shape();
             auto ndim = inputs[0]->ndim();
 
             // 動的な入力なのでチェック
@@ -36,27 +34,28 @@ namespace is
             shape_y_.reshape({ ndim }, true);
             Context cpu = Context().set_array_class("CpuCachedArray");
             // Context cpu = Context().set_array_class("CpuArray");
+
             int* stride_x = stride_x_.cast_data_and_get_pointer<int>(cpu, true);
             int* shape_y = shape_y_.cast_data_and_get_pointer<int>(cpu, true);
             auto stride_x_in = inputs[0]->strides();
 
             // Check shape, and store ndarrays.
-            for (int d = 0; d < ndim; ++d)
-            {
+            auto eshape = expand_shape(inputs[0]->shape(), shape_.size());
+            auto estride_x_in = get_c_contiguous_strides(eshape);
+            for (unsigned int d = 0; d < eshape.size(); ++d) {
+                NBLA_CHECK(eshape[d] == shape_[d] || eshape[d] == 1, error_code::value,
+                        "Trailing shapes must be same or dimension of trailing shape of "
+                        "input has 1. Input shpae = (%s), Target shape = (%s)",
+                        string_join(inputs[0]->shape(), string(", ")).c_str(),
+                        string_join(shape_, string(", ")).c_str());
+
                 shape_y[d] = shape_[d];
-                if (inshape[d] == shape_[d])
-                {
-                    stride_x[d] = stride_x_in[d];
+                if (eshape[d] == shape_[d]) {
+                    stride_x[d] = estride_x_in[d];
                     continue;
                 }
-
-                NBLA_CHECK(inshape[d] == 1, 
-                           error_code::value,
-                           "Size of a dimension broadcasted must be "
-                           "1 (%d at the dimension %d).",
-                           inshape[d], d);
+                stride_x[d] = 0;
             }
-
             Shape_t outshape(shape_.begin(), shape_.end());
             outputs[0]->reshape(outshape, true);
         }
@@ -77,7 +76,7 @@ namespace is
 
             static void _get(int y_index, const int* stride_x, const int* shape_y, int& stride, int& x_index)
             {
-                const int dim_index = (y_index / stride) % shape_y[ND];
+                const int dim_index = int(y_index / stride) % shape_y[ND];
                 stride *= shape_y[ND];
                 x_index += dim_index * stride_x[ND];
                 strided_index<ND - 1>::_get(y_index, stride_x, shape_y, stride, x_index);
@@ -106,12 +105,13 @@ namespace is
         // Broadcast all elements
         // --------------------------------------------------------------------------
         template <int Ndim, typename T>
-        void broadcast(Size_t size, const T* x, const int* stride_x, const int* shape_y, T* y)
+        void broadcast(size_t size, const T* x, const int* stride_x, const int* shape_y, T* y)
         {
             for (size_t i = 0; i < size; ++i)
             {
                 int j = strided_index<Ndim>::get(i, stride_x, shape_y);
                 y[i] = x[j];
+                // y[i] = 9;
             }
         }
 
