@@ -67,6 +67,9 @@
 #include <IsNdArray/function/cumsum.hpp>
 #include <IsNdArray/function/cumprod.hpp>
 
+// 2-Input
+#include <IsNdArray/function/add2.hpp>
+
 #include <memory>
 
 
@@ -866,5 +869,32 @@ namespace is
             operation.execute({input}, {output});
             return {output};           
         }
+
+
+        // -------------------------------------------------------
+
+
+        // add2
+        template <typename T>
+        NdArrayPtr add2(NdArrayPtr left, NdArrayPtr right, bool inplace = false)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Add2<T> operation(ctx, inplace);
+
+            if (inplace) {
+                operation.setup({left, right}, {left});
+                operation.execute({left, right}, {left});
+                return left;
+            }
+            else {
+                auto output = NdArray::create();
+                operation.setup({left, right}, {output});
+                operation.execute({left, right}, {output});
+                return output;
+            }   
+        }
+
+
+        
     }
 }

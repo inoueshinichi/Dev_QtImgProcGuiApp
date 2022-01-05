@@ -27,6 +27,9 @@ make_test_case(test_nnabla_func_sort.cpp TEST_NNABLA_FUNC_SORT)
 make_test_case(test_nnabla_func_cumsum.cpp TEST_NNABLA_FUNC_CUMSUM)
 make_test_case(test_nnabla_func_cumprod.cpp TEST_NNABLA_FUNC_CUMPROD)
 
+# 2-input
+make_test_case(test_nnabla_func_add2.cpp TEST_NNABLA_FUNC_ADD2)
+
 # point-wise scalar
 make_test_case(test_nnabla_func_add_scalar.cpp TEST_NNABLA_FUNC_ADD_SCALAR)
 make_test_case(test_nnabla_func_pow_scalar.cpp TEST_NNABLA_FUNC_POW_SCALAR)

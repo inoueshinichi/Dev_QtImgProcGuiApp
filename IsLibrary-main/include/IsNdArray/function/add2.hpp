@@ -33,25 +33,11 @@ namespace is
 
             virtual ~Add2() {}
 
-            virtual shared_ptr<Function> copy() const 
-            {
-                return create_Add2(ctx_, inplace_);
-            }
-
-            virtual vector<dtypes> in_types() 
-            {
-                return vector<dtypes>{get_dtype<T>(), get_dtype<T>()};
-            }
-
-            virtual vector<dtypes> out_types() 
-            { 
-                return vector<dtypes>{get_dtype<T>()}; 
-            }
-
+            virtual shared_ptr<Function> copy() const { return create_Add2(ctx_, inplace_); }
+            virtual vector<dtypes> in_types() { return vector<dtypes>{get_dtype<T>(), get_dtype<T>()}; }
+            virtual vector<dtypes> out_types() { return vector<dtypes>{get_dtype<T>()}; }
             virtual int min_inputs() { return 2; }
-
             virtual int min_outputs() { return 1; }
-
             virtual string name() { return "Add2"; }
 
             virtual vector<string> allowed_array_classes() 
@@ -75,7 +61,6 @@ namespace is
         protected:
             NBLA_API virtual void setup_impl(const NdArrays& inputs,
                                              const NdArrays& outputs);
-
             NBLA_API virtual void execute_impl(const NdArrays& inputs,
                                                const NdArrays& outputs);
         };

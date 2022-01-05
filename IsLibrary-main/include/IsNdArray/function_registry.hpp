@@ -295,6 +295,7 @@ namespace is
 
             #define NBLA_REGISTER_FUNCTION_HEADER(NAME, ...)                                                \
                 FunctionRegistry<Function __VA_OPT__(,) __VA_ARGS__>& get_##NAME##Registry();               \
+                                                                                                            \
                 shared_ptr<Function> create_##NAME(NBLA_ARGDEFS(const Context& __VA_OPT__(,) __VA_ARGS__)); 
 
             #define NBLA_REGISTER_FUNCTION_SOURCE(NAME, ...)                                                \
@@ -334,6 +335,7 @@ namespace is
 
                 #define NBLA_REGISTER_FUNCTION_HEADER(NAME, ...)                                                \
                     FunctionRegistry<Function NBLA_VA_ARGS(__VA_ARGS__)>& get_##NAME##Registry();               \
+                                                                                                                \
                     shared_ptr<Function> create_##NAME(NBLA_ARGDEFS(const Context& NBLA_EXPAND(__VA_ARGS__))); 
 
                 #define NBLA_REGISTER_FUNCTION_SOURCE(NAME, ...)                                                \
@@ -394,6 +396,7 @@ namespace is
     #else // GCC (>= C++20)
         #define NBLA_REGISTER_FUNCTION_HEADER(NAME, ...)                                                \
             FunctionRegistry<Function __VA_OPT__(,) __VA_ARGS__>& get_##NAME##Registry();               \
+                                                                                                        \
             shared_ptr<Function> create_##NAME(NBLA_ARGDEFS(                                            \
                                                 const Context& __VA_OPT__(,) __VA_ARGS__));
 

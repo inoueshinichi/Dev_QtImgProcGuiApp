@@ -15,10 +15,6 @@ namespace is
             if (inputs[0]->shape() == inputs[1]->shape()) 
             {
                 outputs[0]->reshape(inputs[0]->shape(), true);
-                if (inplace_)
-                {
-                    outputs[0]->set_array(inputs[0]->array());
-                }
                 return;
             }
 

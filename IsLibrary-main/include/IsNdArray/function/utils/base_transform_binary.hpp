@@ -61,15 +61,13 @@ namespace is
                 Shape_t s1 = inputs[1]->shape();
                 Shape_t oshape(ndim);
                 
-                for (int i = 0; i < ndim; ++i)
+                for (Size_t i = 0; i < ndim; ++i)
                 {
                     if (s0[i] != s1[i])
                     {
                         NBLA_CHECK(std::min(s0[i], s1[i]) == 1, error_code::value,
                                    "Broadcast dimension must be one. shape[%d]: %d.",
                                    i, std::min(s0[i], s1[i]));
-                        
-                        oshape[i] = std::max(s0[i], s1[i]);
                     }
                     oshape[i] = std::max(s0[i], s1[i]);
                 }
@@ -99,7 +97,7 @@ namespace is
                 *       no broadcast    broadcast   broadcast   broadcast
                 *                       y-axis      x-axis      (x and z)-axis
                 * 
-                * x0    [1, 1, x]       [z, y, z]   [1, y, x]   [z, y, x] [1, y, x]
+                * x0    [1, 1, x]       [z, y, x]   [1, y, x]   [z, y, x] [1, y, x]
                 * x1    [1, 1, x]       [z, 1, x]   [1, y, 1]   [1, y, 1] [z, y, 1]
                 * 
                 * Otherwise the compressed dimension is more than four. Of course,
@@ -158,7 +156,6 @@ namespace is
                     }
                 } // end for
 
-
                 if (ndim > 0)
                 {
                     tmp_size_x0 *= s0[ndim - 1];
@@ -178,7 +175,6 @@ namespace is
                     compressed_shape_y.insert(compressed_shape_y.begin(), 1);
                 }
                 compressed_ndim_ = compressed_shape_y.size();
-
 
                 // Compress their strides
                 Shape_t compressed_strides_x0(compressed_ndim_, 1);
@@ -259,16 +255,8 @@ namespace is
                 , binary_op_(args...) {}
 
             virtual ~TransformBinary() {}
-
-            virtual vector<dtypes> in_types() override
-            {
-                return vector<dtypes>{ get_dtype<T>(), get_dtype<T>() };
-            }
-
-            virtual vector<dtypes> out_types() override
-            {
-                return vector<dtypes>{ get_dtype<T>() };
-            }
+            virtual vector<dtypes> in_types() override { return vector<dtypes>{ get_dtype<T>(), get_dtype<T>() }; }
+            virtual vector<dtypes> out_types() override { return vector<dtypes>{ get_dtype<T>() }; }
 
             virtual vector<string> allowed_array_classes()
             {
@@ -296,7 +284,7 @@ namespace is
 
 
         template <typename T, typename BinaryOp>
-        void transform_binary(Size_t size, 
+        void transform_binary(const Size_t size, 
                               const T* x0, const T* x1, T* y,
                               BinaryOp op, const Size_t ndim, 
                               const Size_t* strides_x0, const Size_t* strides_x1, 
