@@ -54,3 +54,17 @@ make_test_case(test_nnabla_func_atan.cpp TEST_NNABLA_FUNC_ATAN)
 make_test_case(test_nnabla_func_atanh.cpp TEST_NNABLA_FUNC_ATANH)
 make_test_case(test_nnabla_func_exp.cpp TEST_NNABLA_FUNC_EXP)
 make_test_case(test_nnabla_func_sinc.cpp TEST_NNABLA_FUNC_SINC)
+make_test_case(test_nnabla_func_log.cpp TEST_NNABLA_FUNC_LOG)
+make_test_case(test_nnabla_func_log1p.cpp TEST_NNABLA_FUNC_LOG1P)
+make_test_case(test_nnabla_func_log2.cpp TEST_NNABLA_FUNC_LOG2)
+make_test_case(test_nnabla_func_log10.cpp TEST_NNABLA_FUNC_LOG10)
+make_test_case(test_nnabla_func_log_sigmoid.cpp TEST_NNABLA_FUNC_LOG_SIGMOID)
+make_test_case(test_nnabla_func_sigmoid.cpp TEST_NNABLA_FUNC_SIGMOID)
+make_test_case(test_nnabla_func_sign.cpp TEST_NNABLA_FUNC_SIGN)
+make_test_case(test_nnabla_func_sqrt.cpp TEST_NNABLA_FUNC_SQRT)
+make_test_case(test_nnabla_func_ceil.cpp TEST_NNABLA_FUNC_CEIL)
+make_test_case(test_nnabla_func_floor.cpp TEST_NNABLA_FUNC_FLOOR)
+make_test_case(test_nnabla_func_round.cpp TEST_NNABLA_FUNC_ROUND)
+
+
+

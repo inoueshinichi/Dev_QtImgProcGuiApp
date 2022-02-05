@@ -4,71 +4,72 @@
 #include <IsNdArray/global_context.hpp>
 
 // Generation
-#include <IsNdArray/function/rand.hpp>
-#include <IsNdArray/function/randint.hpp>
-#include <IsNdArray/function/randn.hpp>
-#include <IsNdArray/function/arange.hpp>
-#include <IsNdArray/function/constant.hpp>
+/*OK*/#include <IsNdArray/function/rand.hpp>
+/*OK*/#include <IsNdArray/function/randint.hpp>
+/*OK*/#include <IsNdArray/function/randn.hpp>
+/*OK*/#include <IsNdArray/function/arange.hpp>
+/*OK*/#include <IsNdArray/function/constant.hpp>
 
 // PointWise-1
-#include <IsNdArray/function/abs.hpp>
-#include <IsNdArray/function/exp.hpp>
-#include <IsNdArray/function/sinc.hpp>
-#include <IsNdArray/function/cos.hpp>
-#include <IsNdArray/function/cosh.hpp>
-#include <IsNdArray/function/acos.hpp>
-#include <IsNdArray/function/acosh.hpp>
-#include <IsNdArray/function/sin.hpp>
-#include <IsNdArray/function/sinh.hpp>
-#include <IsNdArray/function/asin.hpp>
-#include <IsNdArray/function/asinh.hpp>
-#include <IsNdArray/function/atan.hpp>
-#include <IsNdArray/function/tan.hpp>
-#include <IsNdArray/function/tanh.hpp>
-#include <IsNdArray/function/atanh.hpp>
-#include <IsNdArray/function/sqrt.hpp>
-#include <IsNdArray/function/ceil.hpp>
-#include <IsNdArray/function/floor.hpp>
-#include <IsNdArray/function/round.hpp>
-#include <IsNdArray/function/log.hpp>
-#include <IsNdArray/function/log1p.hpp>
-#include <IsNdArray/function/log2.hpp>
-#include <IsNdArray/function/log10.hpp>
-#include <IsNdArray/function/sigmoid.hpp>
-#include <IsNdArray/function/sign.hpp>
+/*OK*/#include <IsNdArray/function/abs.hpp>
+/*OK*/#include <IsNdArray/function/exp.hpp>
+/*OK*/#include <IsNdArray/function/sinc.hpp>
+/*OK*/#include <IsNdArray/function/cos.hpp>
+/*OK*/#include <IsNdArray/function/cosh.hpp>
+/*OK*/#include <IsNdArray/function/acos.hpp>
+/*OK*/#include <IsNdArray/function/acosh.hpp>
+/*OK*/#include <IsNdArray/function/sin.hpp>
+/*OK*/#include <IsNdArray/function/sinh.hpp>
+/*OK*/#include <IsNdArray/function/asin.hpp>
+/*OK*/#include <IsNdArray/function/asinh.hpp>
+/*OK*/#include <IsNdArray/function/atan.hpp>
+/*OK*/#include <IsNdArray/function/tan.hpp>
+/*OK*/#include <IsNdArray/function/tanh.hpp>
+/*OK*/#include <IsNdArray/function/atanh.hpp>
+/*OK*/#include <IsNdArray/function/sqrt.hpp>
+/*OK*/#include <IsNdArray/function/ceil.hpp>
+/*OK*/#include <IsNdArray/function/floor.hpp>
+/*OK*/#include <IsNdArray/function/round.hpp>
+/*OK*/#include <IsNdArray/function/log.hpp>
+/*OK*/#include <IsNdArray/function/log1p.hpp>
+/*OK*/#include <IsNdArray/function/log2.hpp>
+/*OK*/#include <IsNdArray/function/log10.hpp>
+/*OK*/#include <IsNdArray/function/log_sigmoid.hpp>
+/*OK*/#include <IsNdArray/function/sigmoid.hpp>
+/*OK*/#include <IsNdArray/function/sign.hpp>
 
 // Pointwise-2
-#include <IsNdArray/function/add_scalar.hpp>
-#include <IsNdArray/function/pow_scalar.hpp>
-#include <IsNdArray/function/mul_scalar.hpp>
-#include <IsNdArray/function/r_div_scalar.hpp>
-#include <IsNdArray/function/r_pow_scalar.hpp>
-#include <IsNdArray/function/r_sub_scalar.hpp>
-#include <IsNdArray/function/maximum_scalar.hpp>
-#include <IsNdArray/function/minimum_scalar.hpp>
+/*OK*/#include <IsNdArray/function/add_scalar.hpp>
+/*OK*/#include <IsNdArray/function/pow_scalar.hpp>
+/*OK*/#include <IsNdArray/function/mul_scalar.hpp>
+/*OK*/#include <IsNdArray/function/r_div_scalar.hpp>
+/*OK*/#include <IsNdArray/function/r_pow_scalar.hpp>
+/*OK*/#include <IsNdArray/function/r_sub_scalar.hpp>
+/*OK*/#include <IsNdArray/function/maximum_scalar.hpp>
+/*OK*/#include <IsNdArray/function/minimum_scalar.hpp>
 
 // Ope1
-#include <IsNdArray/function/transpose.hpp>
-#include <IsNdArray/function/broadcast.hpp>
-#include <IsNdArray/function/reshape.hpp>
-#include <IsNdArray/function/slice.hpp>
-#include <IsNdArray/function/split.hpp>
+/*OK*/#include <IsNdArray/function/transpose.hpp>
+/*OK*/#include <IsNdArray/function/broadcast.hpp>
+/*OK*/#include <IsNdArray/function/reshape.hpp>
+/*OK*/#include <IsNdArray/function/slice.hpp>
+/*OK*/#include <IsNdArray/function/split.hpp>
 #include <IsNdArray/function/concatenate.hpp>
 
 // Reduce
-#include <IsNdArray/function/sum.hpp>
-#include <IsNdArray/function/mean.hpp>
-#include <IsNdArray/function/max.hpp>
-#include <IsNdArray/function/min.hpp>
-#include <IsNdArray/function/prod.hpp>
+/*OK*/#include <IsNdArray/function/sum.hpp>
+/*OK*/#include <IsNdArray/function/mean.hpp>
+/*OK*/#include <IsNdArray/function/max.hpp>
+/*OK*/#include <IsNdArray/function/min.hpp>
+/*OK*/#include <IsNdArray/function/prod.hpp>
 
 // Ope2
-#include <IsNdArray/function/sort.hpp>
-#include <IsNdArray/function/cumsum.hpp>
-#include <IsNdArray/function/cumprod.hpp>
+/*OK*/#include <IsNdArray/function/sort.hpp>
+/*OK*/#include <IsNdArray/function/cumsum.hpp>
+/*OK*/#include <IsNdArray/function/cumprod.hpp>
 
 // 2-Input
-#include <IsNdArray/function/add2.hpp>
+/*NG*/#include <IsNdArray/function/add2.hpp>
 
 #include <memory>
 
@@ -467,6 +468,19 @@ namespace is
         {
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             Log10<T> operation(ctx);
+            auto output = NdArray::create();
+            output->cast_data_and_get_pointer<T>(ctx);
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // log_sigmoid
+        template <typename T>
+        NdArrayPtr log_sigmoid(NdArrayPtr input)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            LogSigmoid<T> operation(ctx);
             auto output = NdArray::create();
             output->cast_data_and_get_pointer<T>(ctx);
             operation.setup({input}, {output});
