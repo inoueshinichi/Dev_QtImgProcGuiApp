@@ -34,8 +34,10 @@
 #include <deque>
 #include <list>
 
-namespace is {
-    namespace imgproc {
+namespace is 
+{
+    namespace imgproc 
+    {
         using namespace nbla;
 
         /**

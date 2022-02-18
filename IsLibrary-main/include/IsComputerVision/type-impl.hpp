@@ -1,4 +1,14 @@
-#include <IsComputerVision/IsComputerVision.hpp>
+/**
+ * @file type-impl.hpp
+ * @author your name (you@domain.com)
+ * @brief 型情報テンプレート実装
+ * @version 0.1
+ * @date 2022-02-18
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 
 namespace is
 {
@@ -204,6 +214,11 @@ namespace is
         {
             return operator/(a, b);
         }
+
+
+        ////////////////////////////////////////////////////
+        // Voxel 3次元座標プライマリーテンプレートクラス
+        ////////////////////////////////////////////////////
 
     } // imgproc
 }
