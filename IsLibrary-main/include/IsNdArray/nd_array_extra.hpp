@@ -48,20 +48,20 @@
 /*OK*/#include <IsNdArray/function/maximum_scalar.hpp>
 /*OK*/#include <IsNdArray/function/minimum_scalar.hpp>
 
-// Ope1
-/*OK*/#include <IsNdArray/function/transpose.hpp>
-/*OK*/#include <IsNdArray/function/broadcast.hpp>
-/*OK*/#include <IsNdArray/function/reshape.hpp>
-/*OK*/#include <IsNdArray/function/slice.hpp>
-/*OK*/#include <IsNdArray/function/split.hpp>
-#include <IsNdArray/function/concatenate.hpp>
-
 // Reduce
 /*OK*/#include <IsNdArray/function/sum.hpp>
 /*OK*/#include <IsNdArray/function/mean.hpp>
 /*OK*/#include <IsNdArray/function/max.hpp>
 /*OK*/#include <IsNdArray/function/min.hpp>
 /*OK*/#include <IsNdArray/function/prod.hpp>
+
+// Ope1
+/*OK*/#include <IsNdArray/function/transpose.hpp>
+/*OK*/#include <IsNdArray/function/broadcast.hpp>
+/*OK*/#include <IsNdArray/function/reshape.hpp>
+/*OK*/#include <IsNdArray/function/slice.hpp>
+/*OK*/#include <IsNdArray/function/split.hpp>
+/*--*/#include <IsNdArray/function/concatenate.hpp>
 
 // Ope2
 /*OK*/#include <IsNdArray/function/sort.hpp>
@@ -78,7 +78,7 @@ namespace is
 {
     namespace nbla
     {
-        // -------------------------------------------------------
+        // Generation -------------------------------------------------------
 
         // zeros
         template <typename T>
@@ -187,7 +187,7 @@ namespace is
             return output;
         }
 
-        // -------------------------------------------------------
+        // PointWise-1 -------------------------------------------------------
 
         // abs
         template <typename T>
@@ -515,7 +515,7 @@ namespace is
         }
 
 
-        // -------------------------------------------------------
+        // PointWise-2 -------------------------------------------------------
 
         // add_scalar
         template <typename T>
@@ -663,94 +663,9 @@ namespace is
             return output;
         }
 
-        // -------------------------------------------------------
+
+        // Reduce -------------------------------------------------------
         
-        // transpose
-        template <typename T>
-        NdArrayPtr transpose(NdArrayPtr input, const std::vector<int64_t> &axes)
-        {
-            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
-            Transpose<T> operation(ctx, axes);
-            auto output = NdArray::create();
-            operation.setup({input}, {output});
-            operation.execute({input}, {output});
-            return output;
-        }
-
-        // broadcast
-        template <typename T>
-        NdArrayPtr broadcast(NdArrayPtr input, const Shape_t& shape)
-        {
-            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
-            Broadcast<T> operation(ctx, shape);
-            auto output = NdArray::create();
-            operation.setup({input}, {output});
-            operation.execute({input}, {output});
-            return output;
-        }
-
-
-        // reshape
-        template <typename T>
-        NdArrayPtr reshape(NdArrayPtr input, const std::vector<int64_t> &shape)
-        {
-            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
-            Reshape<T> operation(ctx, shape, false);
-            auto output = NdArray::create();
-            operation.setup({input}, {output});
-            operation.execute({input}, {output});
-            return output;
-        }
-
-
-        // slice
-        template <typename T>
-        NdArrayPtr slice(NdArrayPtr input, const vector<int64_t> &starts, 
-                         const vector<int64_t> &stops, const vector<int64_t> &steps)
-        {
-            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
-            Slice<T> operation(ctx, starts, stops, steps);
-            auto output = NdArray::create();
-            operation.setup({input}, {output});
-            operation.execute({input}, {output});
-            return output;
-        }
-
-
-        // split
-        template <typename T>
-        vector<NdArrayPtr> split(NdArrayPtr input, int axis) 
-        {
-            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
-            Split<T> operation(ctx, axis);
-            auto sh = input->shape();
-            int num = sh.at(axis);
-            vector<NdArrayPtr> outputs(num);
-            for (int i = 0; i < num; ++i)
-            {
-                outputs[i] = NdArray::create();
-            }
-            operation.setup({input}, outputs);
-            operation.execute({input}, outputs);
-            return outputs;
-        }
-
-
-        // concatenate
-        template <typename T>
-        NdArrayPtr concatenate(vector<NdArrayPtr> inputs, int axis)
-        {
-            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
-            Concatenate<T> operation(ctx, axis);
-            auto output = NdArray::create();
-            operation.setup(inputs, {output});
-            operation.execute(inputs, {output});
-            return output;
-        }
-
-        // -------------------------------------------------------
-        
-
         // sum
         template <typename T>
         NdArrayPtr sum(NdArrayPtr input, int axis = 0, bool keep_dims = false)
@@ -836,6 +751,95 @@ namespace is
             return {output};
         }
 
+
+        // Ope1 -------------------------------------------------------
+        
+        // transpose
+        template <typename T>
+        NdArrayPtr transpose(NdArrayPtr input, const std::vector<int64_t> &axes)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Transpose<T> operation(ctx, axes);
+            auto output = NdArray::create();
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+        // broadcast
+        template <typename T>
+        NdArrayPtr broadcast(NdArrayPtr input, const Shape_t& shape)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Broadcast<T> operation(ctx, shape);
+            auto output = NdArray::create();
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+
+        // reshape
+        template <typename T>
+        NdArrayPtr reshape(NdArrayPtr input, const std::vector<int64_t> &shape)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Reshape<T> operation(ctx, shape, false);
+            auto output = NdArray::create();
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+
+        // slice
+        template <typename T>
+        NdArrayPtr slice(NdArrayPtr input, const vector<int64_t> &starts, 
+                         const vector<int64_t> &stops, const vector<int64_t> &steps)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Slice<T> operation(ctx, starts, stops, steps);
+            auto output = NdArray::create();
+            operation.setup({input}, {output});
+            operation.execute({input}, {output});
+            return output;
+        }
+
+
+        // split
+        template <typename T>
+        vector<NdArrayPtr> split(NdArrayPtr input, int axis) 
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Split<T> operation(ctx, axis);
+            auto sh = input->shape();
+            int num = sh.at(axis);
+            vector<NdArrayPtr> outputs(num);
+            for (int i = 0; i < num; ++i)
+            {
+                outputs[i] = NdArray::create();
+            }
+            operation.setup({input}, outputs);
+            operation.execute({input}, outputs);
+            return outputs;
+        }
+
+
+        // concatenate
+        template <typename T>
+        NdArrayPtr concatenate(vector<NdArrayPtr> inputs, int axis)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Concatenate<T> operation(ctx, axis);
+            auto output = NdArray::create();
+            operation.setup(inputs, {output});
+            operation.execute(inputs, {output});
+            return output;
+        }
+
+
+        // Ope2 -------------------------------------------------------
+
         // sort
         template <typename T>
         vector<NdArrayPtr> sort(NdArrayPtr input, int axis = 0, bool reverse = false, bool with_index = false, bool only_index = false) 
@@ -884,9 +888,8 @@ namespace is
             return {output};           
         }
 
-
-        // -------------------------------------------------------
-
+    
+        // 2-Input -------------------------------------------------------
 
         // add2
         template <typename T>
