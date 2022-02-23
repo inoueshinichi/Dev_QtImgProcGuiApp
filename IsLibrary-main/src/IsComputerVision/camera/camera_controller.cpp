@@ -6,21 +6,25 @@
 #include <iostream>
 #include <stdexcept>
 
-namespace is {
-    namespace imgproc {
-
+namespace is 
+{
+    namespace imgproc 
+    {
         //////////////////////////////////////////////////////////
         // ctor/dtor
         //////////////////////////////////////////////////////////
         CameraController::CameraController() {}
 
-        CameraController::~CameraController() {
-            if (frameReader_) {
+        CameraController::~CameraController() 
+        {
+            if (frameReader_) 
+            {
                 delete frameReader_;
                 frameReader_ = nullptr;
             }
 
-            if (workerThread_) {
+            if (workerThread_) 
+            {
                 delete workerThread_;
                 workerThread_ = nullptr;
             }
@@ -51,38 +55,48 @@ namespace is {
         vector<int> CameraController::strides() const { return frameReader_->strides(); }
 
 
-        void CameraController::setCameraType(const std::string& maker, const std::string& type) {
-
-            if (frameReader_) {
+        void CameraController::setCameraType(const std::string& maker, const std::string& type) 
+        {
+            if (frameReader_) 
+            {
                 delete frameReader_;
                 frameReader_ = nullptr;
             }
 
            
-            if (maker == "general") {
-                if (type == "usb") {
+            if (maker == "general") 
+            {
+                if (type == "usb") 
+                {
                     frameReader_ = new UsbCameraFrameReader();
                 }
-                else if (type == "ethernet") {
-                    
+                else if (type == "ethernet") 
+                {
+                    // yet do it.    
                 }
-                else if (type == "wifi") {
-
+                else if (type == "wifi") 
+                {
+                    // yet do it.
                 }
             }
-            else if (maker == "ids") {
+            else if (maker == "ids") 
+            {
+                // yet do it.
+            }
+            else if (maker == "omron") 
+            {
 
             }
-            else if (maker == "omron") {
+            else if (maker == "basler") 
+            {
 
             }
-            else if (maker == "basler") {
+            else if (maker == "cognex") 
+            {
 
             }
-            else if (maker == "cognex") {
-
-            }
-            else {
+            else 
+            {
                 std::string msg = is::common::format_string("Unknown type maker. Given is %s.", maker);
                 throw std::runtime_error(msg);
             }
@@ -91,16 +105,18 @@ namespace is {
         }
 
 
-        bool CameraController::startCamera(int deviceId, int delay) {
-
-            if (!frameReader_) {
+        bool CameraController::startCamera(int deviceId, int delay) 
+        {
+            if (!frameReader_) 
+            {
                 IS_DEBUG_STREAM("No configure frame reader. Please configure maker and type.\n");
                 return false;
             }
 
             frameReader_->setDeviceId(deviceId);
             frameReader_->setDelay(delay);
-            if (!frameReader_->initialize()) {
+            if (!frameReader_->initialize()) 
+            {
                 return false;
             }
 
@@ -113,19 +129,23 @@ namespace is {
         }
 
 
-        void CameraController::stopCamera() {
-            if (!workerThread_) {
+        void CameraController::stopCamera() 
+        {
+            if (!workerThread_) 
+            {
                 IS_DEBUG_STREAM("Don't start worker thread.\n");
                 return;
             }
 
             frameReader_->stop(); // 例外が発生していれば、既にWorkerThreadは動作停止しているかも
 
-            try {
+            try 
+            {
                 // 例外のthrowはfuture<T>::get()で起こる
                 result_.get();
             }
-            catch(const std::exception& e) {
+            catch(const std::exception& e) 
+            {
                 std::cerr << e.what() << std::endl; // WorkerThread内部で発生した例外をキャッチ
             }
 
@@ -140,7 +160,8 @@ namespace is {
 
 
         //#define IS_DEBUG_SHOW
-        CameraFrameReader::FrameDesc CameraController::fetchFrame() {
+        CameraFrameReader::FrameDesc CameraController::fetchFrame() 
+        {
             using byte = unsigned char;
 
         #ifdef IS_DEBUG_SHOW
@@ -161,10 +182,12 @@ namespace is {
             IS_DEBUG_STREAM("Fetch datetime: %s\n", timeString);
         #endif
 
-            if (frameReader_) {
+            if (frameReader_) 
+            {
                 return frameReader_->retrieveFrame();
             }
-            else {
+            else 
+            {
                 return std::make_tuple(std::vector<byte>(), 0.0);
             }
         }

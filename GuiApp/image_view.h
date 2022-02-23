@@ -25,7 +25,7 @@
 #include <QDrag>
 
 
-class ImageView : public QGraphicsView
+class ImageView : public QGraphicsView 
 {
     Q_OBJECT
 
@@ -37,29 +37,33 @@ class ImageView : public QGraphicsView
 
     bool m_isGenFigure{false};
 
-    void updateStatusBar(const QPoint &viewPos);
+    void UpdateStatusBar(const QPoint &viewPos);
 
-    void drawCrossLine(const QPoint &viewPos);
-    void drawProfile(const QPoint &viewPos,
+    void DrawCrossLine(const QPoint &viewPos);
+    void DrawProfile(const QPoint &viewPos,
                      bool isXRed, bool isXGreen, bool isXBlue,
                      bool isYRed, bool isYGreen, bool isYBlue);
-    void drawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSquareDrag);
-    void removeFigure(const QPoint &viewPos);
+    void DrawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSquareDrag);
+    void RemoveFigure(const QPoint &viewPos);
 
 protected:
-    typedef struct ZoomLebel
+    typedef struct ZoomLebel 
     {
         int index{0};
-        float levels[23] = {1.f / 72, 1.f / 48, 1.f / 32, 1.f / 24, 1.f / 16, 1.f / 12, 1.f / 8, 1.f / 6, 1.f / 4, 1.f / 3, 1.f / 2,
-                            0.75f, 1.0f, 1.5f, 2.0f, 3.0f, 4.0f, 6.0f, 8.0f, 12.0f, 16.0f, 24.0f, 32.0f};
+        float levels[23] = { 
+            1.f / 72, 1.f / 48, 1.f / 32, 1.f / 24, 1.f / 16, 
+            1.f / 12, 1.f / 8,  1.f / 6,  1.f / 4,  1.f / 3, 1.f / 2, 
+            0.75f,  1.0f, 1.5f, 2.0f, 3.0f, 4.0f, 6.0f, 8.0f, 12.0f, 16.0f, 24.0f, 32.0f
+        };
 
-        float operator[](int i)
+        float operator[](int i) 
         {
             assert(i >= 0);
             int length = sizeof(levels) / sizeof(float);
             assert(i < length);
             return levels[i];
         }
+        
     } ZoomLevel;
 
     ZoomLevel m_zoomLevel;
@@ -76,7 +80,7 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent *event) override;
 
 signals:
-    void emitShowPosToStatusBar(
+    void EmitShowPosToStatusBar(
         const QPointF &imgLocalPos,
         const QPointF &scenePos,
         const QPoint &viewPos);

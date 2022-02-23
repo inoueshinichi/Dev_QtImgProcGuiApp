@@ -34,22 +34,23 @@ QT_BEGIN_NAMESPACE
     namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow 
 {
     Q_OBJECT
     Q_DISABLE_COPY(MainWindow)
+    
     Ui::MainWindow*  m_pUi;
     QLabel*          m_pStatusBarLabel;
     ImageWindow*     m_pLastActiveImgWin;
     QImage           m_copyImg;
 
 private:
-    void menuBarConnection();
-    void toolBarConnection();
-    void uiConnection();
-    void customConnection();
+    void MenuBarConnection();
+    void ToolBarConnection();
+    void UiConnection();
+    void CustomConnection();
 
-    void helperImgProc(const QString &process, std::function<void(QImage&)> func);
+    void HelperImgProc(const QString &process, std::function<void(QImage&)> func);
 
 
 public:
@@ -58,8 +59,8 @@ public:
 
     /*ImageWindow*/
     using ImgWinRegistry_t = std::set<ImageWindow*>;
-    static ImgWinRegistry_t& getImgWinRegistry();
-    ImageWindow* genImgWin(const QString &filename);
+    static ImgWinRegistry_t& GetImgWinRegistry();
+    ImageWindow* GenImgWin(const QString &filename);
 
 protected:
     /*Drag/Drop*/
@@ -73,51 +74,51 @@ protected:
 signals:
     
 public slots:
-    void slotRmImgWin(ImageWindow *ptr);
-    void slotActiveImgWin(ImageWindow *ptr);
+    void SlotRmImgWin(ImageWindow *ptr);
+    void SlotActiveImgWin(ImageWindow *ptr);
 
     /* Menu -> File */
-    void slotActMenuBarFileNew();
-    void slotActMenuBarFileOpen();
-    void slotActMenuBarFileClose();
-    void slotActMenuBarFileCloseAll();
-    void slotActMenuBarFileSave();
-    void slotActMenuBarFileSaveAs();
-    void slotActMenuBarFilePrint();
-    void slotActMenuBarFileQuit();
+    void SlotActMenuBarFileNew();
+    void SlotActMenuBarFileOpen();
+    void SlotActMenuBarFileClose();
+    void SlotActMenuBarFileCloseAll();
+    void SlotActMenuBarFileSave();
+    void SlotActMenuBarFileSaveAs();
+    void SlotActMenuBarFilePrint();
+    void SlotActMenuBarFileQuit();
 
     /* Menu -> Edit */
-    void slotActMenuBarEditUndo();
-    void slotActMenuBarEditRename();
-    void slotActMenuBarEditCut();
-    void slotActMenuBarEditCopy();
-    void slotActMenuBarEditPaste();
-    void slotActMenuBarEditClear();
-    void slotActMenuBarEditClearOutside();
-    void slotActMenuBarEditFill();
-    void slotActMenuBarEditInvert();
+    void SlotActMenuBarEditUndo();
+    void SlotActMenuBarEditRename();
+    void SlotActMenuBarEditCut();
+    void SlotActMenuBarEditCopy();
+    void SlotActMenuBarEditPaste();
+    void SlotActMenuBarEditClear();
+    void SlotActMenuBarEditClearOutside();
+    void SlotActMenuBarEditFill();
+    void SlotActMenuBarEditInvert();
 
     /* Menu -> Image */
-    void slotActMenuBarImageType();
-    void slotActMenuBarImageShowInfo();
-    void slotActMenuBarImageColor();
-    void slotActMenuBarImageBorder();
-    void slotActMenuBarImageCrop();
-    void slotActMenuBarImageDuplicate();
-    void slotActMenuBarImageTransform();
+    void SlotActMenuBarImageType();
+    void SlotActMenuBarImageShowInfo();
+    void SlotActMenuBarImageColor();
+    void SlotActMenuBarImageBorder();
+    void SlotActMenuBarImageCrop();
+    void SlotActMenuBarImageDuplicate();
+    void SlotActMenuBarImageTransform();
 
     /* Menu -> View */
     // void slotActMenuBarViewFitView();
     // void slotActMenuBarViewOriginalScale();
 
     // /* Menu -> Camera */
-    void slotActMenuBarCameraWindow();
+    void SlotActMenuBarCameraWindow();
 
     // /* Menu -> Video */
     // void slotActMenuBarVideoWindow();
  
     /* Menu -> Process */
-    void slotActMenuBarFilter();
+    void SlotActMenuBarFilter();
     // void slotActMenuBarEdgeDetector();
     // void slotActMenuBarLut();
     // void slotActMenuBarBinarize();

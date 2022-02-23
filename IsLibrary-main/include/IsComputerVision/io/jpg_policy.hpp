@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IsComputerVision/common.hpp"
+#include <IsComputerVision/IsComputerVision.hpp>
 
 #include <cstdint>
 

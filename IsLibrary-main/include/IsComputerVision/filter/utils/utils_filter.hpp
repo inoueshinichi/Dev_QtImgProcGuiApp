@@ -1,7 +1,6 @@
 #pragma once
 
-#include <IsComputerVision/common.hpp>
-#include <IsComputerVision/saturate_cast.hpp>
+#include <IsComputerVision/IsComputerVision.hpp>
 
 #ifdef _OPENMP
     #include <omp.h>
@@ -122,9 +121,9 @@ namespace is
                         for (int x = 0; x < ex; ++x)
                         {
                             data_ex[c * ex_C + y * ex_H + x * ex_W] = 
-                                saturate_cast<T>(mean_left);
+                                saturate_clamp<T>(mean_left);
                             data_ex[c * ex_C + y * ex_H + (idx_xe + x) * ex_W] = 
-                                saturate_cast<T>(mean_right);
+                                saturate_clamp<T>(mean_right);
                         }
                     }
 
@@ -144,9 +143,9 @@ namespace is
 
                         for (int y = 0; y < ey; ++y)
                         {
-                            data_ex[c * ex_C + y * ex_H + x * ex_W] = saturate_cast<T>(mean_top);
+                            data_ex[c * ex_C + y * ex_H + x * ex_W] = saturate_clamp<T>(mean_top);
                             data_ex[c * ex_C + (idx_ye + y) * ex_H + x * ex_W] = 
-                                saturate_cast<T>(mean_bottom);
+                                saturate_clamp<T>(mean_bottom);
                         }
                     }
 
@@ -187,11 +186,11 @@ namespace is
                     {
                         for (int x = 0; x < ex; ++x)
                         {
-                            data_ex[c * ex_C + y * ex_H + x * ex_W] = saturate_cast<T>(mean_tl);
-                            data_ex[c * ex_C + y * ex_H + (x + idx_xe) * ex_W] = saturate_cast<T>(mean_tr);
-                            data_ex[c * ex_C + (y + idx_ye) * ex_H + x * ex_W] = saturate_cast<T>(mean_bl);
+                            data_ex[c * ex_C + y * ex_H + x * ex_W] = saturate_clamp<T>(mean_tl);
+                            data_ex[c * ex_C + y * ex_H + (x + idx_xe) * ex_W] = saturate_clamp<T>(mean_tr);
+                            data_ex[c * ex_C + (y + idx_ye) * ex_H + x * ex_W] = saturate_clamp<T>(mean_bl);
                             data_ex[c * ex_C + (y + idx_ye) * ex_H + (x + idx_xe) * ex_W] = 
-                                saturate_cast<T>(mean_br);
+                                saturate_clamp<T>(mean_br);
                         }
                     }
                 }
@@ -233,27 +232,27 @@ namespace is
                     }
 
                     // 四隅
-                    T mean_tl = saturate_cast<T>(
+                    T mean_tl = saturate_clamp<T>(
                         (
                             data_ex[c * ex_C + (idx_ys - 1) * ex_H + idx_xs * ex_W] + 
                             data_ex[c * ex_C + idx_ys * ex_H + (idx_xs - 1) * ex_W]
                         ) / 2
                     );
 
-                    T mean_tr = saturate_cast<T>(
+                    T mean_tr = saturate_clamp<T>(
                         (
                             data_ex[c * ex_C + (idx_ys - 1) * ex_H + (idx_xe - 1) * ex_W] + 
                             data_ex[c * ex_C + idx_ys * ex_H + idx_xe * ex_W]
                         ) / 2
                     );
 
-                    T mean_bl = saturate_cast<T>(
+                    T mean_bl = saturate_clamp<T>(
                         (
                             data_ex[c * ex_C + (idx_ye - 1) * ex_H + (idx_xs - 1) * ex_W] +
                             data_ex[c * ex_C + idx_ye * ex_H * idx_xs * ex_W]
                         ) / 2
                     );
-                    T mean_br = saturate_cast<T>(
+                    T mean_br = saturate_clamp<T>(
                         (
                             data_ex[c * ex_C + (idx_ye - 1) * ex_H + idx_xe * ex_W] +
                             data_ex[c * ex_C + idx_ye * ex_H + (idx_xe - 1) * ex_W]
@@ -372,7 +371,7 @@ namespace is
                         }
 
                         // 演算結果
-                        data_dst[c * dst_st0 + y * dst_st1 + x * dst_st2] = saturate_cast<T>(answer);
+                        data_dst[c * dst_st0 + y * dst_st1 + x * dst_st2] = saturate_clamp<T>(answer);
                     }
                 }
             }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <IsComputerVision/common.hpp>
+#include <IsComputerVision/IsComputerVision.hpp>
 
 /*ポリシークラス*/
 #include <IsComputerVision/io/bmp_policy.hpp>

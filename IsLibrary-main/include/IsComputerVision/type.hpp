@@ -39,7 +39,7 @@ namespace is
             Point_<T> &operator=(Point_<T> &&other) = default;
 
             template <typename U>
-            operator Point_<U>() const { return Point_<U>(saturate_cast<U>(x_), saturate_cast<U>(y_)); }
+            operator Point_<U>() const { return Point_<U>(saturate_clamp<U>(x_), saturate_clamp<U>(y_)); }
             double norm() const { return std::sqrt(x_ * x_ + y_ * y_); }
             double dot(const Point_<T> &point) const { return std::sqrt(x_ * point.x_ + y_ * point.y_); }
 
@@ -126,26 +126,26 @@ namespace is
 
             operator Rect_<int>() const
             {
-                return Rect_<int>(saturate_cast<int>(top_),
-                                    saturate_cast<int>(left_),
-                                    saturate_cast<int>(bottom_),
-                                    saturate_cast<int>(right_));
+                return Rect_<int>(saturate_clamp<int>(top_),
+                                    saturate_clamp<int>(left_),
+                                    saturate_clamp<int>(bottom_),
+                                    saturate_clamp<int>(right_));
             }
 
             operator Rect_<float>() const
             {
-                return Rect_<float>(saturate_cast<float>(top_),
-                                    saturate_cast<float>(left_),
-                                    saturate_cast<float>(bottom_),
-                                    saturate_cast<float>(right_));
+                return Rect_<float>(saturate_clamp<float>(top_),
+                                    saturate_clamp<float>(left_),
+                                    saturate_clamp<float>(bottom_),
+                                    saturate_clamp<float>(right_));
             }
 
             operator Rect_<double>() const
             {
-                return Rect_<double>(saturate_cast<double>(top_),
-                                        saturate_cast<double>(left_),
-                                        saturate_cast<double>(bottom_),
-                                        saturate_cast<double>(right_));
+                return Rect_<double>(saturate_clamp<double>(top_),
+                                        saturate_clamp<double>(left_),
+                                        saturate_clamp<double>(bottom_),
+                                        saturate_clamp<double>(right_));
             }
 
             bool contains(const Point_<T> &point) const;
@@ -186,9 +186,9 @@ namespace is
             template <typename U>
             operator Point3_<U>() const
             {
-                return Point3_<U>(saturate_cast<U>(x_),
-                                    saturate_cast<U>(y_),
-                                    saturate_cast<U>(z_));
+                return Point3_<U>(saturate_clamp<U>(x_),
+                                    saturate_clamp<U>(y_),
+                                    saturate_clamp<U>(z_));
             }
 
             double norm() const { return std::sqrt(x_ * x_ + y_ * y_ + z_ * z_); }

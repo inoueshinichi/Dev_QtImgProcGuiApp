@@ -44,11 +44,11 @@ namespace is
         void Max<T>::execute_impl_reduce(const T *x, T *y, int outer_size, int reduction_size)
         {
             // Saving index is a bit inefficient if backward is not required.
-            int* ind = this->index_buff_->cast_data_and_get_pointer<int>(this->ctx_, true);
+            int* ind = this->index_buff_-> template cast_data_and_get_pointer<int>(this->ctx_, true);
             for (int o = 0; o < outer_size; ++o)
             {
                 int max_index = 0;
-                T max_val = -1e+8; // maxの初期値(最も小さい値) これだと、型ごとで最小値が同じなのでマズイと思う。 @inoueshinichi
+                T max_val = -1e+8; // maxの初期値(最も小さい値)
 
                 // maxを求める
                 for (int i = 0; i < reduction_size; ++i) 

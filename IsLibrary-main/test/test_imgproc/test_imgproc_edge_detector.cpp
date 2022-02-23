@@ -6,7 +6,7 @@
 #include <IsCommon/tm.hpp>
 
 // imgproc
-#include <IsComputerVision/common.hpp>
+#include <IsComputerVision/IsComputerVision.hpp>
 #include <IsComputerVision/io/img_io.hpp>
 
 // filter

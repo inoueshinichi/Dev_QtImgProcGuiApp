@@ -6,9 +6,10 @@
 #include <cstring>
 
 
-namespace is {
-    namespace imgproc {
-
+namespace is 
+{
+    namespace imgproc 
+    {
         // -------------------------- CameraFrameReader --------------------------
 
         //////////////////////////////////////////////////////////
@@ -29,7 +30,8 @@ namespace is {
         //////////////////////////////////////////////////////////
         // private method
         //////////////////////////////////////////////////////////
-        void CameraFrameReader::spin(const high_resolution_clock::time_point& tp_base) {
+        void CameraFrameReader::spin(const high_resolution_clock::time_point& tp_base) 
+        {
             // std::this_thread::sleep_for(milliseconds(delay_));
 
             if (delay_ > 0) {
@@ -72,47 +74,22 @@ namespace is {
         int CameraFrameReader::channels() const { return channels_; }
         size_t CameraFrameReader::memSizePerLine() const { return memSizePerLine_; }
         size_t CameraFrameReader::memDataSize() const { return memDataSize_; }
+        std::vector<int> CameraFrameReader::shape() const { return shape_; }
+        std::vector<int> CameraFrameReader::strides() const { return strides_; }
+        int CameraFrameReader::ndim() const { return ndim_; }
+        bool CameraFrameReader::isRunning() const { return isRunning_; }
+        void CameraFrameReader::setDeviceId(int deviceId) { deviceId_ = deviceId; }
+        int CameraFrameReader::getDeviceId() const { return deviceId_; }
+        void CameraFrameReader::setDelay(int delay) { delay_ = delay; }
+        int CameraFrameReader::getDelay() const { return delay_; }
+        void CameraFrameReader::stop() { isRunning_ = false; }
 
-        std::vector<int> CameraFrameReader::shape() const {
-            return shape_;
-        }
-
-        std::vector<int> CameraFrameReader::strides() const {
-            return strides_;
-        }
-
-        int CameraFrameReader::ndim() const {
-            return ndim_;
-        }
-
-        bool CameraFrameReader::isRunning() const {
-            return isRunning_;
-        }
-
-        void CameraFrameReader::setDeviceId(int deviceId) {
-            deviceId_ = deviceId;
-        }
-
-        int CameraFrameReader::getDeviceId() const {
-            return deviceId_;
-        }
-
-        void CameraFrameReader::setDelay(int delay) {
-            delay_ = delay;
-        }
-
-        int CameraFrameReader::getDelay() const {
-            return delay_;
-        }
-
-        void CameraFrameReader::stop() {
-            isRunning_ = false;
-        }
-
-        void CameraFrameReader::start(std::promise<int> result) {
+        void CameraFrameReader::start(std::promise<int> result) 
+        {
             /* ワーカースレッド側で処理される */
 
-            if (!isInitialized_) {
+            if (!isInitialized_) 
+            {
                 IS_DEBUG_STREAM("No initialization.\n");
                 return;
             }
@@ -122,8 +99,10 @@ namespace is {
             high_resolution_clock::time_point tp_start;
             high_resolution_clock::time_point tp_end;
 
-            try {
-                while (isRunning_) {
+            try 
+            {
+                while (isRunning_) 
+                {
                     tp_start = high_resolution_clock::now();
 
                     // クリティカルセクション
@@ -133,7 +112,8 @@ namespace is {
                         status = capture();
                     }
                     
-                    if (!status) {
+                    if (!status) 
+                    {
                         IS_DEBUG_STREAM("Miss frame!\n");
                     }
 
@@ -147,19 +127,22 @@ namespace is {
                 }
                 result.set_value(0);
             }
-            catch (...) {
+            catch (...) 
+            {
                 // 全例外を捕まえて promiseにセットする
                 result.set_exception(std::current_exception());
             }
         }
 
-        std::function<void(std::promise<int>)> CameraFrameReader::wrapedStart() {
+        std::function<void(std::promise<int>)> CameraFrameReader::wrapedStart() 
+        {
             return [this](std::promise<int> result) -> void {
                 this->start(std::move(result));
             };
         }
 
-        CameraFrameReader::FrameDesc CameraFrameReader::retrieveFrame() const {
+        CameraFrameReader::FrameDesc CameraFrameReader::retrieveFrame() const 
+        {
             // クリティカルセクション
             using byte = unsigned char;
 
@@ -176,19 +159,13 @@ namespace is {
         }
 
         // Interface
-        bool CameraFrameReader::initialize() {
-            return this->initializeImpl();
-        }
+        bool CameraFrameReader::initialize() { return this->initializeImpl(); }
 
         // Interface
-        void CameraFrameReader::release() {
-            this->releaseImpl();
-        }
+        void CameraFrameReader::release() { this->releaseImpl(); }
 
         // Interface
-        bool CameraFrameReader::capture() {
-            return this->captureImpl();
-        }
+        bool CameraFrameReader::capture() { return this->captureImpl(); }
 
     }
 }

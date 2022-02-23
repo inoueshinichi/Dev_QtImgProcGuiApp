@@ -21,8 +21,8 @@ namespace is
         template <typename T>
         static inline Point_<T> &operator+=(Point_<T> &a, const Point_<T> &b)
         {
-            a.x_ = saturate_cast<T>(a.x_ + b.x_);
-            a.y_ = saturate_cast<T>(a.y_ + b.y_);
+            a.x_ = saturate_clamp<T>(a.x_ + b.x_);
+            a.y_ = saturate_clamp<T>(a.y_ + b.y_);
             return a;
         }
 
@@ -30,8 +30,8 @@ namespace is
         template <typename T>
         static inline Point_<T> &operator-=(Point_<T> &a, const Point_<T> &b)
         {
-            a.x_ = saturate_cast<T>(a.x_ - b.x_);
-            a.y_ = saturate_cast<T>(a.y_ - b.y_);
+            a.x_ = saturate_clamp<T>(a.x_ - b.x_);
+            a.y_ = saturate_clamp<T>(a.y_ - b.y_);
             return a;
         }
 
@@ -39,8 +39,8 @@ namespace is
         template <typename T, typename U>
         static inline Point_<T> &operator*=(Point_<T> &a, U b)
         {
-            a.x_ = saturate_cast<T>(a.x_ * b);
-            a.y_ = saturate_cast<T>(a.y_ * b);
+            a.x_ = saturate_clamp<T>(a.x_ * b);
+            a.y_ = saturate_clamp<T>(a.y_ * b);
             return a;
         }
 
@@ -48,8 +48,8 @@ namespace is
         template <typename T, typename U>
         static inline Point_<T> &operator/=(Point_<T> &a, U b)
         {
-            a.x_ = saturate_cast<T>(a.x_ / b);
-            a.y_ = saturate_cast<T>(a.y_ / b);
+            a.x_ = saturate_clamp<T>(a.x_ / b);
+            a.y_ = saturate_clamp<T>(a.y_ / b);
             return a;
         }
 
@@ -137,9 +137,9 @@ namespace is
         template <typename T>
         static inline Point3_<T> &operator+=(Point3_<T> &a, const Point3_<T> &b)
         {
-            a.x_ = saturate_cast<T>(a.x_ + b.x_);
-            a.y_ = saturate_cast<T>(a.y_ + b.y_);
-            a.z_ = saturate_cast<T>(a.z_ + b.z_);
+            a.x_ = saturate_clamp<T>(a.x_ + b.x_);
+            a.y_ = saturate_clamp<T>(a.y_ + b.y_);
+            a.z_ = saturate_clamp<T>(a.z_ + b.z_);
             return a;
         }
 
@@ -147,9 +147,9 @@ namespace is
         template <typename T>
         static inline Point3_<T> &operator-=(Point3_<T> &a, const Point3_<T> &b)
         {
-            a.x_ = saturate_cast<T>(a.x_ - b.x_);
-            a.y_ = saturate_cast<T>(a.y_ - b.y_);
-            a.z_ = saturate_cast<T>(a.z_ - b.z_);
+            a.x_ = saturate_clamp<T>(a.x_ - b.x_);
+            a.y_ = saturate_clamp<T>(a.y_ - b.y_);
+            a.z_ = saturate_clamp<T>(a.z_ - b.z_);
             return a;
         }
 
@@ -157,9 +157,9 @@ namespace is
         template <typename T, typename U>
         static inline Point3_<T> &operator*=(Point3_<T> &a, U b)
         {
-            a.x_ = saturate_cast<T>(a.x_ * b);
-            a.y_ = saturate_cast<T>(a.y_ * b);
-            a.z_ = saturate_cast<T>(a.z_ * b);
+            a.x_ = saturate_clamp<T>(a.x_ * b);
+            a.y_ = saturate_clamp<T>(a.y_ * b);
+            a.z_ = saturate_clamp<T>(a.z_ * b);
             return a;
         }
 
@@ -167,9 +167,9 @@ namespace is
         template <typename T, typename U>
         static inline Point3_<T> &operator/=(Point3_<T> &a, U b)
         {
-            a.x_ = saturate_cast<T>(a.x_ / b);
-            a.y_ = saturate_cast<T>(a.y_ / b);
-            a.z_ = saturate_cast<T>(a.z_ / b);
+            a.x_ = saturate_clamp<T>(a.x_ / b);
+            a.y_ = saturate_clamp<T>(a.y_ / b);
+            a.z_ = saturate_clamp<T>(a.z_ / b);
             return a;
         }
 

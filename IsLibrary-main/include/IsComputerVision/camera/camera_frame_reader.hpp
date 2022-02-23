@@ -16,9 +16,10 @@ using namespace std::chrono;
 #include <memory>
 
 
-namespace is {
-    namespace imgproc {
-
+namespace is 
+{
+    namespace imgproc 
+    {
         using std::mutex;
         using std::vector;
         using std::tuple;
@@ -31,8 +32,8 @@ namespace is {
          * 
          */
         class IS_IMGPROC_API CameraFrameReader 
-            : public enable_shared_from_this<CameraFrameReader> {
-
+            : public enable_shared_from_this<CameraFrameReader> 
+        {
         public:
             using byte = unsigned char;
             using FrameDesc = tuple<vector<byte>, float>; // Image, Fps

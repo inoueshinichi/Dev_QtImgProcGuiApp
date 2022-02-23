@@ -15,32 +15,58 @@
     #define IS_IMGPROC_API
 #endif
 
+
+//////////////////////////////////////////////////////////////////////////////////
+// Std headers
+//////////////////////////////////////////////////////////////////////////////////
+#include <stdexcept>
+#include <exception>
+#include <cassert>
+
+#include <limits>
+#include <numeric>
+
+#include <iostream>
+#include <cstdlib>
+#include <string>
+#include <sstream>
+
+#include <algorithm>
+
+// C++11 gives alignas as standard
+// http://en.cppreference.com/w/cpp/language/alignas
+#define IS_IMGPROC_ALIGN(N) alignas(N)
+
 #if _MSC_VER
-    #define _USE_MATH_DEFINES
+  #define _USE_MATH_DEFINES
 #endif
 #include <cmath>
 
-    // C++11 gives alignas as standard
-    // http://en.cppreference.com/w/cpp/language/alignas
-#define IS_IMGPROC_ALIGN(N) alignas(N)
-
-
-// Memory
+    // Memory
 #include <cstring>
 #define IS_ZERO_MEMORY(ptr, bytesize) std::memset((void *)ptr, 0, bytesize)
 
-
-
-// Log
+    // Log
 #if (0)
-    #define IS_DEBUG_FLAG 0
-    #define IS_DEBUG_STREAM(format, ...)
+  #define IS_DEBUG_FLAG 0
+  #define IS_DEBUG_STREAM(format, ...)
 #else
-    #include <cstdio>
-    #define IS_DEBUG_FLAG 1
-    #define IS_DEBUG_STREAM(format, ...) std::printf(format, ##__VA_ARGS__)
+  #include <cstdio>
+  #define IS_DEBUG_FLAG 1
+  #define IS_DEBUG_STREAM(format, ...) std::printf(format, ##__VA_ARGS__)
 #endif
 
+#include <tuple>
+#include <vector>
+#include <deque>
+#include <list>
+
+//////////////////////////////////////////////////////////////////////////////////
+// IsCommon headers
+//////////////////////////////////////////////////////////////////////////////////
+#include <IsCommon/format_string.hpp>
+#include <IsCommon/split_string.hpp>
+#include <IsCommon/join_string.hpp>
 
 #define IS_DEBUG_CHECK_NDARRAY_STATE(func, flag, ndarray) \
   if (flag > 0) {                                         \
@@ -91,14 +117,98 @@
     } else {                                                                     \
       /*(C, H, W)*/                                                              \
       int channels = shape[0];                                                   \
-      if (channels > 3) {                                                        \
+      if (channels > 3 || channels == 2) {                                                        \
         throw std::runtime_error(is::common::format_string(                      \
-            "Miss matching channels of top shape (<=3). Given is %d",            \
+            "Miss matching channels of top shape (<=3 or ==2). Given is %d",            \
             channels));                                                          \
       }                                                                          \
     }                                                                            \
   }
 
 
-#include <IsComputerVision/saturate_cast.hpp>
+
+    //////////////////////////////////////////////////////////////////////////////////
+    // IsNdArray headers
+    //////////////////////////////////////////////////////////////////////////////////
+/*Context*/
+#include <IsNdArray/global_context.hpp>
+#include <IsNdArray/singleton_manager.hpp>
+
+/*NdArray*/
+#include <IsNdArray/nd_array.hpp>
+#include <IsNdArray/nd_array_extra.hpp>
+
+//////////////////////////////////////////////////////////////////////////////////
+// SaturateClamp headers
+//////////////////////////////////////////////////////////////////////////////////
+namespace is
+{
+  namespace imgproc
+  {
+    using namespace nbla;
+
+    /**
+     * @brief saturate_clamp for NdArray
+     *
+     * @tparam T
+     * @param src
+     * @return NdArrayPtr
+     */
+    template <typename T>
+    NdArrayPtr saturate_clamp(NdArrayPtr src)
+    {
+      const auto &ctx =
+          SingletonManager::get<GlobalContext>()->get_current_context();
+
+      #define IS_SATURATE_CLAMP(dtype, type)                      \
+        case dtypes::dtype:                                       \
+        {                                                         \
+          type *data = src->cast_data_and_get_pointer<type>(ctx); \
+          for (size_t k = 0; k < src->size(); ++k)                \
+          {                                                       \
+            data[k] = (type)saturate_clamp<T>(data[k]);           \
+          }                                                       \
+        }                                                         \
+        break
+
+      auto dtype = src -> dtype();
+      switch (dtype)
+      {
+        IS_SATURATE_CLAMP(UBYTE, unsigned char);
+        IS_SATURATE_CLAMP(BYTE, char);
+        IS_SATURATE_CLAMP(USHORT, unsigned short);
+        IS_SATURATE_CLAMP(SHORT, short);
+        IS_SATURATE_CLAMP(UINT, unsigned int);
+        IS_SATURATE_CLAMP(INT, int);
+        IS_SATURATE_CLAMP(ULONG, unsigned long);
+        IS_SATURATE_CLAMP(LONG, long);
+        IS_SATURATE_CLAMP(ULONGLONG, unsigned long long);
+        IS_SATURATE_CLAMP(LONGLONG, long long);
+        IS_SATURATE_CLAMP(FLOAT, float);
+        IS_SATURATE_CLAMP(DOUBLE, double);
+        IS_SATURATE_CLAMP(BOOL, bool);
+        IS_SATURATE_CLAMP(LONGDOUBLE, long double);
+
+        case dtypes::HALF:
+        {
+          Half *data = src->cast_data_and_get_pointer<Half>(ctx);
+          for (size_t k = 0; k < src->size(); ++k)
+          {
+            data[k] = (Half)saturate_clamp<T>((float)data[k]);
+          }
+        }
+        break;
+      }
+
+      return src;
+  #undef IS_SATURATE_CLAMP
+    }
+  }
+}
+
+#include <IsComputerVision/saturate_clamp.hpp>
+
+//////////////////////////////////////////////////////////////////////////////////
+// Type headers
+//////////////////////////////////////////////////////////////////////////////////
 #include <IsComputerVision/type.hpp>

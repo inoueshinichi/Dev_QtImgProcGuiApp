@@ -17,14 +17,12 @@
 //////////////////////////////////////////////////////////
 
 ImageScene::ImageScene(QObject* parent)
-    : QGraphicsScene(parent) {
-
+    : QGraphicsScene(parent) 
+{
     // m_crossLine.m_isCrossLine = true; // 仮
 }
 
-ImageScene::~ImageScene() {
-
-}
+ImageScene::~ImageScene() {}
 
 //////////////////////////////////////////////////////////
 // private method
@@ -36,23 +34,23 @@ ImageScene::~ImageScene() {
 // protected method
 //////////////////////////////////////////////////////////
 
-void ImageScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
-    /* マウスプレスイベント
-    */
+void ImageScene::mousePressEvent(QGraphicsSceneMouseEvent *event) 
+{
+    /* マウスプレスイベント */
     auto scenePos = event->scenePos();
     QGraphicsScene::mousePressEvent(event);
 }
 
-void ImageScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
-    /* マウスムーブイベント
-    */
+void ImageScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) 
+{
+    /* マウスムーブイベント */
     auto scenePos = event->scenePos();
     QGraphicsScene::mouseMoveEvent(event);
 }
 
-void ImageScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
-    /* マウスリリースイベント
-    */
+void ImageScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) 
+{
+    /* マウスリリースイベント */
     auto scenePos = event->scenePos();
     QGraphicsScene::mouseReleaseEvent(event);
 }
@@ -68,12 +66,15 @@ void ImageScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
  * @return true
  * @return false
  */
-bool ImageScene::setDibImg(const QImage& img, bool isRaw) {
-    if (img.isNull()) {
+bool ImageScene::SetDibImg(const QImage& img, bool isRaw) 
+{
+    if (img.isNull()) 
+    {
         return false;
     }
 
     m_editImgIns.m_memDibImg = img.copy(); // ここのcopy必要!
+
     if (isRaw)
     {
         m_rawDibImg = m_editImgIns.m_memDibImg.copy();
@@ -84,7 +85,9 @@ bool ImageScene::setDibImg(const QImage& img, bool isRaw) {
 
     // QGraphicsPixmapItemにセット
     m_editImgIns.m_pItemOffScreenDdbImg->setPixmap(m_editImgIns.m_offScreenDdbImg);
-    if (!m_editImgIns.m_isSceneImg) {
+
+    if (!m_editImgIns.m_isSceneImg) 
+    {
         m_editImgIns.m_isSceneImg = true;
         this->addItem(m_editImgIns.m_pItemOffScreenDdbImg);
     }
@@ -100,11 +103,13 @@ bool ImageScene::setDibImg(const QImage& img, bool isRaw) {
  * 
  * @return QImage 
  */
-QImage ImageScene::getDibImg() {
+QImage ImageScene::GetDibImg() 
+{
     return m_editImgIns.m_memDibImg;
 }
 
-void ImageScene::resetRawImg() {
+void ImageScene::ResetRawImg() 
+{
     /* 原画像に戻す */
 
     // 初期化
@@ -124,15 +129,17 @@ void ImageScene::resetRawImg() {
     this->update();
 }
 
-QGraphicsPixmapItem *ImageScene::getEditImgItem(const QPointF &scenePos)
+QGraphicsPixmapItem *ImageScene::GetEditImgItem(const QPointF &scenePos)
 {
     /* QGraphicsPixmapItem上のローカル座標を計算
     */
     auto p_item = m_editImgIns.m_pItemOffScreenDdbImg;
-    if (p_item->contains(scenePos)) {
+    if (p_item->contains(scenePos)) 
+    {
         return p_item;
     }
-    else {
+    else 
+    {
         return nullptr;
     }
 }

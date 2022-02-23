@@ -11,19 +11,18 @@ QT_END_NAMESPACE
 
 class ImageWindow;
 
-class FilterDialog : public QDialog {
+class FilterDialog : public QDialog 
+{
     Q_OBJECT
     Q_DISABLE_COPY(FilterDialog)
 
     ImageWindow* m_pImgWin;
-
     Ui::FilterDialog* m_pUi;
 
-
-    void menuBarConnection();
-    void toolBarConnection();
-    void uiConnection();
-    void customConnection();
+    void MenuBarConnection();
+    void ToolBarConnection();
+    void UiConnection();
+    void CustomConnection();
 
 public:
     FilterDialog(QWidget* parent = nullptr);
@@ -34,7 +33,6 @@ signals:
 public slots:
 
 private slots:
-    void slotAverageFilter();
-
-    
+    void SlotAverageFilter();
+  
 };

@@ -1,5 +1,6 @@
 #pragma once
 
+// Common
 #include <IsCommon/IsCommon.hpp>
 #include <IsCommon/format_string.hpp>
 #include <IsCommon/join_string.hpp>
@@ -8,8 +9,18 @@
 #include <IsCommon/thread_pool.hpp>
 #include <IsCommon/singleton_manager.hpp>
 
-#include "qt_defs.h"
+// ComputerVision
+#include <IsComputerVision/IsComputerVision.hpp>
 
+// Qt
+#include <Qt>
+#include <QImage>
+#include <QString>
+
+// QtCustom
+#include "qt_custom_graphics_item.h"
+
+// Std
 #include <cassert>
 #include <string>
 using namespace std::literals::string_literals;
@@ -27,11 +38,6 @@ using namespace std::literals::string_literals;
 #include <filesystem>
 namespace fs = std::filesystem;
 
-
-#include <Qt>
-#include <QImage>
-#include <QString>
-
 ///////////////////////////////////////////////////////////////////////////////////////
 // Global関数
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -43,8 +49,8 @@ namespace fs = std::filesystem;
  * @param filenameSet 
  * @return std::string 
  */
-std::string getNewSerialNo(const std::string &filename,
-                           const std::set<std::string> &filenameSet);
+std::string GetNewSerialNo(const std::string& filename,
+                           const std::set<std::string>& filenameSet);
 
 
 /**
@@ -53,7 +59,7 @@ std::string getNewSerialNo(const std::string &filename,
  * @param img 
  * @return std::pair<QImage::Format, QString> 
  */
-std::pair<QImage::Format, QString> getFormatStr(const QImage &img);
+std::pair<QImage::Format, QString> GetFormatStr(const QImage& img);
 
 
 
@@ -63,3 +69,23 @@ std::pair<QImage::Format, QString> getFormatStr(const QImage &img);
  * @param img 
  */
 // void showStatus(const QImage &img);
+
+
+
+/**
+ * @brief QImage (W, H, C) -> NdArray(byte) (C, H, W)
+ * 
+ * @param img 
+ * @return is::nbla::NdArrayPtr 
+ */
+is::nbla::NdArrayPtr QImage2NdArray(const QImage& img);
+
+/**
+ * @brief NdArray(byte) (C, H, W) -> QImage
+ * 
+ * @param array 
+ * @return QImage 
+ */
+QImage NdArray2QImage(is::nbla::NdArrayPtr ndarray);
+
+

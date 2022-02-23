@@ -2,9 +2,10 @@
 
 #include <IsCommon/IsCommon.hpp>
 
-namespace is {
-    namespace imgproc {
-
+namespace is 
+{
+    namespace imgproc 
+    {
         // -------------------------- UsbCameraFrameReader --------------------------
 
         //////////////////////////////////////////////////////////
@@ -14,7 +15,8 @@ namespace is {
             : CameraFrameReader() {}
 
 
-        UsbCameraFrameReader::~UsbCameraFrameReader() {
+        UsbCameraFrameReader::~UsbCameraFrameReader() 
+        {
             release();
             //IS_DEBUG_STREAM("Dtor of UsbCameraFrameReader\n");
         }
@@ -23,14 +25,16 @@ namespace is {
         //////////////////////////////////////////////////////////
         // private method
         //////////////////////////////////////////////////////////
-        bool UsbCameraFrameReader::initializeImpl() {
-
-            if (isInitialized_) {
+        bool UsbCameraFrameReader::initializeImpl() 
+        {
+            if (isInitialized_) 
+            {
                 IS_DEBUG_STREAM("Already initialized.\n");
                 return false;
             }
 
-            if (getDeviceId() < 0) {
+            if (getDeviceId() < 0) 
+            {
                 IS_DEBUG_STREAM("Please set device id.\n");
                 return false;
             }
@@ -39,17 +43,21 @@ namespace is {
             IS_DEBUG_STREAM("Device Id: %d\n", getDeviceId());
         
             capPtr_ = new cv::VideoCapture(getDeviceId());//, cv::CAP_GSTREAMER); // cv::CAP_V4L2 cv::CAP_GSTREAMER
-            if (!capPtr_->isOpened()) {
+            
+            if (!capPtr_->isOpened()) 
+            {
                 IS_DEBUG_STREAM("[Error] Can not open cv::VideoCapture.\n");
                 IS_DEBUG_STREAM("[Exit] <<< Initialize\n");
-                delete capPtr_; capPtr_ = nullptr;
+                delete capPtr_;
+                capPtr_ = nullptr;
                 return false;
             }
 
             IS_DEBUG_STREAM("Success to initialize usb camera with device id: %d\n", getDeviceId());
 
-            std::string backApiStr = capPtr_->getBackendName();
-            IS_DEBUG_STREAM("Background api: %s\n", backApiStr.c_str());
+            // clangだとなぜかgetBackendName()関数が未定義.
+            // std::string backApiStr = capPtr_->getBackendName();
+            // IS_DEBUG_STREAM("Background api: %s\n", backApiStr.c_str());
 
             // GStreamerだと設定が反映されない仕様らしい
             // https://qiita.com/iwatake2222/items/b8c442a9ec0406883950

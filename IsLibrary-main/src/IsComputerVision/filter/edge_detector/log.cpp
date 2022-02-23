@@ -1,5 +1,5 @@
 #include <IsComputerVision/filter/utils/utils_filter.hpp>
-#include <IsComputerVision/filter/edge_detector.hpp>
+#include <IsComputerVision/filter/edge_detector/log.hpp>
 
 
 namespace is
@@ -8,7 +8,8 @@ namespace is
     {
         using namespace nbla;
 
-        NdArrayPtr log_edge_detector(NdArrayPtr src, double sigma) {
+        NdArrayPtr log(NdArrayPtr src, double sigma) 
+        {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
             IS_DEBUG_CHECK_NDARRAY_STATE(log_edge_detector, IS_DEBUG_FLAG, src);
 
@@ -33,8 +34,10 @@ namespace is
             double sum = 0;
             sig2 = sigma * sigma;
             
-            for (int j = 0; j < ksize; ++j) {
-                for (int i = 0; i < ksize; ++i) {
+            for (int j = 0; j < ksize; ++j) 
+            {
+                for (int i = 0; i < ksize; ++i) 
+                {
                     dy = j - hlf_ks;
                     dx = i - hlf_ks;
                     norm = dx *dx + dy *dy;
@@ -47,7 +50,8 @@ namespace is
             }
             
             // 正規化
-            for (int k = 0; k < kernel_size; ++k) {
+            for (int k = 0; k < kernel_size; ++k) 
+            {
                 p_kernel[k] /= sum;
             }
 

@@ -1,5 +1,5 @@
 #include <IsComputerVision/filter/utils/utils_filter.hpp>
-#include <IsComputerVision/filter/blur.hpp>
+#include <IsComputerVision/filter/blur/mozic.hpp>
 
 namespace is
 {
@@ -7,7 +7,8 @@ namespace is
     {
         using uchar = unsigned char;
 
-        NdArrayPtr mozic_filter(NdArrayPtr src, int block) {
+        NdArrayPtr mozic(NdArrayPtr src, int block) 
+        {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
             IS_DEBUG_CHECK_NDARRAY_STATE(mozic_filter, IS_DEBUG_FLAG, src);
             using ubyte = uchar;
@@ -56,7 +57,7 @@ namespace is
                         {
                             for (int x = xs; x < xe; ++x)
                             {
-                                dst_data[st[0] * c + st[1] * y + st[2] * x] = saturate_cast<ubyte>(mean);
+                                dst_data[st[0] * c + st[1] * y + st[2] * x] = saturate_clamp<ubyte>(mean);
                             }
                         }
                     }
@@ -82,7 +83,7 @@ namespace is
                         {
                             for (int x = xs; x < xe; ++x)
                             {
-                                dst_data[st[0] * c + st[1] * y + st[2] * x] = saturate_cast<ubyte>(mean);
+                                dst_data[st[0] * c + st[1] * y + st[2] * x] = saturate_clamp<ubyte>(mean);
                             }
                         }
                     }
@@ -112,7 +113,7 @@ namespace is
                         {
                             for (int y = ys; y < ye; ++y)
                             {
-                                dst_data[st[0] * c + st[1] * y + st[2] * x] = saturate_cast<ubyte>(mean);
+                                dst_data[st[0] * c + st[1] * y + st[2] * x] = saturate_clamp<ubyte>(mean);
                             }
                         }
                     }
@@ -138,7 +139,7 @@ namespace is
                         {
                             for (int x = xs; x < xe; ++x)
                             {
-                                dst_data[st[0] * c + st[1] * y + st[2] * x] = saturate_cast<ubyte>(mean);
+                                dst_data[st[0] * c + st[1] * y + st[2] * x] = saturate_clamp<ubyte>(mean);
                             }
                         }
                     }

@@ -7,9 +7,10 @@
 #include <thread>
 #include <future>
 
-namespace is {
-    namespace imgproc {
-
+namespace is 
+{
+    namespace imgproc 
+    {
         using std::string;
         using std::vector;
         using std::thread;
@@ -19,8 +20,8 @@ namespace is {
          * @brief カメラのコントローラ
          * 
          */
-        class IS_IMGPROC_API CameraController {
-
+        class IS_IMGPROC_API CameraController 
+        {
             CameraFrameReader* frameReader_ {nullptr};
             thread* workerThread_ {nullptr};
             future<int> result_;

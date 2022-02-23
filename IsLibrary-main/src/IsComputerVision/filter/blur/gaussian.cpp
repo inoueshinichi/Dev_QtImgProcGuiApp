@@ -1,5 +1,5 @@
 #include <IsComputerVision/filter/utils/utils_filter.hpp>
-#include <IsComputerVision/filter/blur.hpp>
+#include <IsComputerVision/filter/blur/gaussian.hpp>
 
 namespace is
 {
@@ -8,7 +8,7 @@ namespace is
         using uchar = unsigned char;
 
 
-        NdArrayPtr gaussian_filter(NdArrayPtr src, int ksize, double sigma)
+        NdArrayPtr gaussian(NdArrayPtr src, int ksize, double sigma)
         {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
             IS_DEBUG_CHECK_NDARRAY_STATE(gaussian_filter, IS_DEBUG_FLAG, src);

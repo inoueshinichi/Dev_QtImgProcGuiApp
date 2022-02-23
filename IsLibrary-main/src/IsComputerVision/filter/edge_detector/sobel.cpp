@@ -1,5 +1,5 @@
 #include <IsComputerVision/filter/utils/utils_filter.hpp>
-#include <IsComputerVision/filter/edge_detector.hpp>
+#include <IsComputerVision/filter/edge_detector/sobel.hpp>
 
 namespace is
 {
@@ -7,7 +7,7 @@ namespace is
     {
         using namespace nbla;
 
-        NdArrayPtr sobel_edge_detector(NdArrayPtr src, int direction)
+        NdArrayPtr sobel(NdArrayPtr src, int direction)
         {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
             IS_DEBUG_CHECK_NDARRAY_STATE(sobel_edge_detector, IS_DEBUG_FLAG, src);

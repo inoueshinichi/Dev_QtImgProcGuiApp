@@ -43,6 +43,7 @@
 class ImageScene : public QGraphicsScene
 {
     Q_OBJECT
+    
 public:
     QImage m_rawDibImg;
     SceneImage m_editImgIns;
@@ -58,10 +59,10 @@ public:
     explicit ImageScene(QObject *parent=nullptr);
     virtual ~ImageScene();
 
-    bool setDibImg(const QImage& img, bool isRaw = false);
-    QImage getDibImg();
-    void resetRawImg();
-    QGraphicsPixmapItem *getEditImgItem(const QPointF &scenePos);
+    bool SetDibImg(const QImage& img, bool isRaw = false);
+    QImage GetDibImg();
+    void ResetRawImg();
+    QGraphicsPixmapItem* GetEditImgItem(const QPointF &scenePos);
 
 protected : 
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;

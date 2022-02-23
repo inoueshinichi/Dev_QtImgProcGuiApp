@@ -16,25 +16,30 @@
 #include <map>
 #include <tuple>
 
-typedef struct CrossLine {
+typedef struct CrossLine 
+{
     QGraphicsLineItem *m_pItemLineX;
     QGraphicsLineItem *m_pItemLineY;
 
     bool m_isCrossLine{false};
 
-    CrossLine() {
+    CrossLine() 
+    {
         m_pItemLineX = new QGraphicsLineItem();
         m_pItemLineY = new QGraphicsLineItem();
         m_pItemLineX->setPen(QPen(QColor(Qt::green)));
         m_pItemLineY->setPen(QPen(QColor(Qt::green)));
     }
 
-    ~CrossLine() {
-        if (m_pItemLineX) {
+    ~CrossLine() 
+    {
+        if (m_pItemLineX) 
+        {
             delete m_pItemLineX;
             m_pItemLineX = nullptr;
         }
-        if (m_pItemLineY) {
+        if (m_pItemLineY) 
+        {
             delete m_pItemLineY;
             m_pItemLineY = nullptr;
         }
@@ -44,7 +49,8 @@ typedef struct CrossLine {
 
 typedef struct Profile 
 {
-    typedef struct Direction {
+    typedef struct Direction 
+    {
         QPainterPath m_pathRed;
         QPainterPath m_pathGreen;
         QPainterPath m_pathBlue;
@@ -60,22 +66,27 @@ typedef struct Profile
         bool m_isAddedGreen{false};
         bool m_isAddedBlue{false};
 
-        Direction() {
+        Direction() 
+        {
             m_pItemPathRed = new QGraphicsPathItem();
             m_pItemPathGreen = new QGraphicsPathItem();
             m_pItemPathBlue = new QGraphicsPathItem();
         }
 
-        ~Direction() {
-            if (m_pItemPathRed) {
+        ~Direction() 
+        {
+            if (m_pItemPathRed) 
+            {
                 delete m_pItemPathRed;
                 m_pItemPathRed = nullptr;
             }
-            if (m_pItemPathGreen) {
+            if (m_pItemPathGreen) 
+            {
                 delete m_pItemPathGreen;
                 m_pItemPathGreen = nullptr;
             }
-            if (m_pItemPathBlue) {
+            if (m_pItemPathBlue) 
+            {
                 delete m_pItemPathBlue;
                 m_pItemPathBlue = nullptr;
             }
@@ -88,8 +99,8 @@ typedef struct Profile
 
 
 template <typename QtItemOnScene>
-class RegionFigure {
-
+class RegionFigure 
+{
 public:
     bool m_isRegionFigure {false};
     std::map<int, QtItemOnScene *> m_regionFigures;
@@ -97,10 +108,13 @@ public:
     RegionFigure() {}
     ~RegionFigure() { release(); }
 
-    void release() {
+    void release() 
+    {
         for (auto iter = m_regionFigures.begin(); 
-            iter != m_regionFigures.end(); ++iter) {
-            if (iter->second) {
+            iter != m_regionFigures.end(); ++iter) 
+        {
+            if (iter->second) 
+            {
                 delete iter->second;
                 iter->second = nullptr;
             }
@@ -108,22 +122,27 @@ public:
         m_regionFigures.clear();
     }
 
-    void makeRect(QGraphicsScene *scene, const QRectF &rect) {
+    void makeRect(QGraphicsScene *scene, const QRectF &rect) 
+    {
         QtItemOnScene *p_item = new QtItemOnScene();
 
         Qt::GlobalColor globalColor;
 
         // constexpr if によるコンパイル時条件分岐
-        if constexpr (std::is_same_v<QtItemOnScene, QGraphicsRectItem>) {
+        if constexpr (std::is_same_v<QtItemOnScene, QGraphicsRectItem>) 
+        {
             globalColor = Qt::magenta;
         }
-        else if constexpr (std::is_same_v<QtItemOnScene, QGraphicsEllipseItem>) {
+        else if constexpr (std::is_same_v<QtItemOnScene, QGraphicsEllipseItem>) 
+        {
             globalColor = Qt::cyan;
         }
-        else if constexpr (std::is_same_v<QtItemOnScene, QGraphicsLineItem>) {
+        else if constexpr (std::is_same_v<QtItemOnScene, QGraphicsLineItem>) 
+        {
             globalColor = Qt::yellow;
         }
-        else {
+        else 
+        {
             globalColor = Qt::white;
         }
 
@@ -137,10 +156,10 @@ public:
                      index, rect.x(), rect.y(), rect.width(), rect.height());
     }
 
-    void updateRect(QGraphicsScene *scene, const QRectF &rect) {
+    void updateRect(QGraphicsScene *scene, const QRectF &rect) 
+    {
         int last = m_regionFigures.size() - 1;
-        if (last < 0)
-            return;
+        if (last < 0) return;
 
         IS_DEBUG_STREAM("Update Rect[%d]: (%f, %f, %f, %f)\n",
                      last, rect.x(), rect.y(), rect.width(), rect.height());
@@ -151,8 +170,10 @@ public:
         scene->addItem(p_item);
     }
 
-     void removeRect(QGraphicsScene *scene, int index) {
-        if (m_regionFigures.contains(index)) {
+     void removeRect(QGraphicsScene *scene, int index) 
+     {
+        if (m_regionFigures.contains(index)) 
+        {
             auto p_item = m_regionFigures[index];
             scene->removeItem(p_item);
             delete p_item; p_item = nullptr;
@@ -161,10 +182,13 @@ public:
         }
     }
 
-    void removeRect(QGraphicsScene *scene, QGraphicsItem *item) {
+    void removeRect(QGraphicsScene *scene, QGraphicsItem *item) 
+    {
         for (auto iter = m_regionFigures.begin(); 
-            iter != m_regionFigures.end();) {
-            if (iter->second == item) {
+            iter != m_regionFigures.end();) 
+        {
+            if (iter->second == item) 
+            {
                 int index = iter->first;
                 scene->removeItem(iter->second);
                 delete iter->second;
@@ -173,7 +197,8 @@ public:
                 IS_DEBUG_STREAM("Rm Rect[%d]\n", index);
                 return;
             }
-            else {
+            else 
+            {
                 ++iter;
             }
         }
@@ -260,18 +285,22 @@ using RoiEllipse = RegionFigure<QGraphicsEllipseItem>;
 // } Roi;
 
 
-typedef struct SceneImage {
+typedef struct SceneImage 
+{
     QImage m_memDibImg;
     QPixmap m_offScreenDdbImg;
     QGraphicsPixmapItem *m_pItemOffScreenDdbImg;
     bool m_isSceneImg {false};
 
-    SceneImage() {
+    SceneImage() 
+    {
         m_pItemOffScreenDdbImg = new QGraphicsPixmapItem();
     }
 
-    ~SceneImage() {
-        if (m_pItemOffScreenDdbImg) {
+    ~SceneImage() 
+    {
+        if (m_pItemOffScreenDdbImg) 
+        {
             delete m_pItemOffScreenDdbImg;
             m_pItemOffScreenDdbImg = nullptr;
         }

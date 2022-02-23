@@ -6,17 +6,16 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/videoio.hpp>
 
-
-namespace is {
-    namespace imgproc {
-
-        class cv::VideoCapture;
-
+namespace is 
+{
+    namespace imgproc 
+    {
         /**
          * @brief USBカメラフレーム取り込みクラス
          * 
          */
-        class IS_IMGPROC_API UsbCameraFrameReader : public CameraFrameReader {
+        class IS_IMGPROC_API UsbCameraFrameReader : public CameraFrameReader 
+        {
             cv::VideoCapture* capPtr_;
             cv::Mat cvFrame;
 

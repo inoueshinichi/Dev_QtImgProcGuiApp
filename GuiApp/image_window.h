@@ -32,10 +32,10 @@ QT_END_NAMESPACE
 
 class MainWindow;
 
-class ImageWindow : public QMainWindow
-{
+class ImageWindow : public QMainWindow 
+{    
     Q_OBJECT
-
+    
     MainWindow*      m_pMainWindow;
     Ui::ImageWindow* m_pUi;
     ImageScene*      m_pScene;
@@ -54,23 +54,23 @@ class ImageWindow : public QMainWindow
     int m_camChannels {0};
     size_t m_camMemSizePerLine {0};
 
-    void uiConnection();
-    void memuBarConnection();
-    void toolBarConnection();
-    void customConnection();
+    void UiConnection();
+    void MemuBarConnection();
+    void ToolBarConnection();
+    void CustomConnection();
 
 public:
     explicit ImageWindow(QWidget *parent = nullptr);
     virtual ~ImageWindow();
 
-    void setFilename(const QString& filename);
-    QString filename() const;
-    ImageScene* scene() const;
-    Ui::ImageWindow *ui() const;
-    void resetDibImg();
-    QImage getDibImg();
-    bool setDibImg(QImage& img, bool isSceneClear = false, bool isRaw = false);
-    std::map<int, QRectF> getRectsOnDibImg() const;
+    void SetFilename(const QString& filename);
+    QString Filename() const;
+    ImageScene* Scene() const;
+    Ui::ImageWindow* Ui() const;
+    void ResetDibImg();
+    QImage GetDibImg();
+    bool SetDibImg(QImage& img, bool isSceneClear = false, bool isRaw = false);
+    std::map<int, QRectF> GetRectsOnDibImg() const;
 
 protected:
     virtual bool event(QEvent *event) override;
@@ -78,23 +78,23 @@ protected:
 
 signals:
     /* --- ImageWindow --- */
-    void rmImgWin(ImageWindow *ptr);
-    void activeImgWin(ImageWindow *ptr);
+    void RemoveImgWin(ImageWindow *ptr);
+    void ActiveImgWin(ImageWindow *ptr);
 
 public slots:
-    void slotShowPosToStatusBar(const QPointF &imgLocalPos,
+    void SlotShowPosToStatusBar(const QPointF &imgLocalPos,
                                 const QPointF &scenePos,
                                 const QPoint &viewPos);
 
 private slots:
-    void slotResetDibImg(bool checked);
-    void slotToggleCrossLine(bool checked);
-    void slotToggleProfile(bool checked);
-    void slotToggleRoi(bool checked);
-    void slotToggleEllipse(bool checked);
+    void SlotResetDibImg(bool checked);
+    void SlotToggleCrossLine(bool checked);
+    void SlotToggleProfile(bool checked);
+    void SlotToggleRoi(bool checked);
+    void SlotToggleEllipse(bool checked);
 
     // QTimer
-    void slotStartCapture();
-    void slotStopCapture();
-    void slotTimerHandler();
+    void SlotStartCapture();
+    void SlotStopCapture();
+    void SlotTimerHandler();
 };
