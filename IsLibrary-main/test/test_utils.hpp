@@ -6,6 +6,11 @@
 #include <iomanip>
 #include <cstring>
 
+#define TEST_INPUT_COLOR_DIR "/home/inoue/Images/Color/"
+#define TEST_INPUT_MONO_256_DIR "/home/inoue/Images/Mono/256X256/"
+#define TEST_INPUT_MONO_512_DIR "/home/inoue/Images/Mono/512X512/"
+#define TEST_OUTPUT_DIR "/home/inoue/Desktop/"
+
 
 using namespace is::nbla;
 

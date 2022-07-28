@@ -1,7 +1,7 @@
 /**
- * @file log_filter.hpp
+ * @file mozic_blur.hpp
  * @author your name (you@domain.com)
- * @brief LOGフィルタ
+ * @brief モザイクフィルタ
  * @version 0.1
  * @date 2022-02-23
  * 
@@ -19,13 +19,12 @@ namespace is
         using namespace nbla;
 
         /**
-         * @brief LoG (Laplacian of Gaussian)
-         * ノイズ除去 + 輪郭線抽出
+         * @brief モザイクフィルタ
+         *
          * @param src
-         * @param sigma
+         * @param block
          * @return NdArrayPtr
          */
-        IS_IMGPROC_API NdArrayPtr log(NdArrayPtr src, double sigma = 0);
-
-    } // imgproc
+        IS_IMGPROC_API NdArrayPtr mozic_blur(NdArrayPtr src, int block);
+    }
 }

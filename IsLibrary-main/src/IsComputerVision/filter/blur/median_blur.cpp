@@ -1,5 +1,5 @@
 #include <IsComputerVision/filter/utils/utils_filter.hpp>
-#include <IsComputerVision/filter/blur/median.hpp>
+#include <IsComputerVision/filter/blur/median_blur.hpp>
 
 namespace is
 {
@@ -7,10 +7,10 @@ namespace is
     {
         using uchar = unsigned char;
 
-        NdArrayPtr median(NdArrayPtr src, int ksize)
+        NdArrayPtr median_blur(NdArrayPtr src, int ksize)
         {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
-            IS_DEBUG_CHECK_NDARRAY_STATE(median_filter, IS_DEBUG_FLAG, src);
+            IS_DEBUG_CHECK_NDARRAY_STATE(__func__, IS_DEBUG_FLAG, src);
             using ubyte = uchar;
 
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();

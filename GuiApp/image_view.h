@@ -67,7 +67,7 @@ protected:
     } ZoomLevel;
 
     ZoomLevel m_zoomLevel;
-    bool isAcceptDragDrop {false};
+    bool m_isAcceptDragDrop {false};
 
 public:
     explicit ImageView(QWidget *parent=nullptr);

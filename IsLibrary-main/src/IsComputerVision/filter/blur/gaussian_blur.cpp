@@ -1,5 +1,5 @@
 #include <IsComputerVision/filter/utils/utils_filter.hpp>
-#include <IsComputerVision/filter/blur/gaussian.hpp>
+#include <IsComputerVision/filter/blur/gaussian_blur.hpp>
 
 namespace is
 {
@@ -8,10 +8,10 @@ namespace is
         using uchar = unsigned char;
 
 
-        NdArrayPtr gaussian(NdArrayPtr src, int ksize, double sigma)
+        NdArrayPtr gaussian_blur(NdArrayPtr src, int ksize, double sigma)
         {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
-            IS_DEBUG_CHECK_NDARRAY_STATE(gaussian_filter, IS_DEBUG_FLAG, src);
+            IS_DEBUG_CHECK_NDARRAY_STATE(__func__, IS_DEBUG_FLAG, src);
             using ubyte = uchar;
 
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();

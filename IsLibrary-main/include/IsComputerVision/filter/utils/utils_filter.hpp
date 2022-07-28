@@ -2,9 +2,15 @@
 
 #include <IsComputerVision/IsComputerVision.hpp>
 
+#include <cstdio>
+
+#if defined(_MSC_VER)
+// __func__の定義
+#define __func__ __FUNCTION__
+#endif
+
 #ifdef _OPENMP
     #include <omp.h>
-    //omp_set_num_threads(8);
 #endif
 
 /**
@@ -347,11 +353,12 @@ namespace is
             double answer;
 
             // OpenMPにより畳み込みループタスクを複数スレッドに分割して並列実行
-#ifdef _OPENMP
-#pragma omp parallel for
-#endif
+
             for (int c = 0; c < dst_C; ++c)
             {
+// #ifdef _OPENMP
+// #pragma omp parallel for
+// #endif
                 for (int y = 0; y < dst_H; ++y)
                 {
                     for (int x = 0; x < dst_W; ++x)

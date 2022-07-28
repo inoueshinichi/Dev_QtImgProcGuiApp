@@ -1,7 +1,7 @@
 /**
- * @file gaussian_filter.hpp
+ * @file lablacian_filter.hpp
  * @author your name (you@domain.com)
- * @brief ガウシアンフィルタ
+ * @brief ラプラシアンフィルタ
  * @version 0.1
  * @date 2022-02-23
  * 
@@ -19,15 +19,12 @@ namespace is
         using namespace nbla;
 
         /**
-         * @brief ガウシアンフィルタ
+         * @brief Laplacian
          *
          * @param src
-         * @param ksize_x
-         * @param ksize_y
-         * @param sigma_x
-         * @param sigma_y
+         * @param is_elem_8
          * @return NdArrayPtr
          */
-        IS_IMGPROC_API NdArrayPtr gaussian(NdArrayPtr src, int ksize, double sigma = 0);
+        IS_IMGPROC_API NdArrayPtr laplacian_edge_detector(NdArrayPtr src, bool is_elem_8 = true);
     }
 }

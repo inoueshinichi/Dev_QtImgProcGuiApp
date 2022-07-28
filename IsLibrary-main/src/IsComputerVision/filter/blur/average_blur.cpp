@@ -1,5 +1,5 @@
 #include <IsComputerVision/filter/utils/utils_filter.hpp>
-#include <IsComputerVision/filter/blur/average.hpp>
+#include <IsComputerVision/filter/blur/average_blur.hpp>
 
 namespace is
 {
@@ -7,10 +7,10 @@ namespace is
     {
         using uchar = unsigned char;
 
-        NdArrayPtr average(NdArrayPtr src, const Size& ksize)
+        NdArrayPtr average_blur(NdArrayPtr src, const Size& ksize)
         {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
-            IS_DEBUG_CHECK_NDARRAY_STATE(average, IS_DEBUG_FLAG, src);
+            IS_DEBUG_CHECK_NDARRAY_STATE(__func__, IS_DEBUG_FLAG, src);
 
             const auto& ctx = SingletonManager::get<GlobalContext>()->get_current_context();
             auto sh = src->shape();

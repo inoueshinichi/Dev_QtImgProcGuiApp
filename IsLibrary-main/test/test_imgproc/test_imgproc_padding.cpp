@@ -35,8 +35,7 @@ namespace
     TEST(imgproc_func, padding)
     {
         const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
-        // std::string dummy_filename = "/home/inoue/Images/Mono/256X256/Tree.bmp";
-        std::string dummy_filename = "/home/inoue/Images/Color/Lenna.bmp";
+        std::string dummy_filename = TEST_INPUT_COLOR_DIR "Lenna.bmp";
 
         // io
         ImageIo<format::BmpFile> io_bmp;
@@ -53,7 +52,7 @@ namespace
         auto pad = padding<uchar>(src, pad_x, pad_x, PADDING_REPLICATE);
         show_ndarray_property(pad);
 
-        dummy_filename = format_string("/home/inoue/Desktop/paddingLenna_%dx%d.bmp",
+        dummy_filename = format_string(TEST_OUTPUT_DIR "paddingLenna_%dx%d.bmp",
                                        pad_x, pad_y);
         io_bmp.save(dummy_filename, pad, false);
     }

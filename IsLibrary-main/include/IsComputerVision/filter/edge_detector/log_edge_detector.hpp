@@ -1,7 +1,7 @@
 /**
- * @file median_filter.hpp
+ * @file log_filter.hpp
  * @author your name (you@domain.com)
- * @brief メディアンフィルタ
+ * @brief LOGフィルタ
  * @version 0.1
  * @date 2022-02-23
  * 
@@ -19,13 +19,13 @@ namespace is
         using namespace nbla;
 
         /**
-         * @brief メディアンフィルタ
-         *
+         * @brief LoG (Laplacian of Gaussian)
+         * ノイズ除去 + 輪郭線抽出
          * @param src
-         * @param ksize_x
-         * @param ksize_y
+         * @param sigma
          * @return NdArrayPtr
          */
-        IS_IMGPROC_API NdArrayPtr median(NdArrayPtr src, int ksize);
-    }
+        IS_IMGPROC_API NdArrayPtr log_edge_detector(NdArrayPtr src, double sigma = 0);
+
+    } // imgproc
 }

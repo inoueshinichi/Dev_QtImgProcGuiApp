@@ -106,9 +106,9 @@ public:
     std::map<int, QtItemOnScene *> m_regionFigures;
 
     RegionFigure() {}
-    ~RegionFigure() { release(); }
+    ~RegionFigure() { Release(); }
 
-    void release() 
+    void Release() 
     {
         for (auto iter = m_regionFigures.begin(); 
             iter != m_regionFigures.end(); ++iter) 
@@ -122,7 +122,7 @@ public:
         m_regionFigures.clear();
     }
 
-    void makeRect(QGraphicsScene *scene, const QRectF &rect) 
+    void MakeRect(QGraphicsScene *scene, const QRectF &rect) 
     {
         QtItemOnScene *p_item = new QtItemOnScene();
 
@@ -156,7 +156,7 @@ public:
                      index, rect.x(), rect.y(), rect.width(), rect.height());
     }
 
-    void updateRect(QGraphicsScene *scene, const QRectF &rect) 
+    void UpdateRect(QGraphicsScene *scene, const QRectF &rect) 
     {
         int last = m_regionFigures.size() - 1;
         if (last < 0) return;
@@ -170,7 +170,7 @@ public:
         scene->addItem(p_item);
     }
 
-     void removeRect(QGraphicsScene *scene, int index) 
+     void RemoveRect(QGraphicsScene *scene, int index) 
      {
         if (m_regionFigures.contains(index)) 
         {
@@ -182,7 +182,7 @@ public:
         }
     }
 
-    void removeRect(QGraphicsScene *scene, QGraphicsItem *item) 
+    void RemoveRect(QGraphicsScene *scene, QGraphicsItem *item) 
     {
         for (auto iter = m_regionFigures.begin(); 
             iter != m_regionFigures.end();) 

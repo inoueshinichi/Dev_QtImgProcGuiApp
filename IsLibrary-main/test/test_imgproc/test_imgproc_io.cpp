@@ -15,6 +15,9 @@ namespace plt = matplotlibcpp;
 #include <string>
 #include <cstdio>
 
+// utility
+#include <test_utils.hpp>
+
 namespace
 {
     TEST(imgproc_io, bmp)
@@ -27,8 +30,7 @@ namespace
         using byte = unsigned char;
         const auto &ctx_cpu = SingletonManager::get<GlobalContext>()->get_current_context();
 
-        string dummy_filename = "/home/inoue/Images/Mono/256X256/Tree.bmp";
-        // string dummy_filename = "/home/inoue/Images/Mono/256X256/lenna.bmp";
+        string dummy_filename = TEST_INPUT_MONO_256_DIR "Tree.bmp";
 
         // Bmp
         ImageIo<BmpFile> io_bmp;
@@ -61,7 +63,7 @@ namespace
         // plt::imshow(data, height, width, 1); // BMPファイルの表示
         // plt::show();
 
-        dummy_filename = "/home/inoue/Desktop/Tree_out.bmp";
+        dummy_filename = TEST_OUTPUT_DIR "Tree_out.bmp";
         io_bmp.save(dummy_filename, test_ndarray, true);
     }
 

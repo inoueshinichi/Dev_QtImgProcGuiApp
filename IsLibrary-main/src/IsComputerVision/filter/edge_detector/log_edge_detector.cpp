@@ -1,5 +1,5 @@
 #include <IsComputerVision/filter/utils/utils_filter.hpp>
-#include <IsComputerVision/filter/edge_detector/log.hpp>
+#include <IsComputerVision/filter/edge_detector/log_edge_detector.hpp>
 
 
 namespace is
@@ -8,10 +8,10 @@ namespace is
     {
         using namespace nbla;
 
-        NdArrayPtr log(NdArrayPtr src, double sigma) 
+        NdArrayPtr log_edge_detector(NdArrayPtr src, double sigma) 
         {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
-            IS_DEBUG_CHECK_NDARRAY_STATE(log_edge_detector, IS_DEBUG_FLAG, src);
+            IS_DEBUG_CHECK_NDARRAY_STATE(__func__, IS_DEBUG_FLAG, src);
 
             const auto &ctx =
                 SingletonManager::get<GlobalContext>()->get_current_context();

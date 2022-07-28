@@ -1,5 +1,5 @@
 #include <IsComputerVision/filter/utils/utils_filter.hpp>
-#include <IsComputerVision/filter/edge_detector/laplacian.hpp>
+#include <IsComputerVision/filter/edge_detector/laplacian_edge_detector.hpp>
 
 
 namespace is
@@ -8,10 +8,10 @@ namespace is
     {
         using namespace nbla;
 
-        NdArrayPtr laplacian(NdArrayPtr src, bool is_elem_8) 
+        NdArrayPtr laplacian_edge_detector(NdArrayPtr src, bool is_elem_8) 
         {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
-            IS_DEBUG_CHECK_NDARRAY_STATE(laplacian_edge_detector, IS_DEBUG_FLAG, src);
+            IS_DEBUG_CHECK_NDARRAY_STATE(__func__, IS_DEBUG_FLAG, src);
 
             const auto &ctx =
                 SingletonManager::get<GlobalContext>()->get_current_context();

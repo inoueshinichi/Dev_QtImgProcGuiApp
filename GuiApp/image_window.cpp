@@ -507,9 +507,9 @@ void ImageWindow::SlotToggleRoi(bool checked)
         size_t num = m_pScene->m_roi.m_regionFigures.size();
         for (size_t i = 0; i < num; ++i) 
         {
-            m_pScene->m_roi.removeRect(m_pScene, i);
+            m_pScene->m_roi.RemoveRect(m_pScene, i);
         }
-        m_pScene->m_roi.release();
+        m_pScene->m_roi.Release();
     }
 }
 
@@ -525,9 +525,9 @@ void ImageWindow::SlotToggleEllipse(bool checked)
         size_t num = m_pScene->m_ellipse.m_regionFigures.size();
         for (size_t i = 0; i < num; ++i) 
         {
-            m_pScene->m_ellipse.removeRect(m_pScene, i);
+            m_pScene->m_ellipse.RemoveRect(m_pScene, i);
         }
-        m_pScene->m_ellipse.release();
+        m_pScene->m_ellipse.Release();
     }
 }
 

@@ -80,8 +80,9 @@ if (MSVC)
         link_libraries(${OpenMP_LIBRARIES})
         add_compile_options("$<$<C_COMPILER_ID:MSVC>:/openmp>")
         add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/openmp>")
-        # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-        # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+        # set(CMAKE_C_FLAGS “${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}”)
+        # set(CMAKE_CXX_FLAGS “${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}”)
+        # add_compile_definitions(_OPENMP) # プリプロセッサーマクロ
     endif()
 
     # ソースコードでUTF-8を使う(MSVC)
@@ -125,10 +126,11 @@ elseif(APPLE)
         include_directories(${OpenMP_INCLUDE_DIRS})
         link_directories(${OpenMP_LIBRARY})
         link_libraries(${OpenMP_LIBRARIES})
-        add_compile_options("$<$<C_COMPILER_ID:GCC>:-fopenmp>")
-        add_compile_options("$<$<CXX_COMPILER_ID:GCC>:-fopenmp>")
-        # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-        # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+        add_compile_options("$<$<C_COMPILER_ID:GNU>:-fopenmp>")
+        add_compile_options("$<$<CXX_COMPILER_ID:GNU>:-fopenmp>")
+        # set(CMAKE_C_FLAGS “${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}”)
+        # set(CMAKE_CXX_FLAGS “${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}”)
+        # add_compile_definitions(_OPENMP) # プリプロセッサーマクロ
     endif()
 
     # C++標準に準拠しない拡張機能を無効化
@@ -156,10 +158,11 @@ else()
         include_directories(${OpenMP_INCLUDE_DIRS})
         link_directories(${OpenMP_LIBRARY})
         link_libraries(${OpenMP_LIBRARIES})
-        add_compile_options("$<$<C_COMPILER_ID:GCC>:-fopenmp>")
-        add_compile_options("$<$<CXX_COMPILER_ID:GCC>:-fopenmp>")
-        # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-        # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+        add_compile_options("$<$<C_COMPILER_ID:GNU>:-fopenmp>")
+        add_compile_options("$<$<CXX_COMPILER_ID:GNU>:-fopenmp>")
+        # set(CMAKE_C_FLAGS “${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}”)
+        # set(CMAKE_CXX_FLAGS “${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}”)
+        # add_compile_definitions(_OPENMP) # プリプロセッサーマクロ
     endif()
 
     # C++標準に準拠しない拡張機能を無効化

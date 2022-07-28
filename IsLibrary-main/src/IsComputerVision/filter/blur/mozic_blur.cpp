@@ -1,5 +1,5 @@
 #include <IsComputerVision/filter/utils/utils_filter.hpp>
-#include <IsComputerVision/filter/blur/mozic.hpp>
+#include <IsComputerVision/filter/blur/mozic_blur.hpp>
 
 namespace is
 {
@@ -7,10 +7,10 @@ namespace is
     {
         using uchar = unsigned char;
 
-        NdArrayPtr mozic(NdArrayPtr src, int block) 
+        NdArrayPtr mozic_blur(NdArrayPtr src, int block) 
         {
             IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(src);
-            IS_DEBUG_CHECK_NDARRAY_STATE(mozic_filter, IS_DEBUG_FLAG, src);
+            IS_DEBUG_CHECK_NDARRAY_STATE(__func__, IS_DEBUG_FLAG, src);
             using ubyte = uchar;
 
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();

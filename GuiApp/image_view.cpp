@@ -13,7 +13,7 @@
 //////////////////////////////////////////////////////////
 ImageView::ImageView(QWidget *parent)
     : QGraphicsView(parent)
-    , isAcceptDragDrop(false) 
+    , m_isAcceptDragDrop(false) 
 {
 
     /*DragDropの有効化*/
@@ -289,13 +289,13 @@ void ImageView::DrawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSqua
                 // 矩形
                 if (p_scene->m_roi.m_isRegionFigure) 
                 {
-                    p_scene->m_roi.makeRect(p_scene, p_scene->m_rect); // 新規作成
+                    p_scene->m_roi.MakeRect(p_scene, p_scene->m_rect); // 新規作成
                 }
 
                 // 楕円
                 if (p_scene->m_ellipse.m_isRegionFigure) 
                 {
-                    p_scene->m_ellipse.makeRect(p_scene, p_scene->m_rect); // 新規作成
+                    p_scene->m_ellipse.MakeRect(p_scene, p_scene->m_rect); // 新規作成
                 }
 
                 m_isGenFigure = true;
@@ -393,13 +393,13 @@ void ImageView::DrawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSqua
             // 矩形
             if (p_scene->m_roi.m_isRegionFigure) 
             {
-                p_scene->m_roi.updateRect(p_scene, p_scene->m_rect); // 描画更新
+                p_scene->m_roi.UpdateRect(p_scene, p_scene->m_rect); // 描画更新
             }
 
             // 楕円
             if (p_scene->m_ellipse.m_isRegionFigure) 
             {
-                p_scene->m_ellipse.updateRect(p_scene, p_scene->m_rect); // 描画更新
+                p_scene->m_ellipse.UpdateRect(p_scene, p_scene->m_rect); // 描画更新
             }
         }
         else if (!m_isMousePressLeft && m_isMouseDrag) 
@@ -413,11 +413,11 @@ void ImageView::DrawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSqua
                 IS_DEBUG_STREAM("w:%d, h:%d\n", (int)w, (int)h);
                 if (w > 2 && h > 2) 
                 {
-                    p_scene->m_roi.updateRect(p_scene, p_scene->m_rect); // 描画更新
+                    p_scene->m_roi.UpdateRect(p_scene, p_scene->m_rect); // 描画更新
                 }
                 else 
                 {
-                    p_scene->m_roi.removeRect(p_scene, p_scene->m_roi.m_regionFigures.size() - 1);
+                    p_scene->m_roi.RemoveRect(p_scene, p_scene->m_roi.m_regionFigures.size() - 1);
                     p_scene->m_rect.setX(0);
                     p_scene->m_rect.setY(0);
                     p_scene->m_rect.setWidth(0);
@@ -434,11 +434,11 @@ void ImageView::DrawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSqua
                 IS_DEBUG_STREAM("w:%d, h:%d\n", (int)w, (int)h);
                 if (w > 2 && h > 2) 
                 {
-                    p_scene->m_ellipse.updateRect(p_scene, p_scene->m_rect); // 描画更新
+                    p_scene->m_ellipse.UpdateRect(p_scene, p_scene->m_rect); // 描画更新
                 }
                 else 
                 {
-                    p_scene->m_ellipse.removeRect(p_scene, p_scene->m_ellipse.m_regionFigures.size() - 1);
+                    p_scene->m_ellipse.RemoveRect(p_scene, p_scene->m_ellipse.m_regionFigures.size() - 1);
                     p_scene->m_rect.setX(0);
                     p_scene->m_rect.setY(0);
                     p_scene->m_rect.setWidth(0);
@@ -467,13 +467,13 @@ void ImageView::RemoveFigure(const QPoint &viewPos)
         // 矩形
         if (p_scene->m_roi.m_isRegionFigure) 
         {
-            p_scene->m_roi.removeRect(p_scene, p_item);
+            p_scene->m_roi.RemoveRect(p_scene, p_item);
         }
 
         // 楕円
         if (p_scene->m_ellipse.m_isRegionFigure) 
         {
-            p_scene->m_ellipse.removeRect(p_scene, p_item);
+            p_scene->m_ellipse.RemoveRect(p_scene, p_item);
         }
     }
 }

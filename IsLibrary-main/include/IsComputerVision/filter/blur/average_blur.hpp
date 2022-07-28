@@ -1,5 +1,5 @@
 /**
- * @file average_filter.hpp
+ * @file average_blur.hpp
  * @author your name (you@domain.com)
  * @brief 平均値フィルタ
  * @version 0.1
@@ -26,7 +26,7 @@ namespace is
          * @param ksize_y
          * @return NdArrayPtr
          */
-        IS_IMGPROC_API NdArrayPtr average(NdArrayPtr src, const Size &ksize);
+        IS_IMGPROC_API NdArrayPtr average_blur(NdArrayPtr src, const Size &ksize);
 
     }
 }

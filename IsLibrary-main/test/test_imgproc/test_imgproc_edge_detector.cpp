@@ -8,11 +8,14 @@
 // imgproc
 #include <IsComputerVision/IsComputerVision.hpp>
 #include <IsComputerVision/io/img_io.hpp>
+#include <IsComputerVision/saturate_clamp.hpp>
 
 // filter
 #include <IsComputerVision/filter/utils/utils_filter.hpp>
-#include <IsComputerVision/filter/blur.hpp>
-#include <IsComputerVision/filter/edge_detector.hpp>
+#include <IsComputerVision/filter/edge_detector/sobel_edge_detector.hpp>
+#include <IsComputerVision/filter/edge_detector/laplacian_edge_detector.hpp>
+#include <IsComputerVision/filter/edge_detector/log_edge_detector.hpp>
+
 
 // utility
 #include <test_utils.hpp>
@@ -31,8 +34,7 @@ namespace
         const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
         std::cout << "GlobalContext after load: " << ctx.to_string() << std::endl;
 
-        // std::string dummy_filename = "/home/inoue/Images/Mono/256X256/Tree.bmp";
-        std::string dummy_filename = "/home/inoue/Images/Mono/512X512/barbara512.bmp";
+        std::string dummy_filename = TEST_INPUT_MONO_512_DIR "barbara512.bmp";
 
         // io
         ImageIo<format::BmpFile> io_bmp;
@@ -57,7 +59,7 @@ namespace
                     double v = dst_data[st[0] * c + st[1] * j + st[2] * i];
                     v += 128;
                     dst_data[st[0] * c + st[1] * j + st[2] * i] =
-                        saturate_cast<uchar>(v); // Clamp
+                        saturate_clamp<uchar>(v); // Clamp
                 }
             }
         }
@@ -67,7 +69,7 @@ namespace
 
         // show_ndarray_property(filtered);
 
-        dummy_filename = format_string("/home/inoue/Desktop/sobel_barbara512_dir%d.bmp",
+        dummy_filename = format_string(TEST_OUTPUT_DIR "sobel_barbara512_dir%d.bmp",
                                        direction);
         io_bmp.save(dummy_filename, filtered, false);
     }
@@ -77,10 +79,7 @@ namespace
           SingletonManager::get<GlobalContext>()->get_current_context();
       std::cout << "GlobalContext after load: " << ctx.to_string() << std::endl;
 
-      // std::string dummy_filename =
-      // "/home/inoue/Images/Mono/256X256/Tree.bmp";
-      std::string dummy_filename =
-          "/home/inoue/Images/Mono/512X512/barbara512.bmp";
+      std::string dummy_filename = TEST_INPUT_MONO_512_DIR "barbara512.bmp";
 
       // io
       ImageIo<format::BmpFile> io_bmp;
@@ -102,7 +101,7 @@ namespace
             double v = dst_data[st[0] * c + st[1] * j + st[2] * i];
             v += 128;
             dst_data[st[0] * c + st[1] * j + st[2] * i] =
-                saturate_cast<uchar>(v);  // Clamp
+                saturate_clamp<uchar>(v);  // Clamp
           }
         }
       }
@@ -112,8 +111,7 @@ namespace
 
       // show_ndarray_property(filtered);
 
-      dummy_filename = format_string(
-          "/home/inoue/Desktop/laplacian_barbara512_dir%d.bmp", direction);
+      dummy_filename = format_string(TEST_OUTPUT_DIR "laplacian_barbara512_dir%d.bmp", direction);
       io_bmp.save(dummy_filename, filtered, false);
     }
 
@@ -122,10 +120,7 @@ namespace
             SingletonManager::get<GlobalContext>()->get_current_context();
         std::cout << "GlobalContext after load: " << ctx.to_string() << std::endl;
 
-        // std::string dummy_filename =
-        // "/home/inoue/Images/Mono/256X256/Tree.bmp";
-        std::string dummy_filename =
-            "/home/inoue/Images/Mono/512X512/barbara512.bmp";
+        std::string dummy_filename = TEST_INPUT_MONO_512_DIR "barbara512.bmp";
 
         // io
         ImageIo<format::BmpFile> io_bmp;
@@ -146,7 +141,7 @@ namespace
                 double v = dst_data[st[0] * c + st[1] * j + st[2] * i];
                 v += 128;
                 dst_data[st[0] * c + st[1] * j + st[2] * i] =
-                    saturate_cast<uchar>(v);  // Clamp
+                    saturate_clamp<uchar>(v);  // Clamp
             }
             }
         }
@@ -156,8 +151,7 @@ namespace
 
         // show_ndarray_property(filtered);
 
-        dummy_filename = format_string(
-            "/home/inoue/Desktop/log_barbara512.bmp");
+        dummy_filename = format_string(TEST_OUTPUT_DIR "log_barbara512.bmp");
         io_bmp.save(dummy_filename, filtered, false);
     }
 }

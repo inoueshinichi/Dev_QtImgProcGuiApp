@@ -1,7 +1,7 @@
 /**
- * @file lablacian_filter.hpp
+ * @file gaussian_blur.hpp
  * @author your name (you@domain.com)
- * @brief ラプラシアンフィルタ
+ * @brief ガウシアンフィルタ
  * @version 0.1
  * @date 2022-02-23
  * 
@@ -19,12 +19,15 @@ namespace is
         using namespace nbla;
 
         /**
-         * @brief Laplacian
+         * @brief ガウシアンフィルタ
          *
          * @param src
-         * @param is_elem_8
+         * @param ksize_x
+         * @param ksize_y
+         * @param sigma_x
+         * @param sigma_y
          * @return NdArrayPtr
          */
-        IS_IMGPROC_API NdArrayPtr laplacian(NdArrayPtr src, bool is_elem_8 = true);
+        IS_IMGPROC_API NdArrayPtr gaussian_blur(NdArrayPtr src, int ksize, double sigma = 0);
     }
 }
