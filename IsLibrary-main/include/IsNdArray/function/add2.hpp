@@ -24,16 +24,13 @@ namespace is
         class Add2 : public BaseFunction<bool>
         {
         protected:
-            bool inplace_;
-
         public:
             Add2(const Context& ctx, bool inplace)
-                : BaseFunction(ctx, inplace)
-                , inplace_(inplace) {}
+                : BaseFunction(ctx, inplace) {}
 
             virtual ~Add2() {}
 
-            virtual shared_ptr<Function> copy() const { return create_Add2(ctx_, inplace_); }
+            virtual shared_ptr<Function> copy() const { return create_Add2(ctx_, false /*inplace is obsoleted. */); }
             virtual vector<dtypes> in_types() { return vector<dtypes>{get_dtype<T>(), get_dtype<T>()}; }
             virtual vector<dtypes> out_types() { return vector<dtypes>{get_dtype<T>()}; }
             virtual int min_inputs() { return 2; }
@@ -43,19 +40,6 @@ namespace is
             virtual vector<string> allowed_array_classes() 
             {
                 return SingletonManager::get<Cpu>()->array_classes();
-            }
-
-            virtual int inplace_data(int i) const 
-            {
-                if (this->fall_back_func_ || !inplace_ || i > 0)
-                    return Function::NOT_INPLACE;
-                return Function::INPLACE;
-            }
-
-            virtual int inplace_data_with(int i) const 
-            {
-                // 0 is okay because never be called in the case of i != 0.
-                return 0;
             }
 
         protected:

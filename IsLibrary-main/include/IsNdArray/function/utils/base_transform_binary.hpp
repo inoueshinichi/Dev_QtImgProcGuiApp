@@ -50,7 +50,7 @@ namespace is
         protected:
             virtual void setup_impl(const NdArrays& inputs, const NdArrays& outputs)
             {
-                int ndim = inputs[0]->ndim();
+                Size_t ndim = inputs[0]->ndim();
 
                 NBLA_CHECK(ndim == inputs[1]->ndim(), error_code::value,
                            "Dimensions of inputs must match. "
@@ -372,14 +372,14 @@ public:                                                                         
         }                                                                                               \
     };
 
-#define NBLA_DEFINE_TRANSFORM_BINARY_CLASS_INPLACE(NAME)                                                \
+#define NBLA_DEFINE_TRANSFORM_BINARY_CLASS_INPLACE(NAME, IGNORE_INPLACE)                                                \
     template <typename T>                                                                               \
     class NAME : public TransformBinary<T, NAME##BinaryOp>                                              \
     {                                                                                                   \
         NBLA_DEFINE_TRANSFORM_BINARY_CLASS_COMMON(NAME)                                                 \
                                                                                                         \
         NAME(const Context& ctx, bool inplace)                                                          \
-            : TransformBinary<T, NAME##BinaryOp>(ctx, inplace) {}                                       \
+            : TransformBinary<T, NAME##BinaryOp>(ctx, (IGNORE_INPLACE) ? false : inplace) {}                                       \
                                                                                                         \
         virtual shared_ptr<Function> copy() const                                                       \
         {                                                                                               \
@@ -392,10 +392,10 @@ public:                                                                         
     NBLA_DEFINE_BINARY_OP(NAME, OP)                                                                     \
     NBLA_DEFINE_TRANSFORM_BINARY_CLASS(NAME)
 
-#define NBLA_DEFINE_TRANSFORM_BINARY_INPLACE(NAME, OP)                                                  \
+#define NBLA_DEFINE_TRANSFORM_BINARY_INPLACE(NAME, OP, IGNORE_INPLACE)                                                  \
     NBLA_REGISTER_FUNCTION_HEADER(NAME, bool)                                                           \
     NBLA_DEFINE_BINARY_OP(NAME, OP)                                                                     \
-    NBLA_DEFINE_TRANSFORM_BINARY_CLASS_INPLACE(NAME)
+    NBLA_DEFINE_TRANSFORM_BINARY_CLASS_INPLACE(NAME, IGNORE_INPLACE)
 
 
 // ----------------------------------------------------------------------------------------------------

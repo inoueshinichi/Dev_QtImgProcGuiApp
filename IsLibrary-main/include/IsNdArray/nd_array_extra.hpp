@@ -893,22 +893,15 @@ namespace is
 
         // add2
         template <typename T>
-        NdArrayPtr add2(NdArrayPtr left, NdArrayPtr right, bool inplace = false)
+        NdArrayPtr add2(NdArrayPtr left, NdArrayPtr right)
         {
             const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
-            Add2<T> operation(ctx, inplace);
+            Add2<T> operation(ctx, false/*inplace*/);
 
-            if (inplace) {
-                operation.setup({left, right}, {left});
-                operation.execute({left, right}, {left});
-                return left;
-            }
-            else {
-                auto output = NdArray::create();
-                operation.setup({left, right}, {output});
-                operation.execute({left, right}, {output});
-                return output;
-            }   
+            auto output = NdArray::create();
+            operation.setup({left, right}, {output});
+            operation.execute({left, right}, {output});
+            return output;
         }
 
 

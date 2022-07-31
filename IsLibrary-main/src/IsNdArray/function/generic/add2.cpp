@@ -20,7 +20,7 @@ namespace is
 
             // ブロードキャスト
             // Trying to fallback to broadcastable Add2.
-            this->fall_back_func_ = create_BcAdd2(this->ctx_, inplace_);
+            this->fall_back_func_ = create_BcAdd2(this->ctx_, false);
             this->fall_back_func_->setup(inputs, outputs);
         }
 
@@ -30,7 +30,7 @@ namespace is
         {
             const T* x0 = inputs[0]->get_data_pointer<T>(this->ctx_);
             const T* x1 = inputs[1]->get_data_pointer<T>(this->ctx_);
-            T* y = outputs[0]->cast_data_and_get_pointer<T>(this->ctx_, !inplace_);
+            T* y = outputs[0]->cast_data_and_get_pointer<T>(this->ctx_, true/*!inplace_*/);
 
             for (int s = 0; s < inputs[0]->size(); s++) 
             {

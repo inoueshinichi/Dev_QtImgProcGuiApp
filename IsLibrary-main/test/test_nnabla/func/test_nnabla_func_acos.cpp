@@ -68,7 +68,7 @@ namespace
             for (int x = 0; x < sh[1]; ++x)
             {
                 auto& v = data[y * st[0] + x * st[1]];
-                V = acos(v);
+                v = acos(v);
             }
         }
     

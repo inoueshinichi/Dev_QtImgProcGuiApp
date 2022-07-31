@@ -119,6 +119,7 @@ namespace is
             {
                 // Fall back to the specified function.
                 fall_back_func_->execute(inputs, outputs);
+                return;
             }
 
             check_shapes(this, inputs, outputs, in_shapes_, out_shapes_);

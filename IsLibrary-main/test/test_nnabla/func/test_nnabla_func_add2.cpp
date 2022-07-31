@@ -60,7 +60,7 @@ namespace
         cout << "--- in_arr2" << endl;
         show_ndarray_contents<float>(in_narr2);
 
-        auto output = add2<float>(in_narr1, in_narr2, true);
+        auto output = add2<float>(in_narr1, in_narr2);
         cout << "--- output" << endl;
         show_ndarray_contents<float>(output);
         cout << "--- in_narr1" << endl;

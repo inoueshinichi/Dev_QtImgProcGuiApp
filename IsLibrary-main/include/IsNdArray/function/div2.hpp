@@ -17,6 +17,6 @@ namespace is
          * Outputs:
          * - N-D array.
          */
-        NBLA_DEFINE_TRANSFORM_BINARY_INPLACE(Div2, x0 / x1)
+        NBLA_DEFINE_TRANSFORM_BINARY_INPLACE(Div2, x0 / x1, true)
     }
 }
