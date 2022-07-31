@@ -69,7 +69,20 @@
 /*OK*/#include <IsNdArray/function/cumprod.hpp>
 
 // 2-Input
-/*NG*/#include <IsNdArray/function/add2.hpp>
+/*KO*/#include <IsNdArray/function/add2.hpp>
+/*--*/#include <IsNdArray/function/sub2.hpp>
+/*--*/#include <IsNdArray/function/mul2.hpp>
+/*--*/#include <IsNdArray/function/div2.hpp>
+
+// 3-Input
+/*--*/#include <IsNdArray/function/where.hpp>
+
+// Other
+/**/#include <IsNdArray/function/affine.hpp>
+/**/#include <IsNdArray/function/softmax.hpp>
+/**/#include <IsNdArray/function/stack.hpp>
+
+
 
 #include <memory>
 
@@ -905,6 +918,47 @@ namespace is
         }
 
 
-        
+        // sub2
+        template <typename T>
+        NdArrayPtr sub2(NdArrayPtr left, NdArrayPtr right)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Sub2<T> operation(ctx, false/*inplace*/);
+
+            auto output = NdArray::create();
+            operation.setup({left, right}, {output});
+            operation.execute({left, right}, {output});
+            return output;
+        }
+
+
+        // mul2
+        template <typename T>
+        NdArrayPtr mul2(NdArrayPtr left, NdArrayPtr right)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Mul2<T> operation(ctx, false/*inplace*/);
+
+            auto output = NdArray::create();
+            operation.setup({left, right}, {output});
+            operation.execute({left, right}, {output});
+            return output;
+        }
+
+
+        // div2
+        template <typename T>
+        NdArrayPtr div2(NdArrayPtr left, NdArrayPtr right)
+        {
+            const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+            Div2<T> operation(ctx, false/*inplace*/);
+
+            auto output = NdArray::create();
+            operation.setup({left, right}, {output});
+            operation.execute({left, right}, {output});
+            return output;
+        }
+
+
     }
 }
