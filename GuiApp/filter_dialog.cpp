@@ -4,7 +4,7 @@
 #include "image_window.h"
 
 // ComputerVision
-#include <IsComputerVision/filter/blur/average.hpp>
+#include <IsComputerVision/filter/blur/average_blur.hpp>
 
 #include <Qt>
 
@@ -91,7 +91,7 @@ void FilterDialog::SlotAverageFilter()
     int ksize_y = 15;
  
     auto func = [&](NdArrayPtr img) -> NdArrayPtr {
-        return average(img, Size(ksize_x, ksize_y));
+        return average_blur(img, Size(ksize_x, ksize_y));
     };
 
     auto qimg = m_pImgWin->GetDibImg();
