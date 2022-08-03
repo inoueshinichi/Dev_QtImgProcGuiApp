@@ -30,7 +30,7 @@ message(STATUS "========== [START] C++ All Target Options ==========")
 
 # Switching Option
 option(BUILD_CPP_OPENMP "Enable/Disable: OpenMP" OFF)
-option(BUILD_CPP_TEST "Enable/Disable: Building Test" ON)
+option(BUILD_CPP_TEST "Enable/Disable: Building Test" OFF)
 option(BUILD_CPP_SHARED_LIBS "Enable/Disable: Shared Libraries" ON)
 option(BUILD_CPP_ZERO_CHECK "Enable/Disable: ZERO_CHECK" OFF)
 option(BUILD_CPP_MSVC_DEFAULT_LOCALE_UTF8 "Enable/Disable utf-8 default locale" OFF) # ANSI: ShiftJIS -> UTF8 @ Windows OS
@@ -80,9 +80,6 @@ if (MSVC)
         link_libraries(${OpenMP_LIBRARIES})
         add_compile_options("$<$<C_COMPILER_ID:MSVC>:/openmp>")
         add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/openmp>")
-        # set(CMAKE_C_FLAGS “${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}”)
-        # set(CMAKE_CXX_FLAGS “${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}”)
-        # add_compile_definitions(_OPENMP) # プリプロセッサーマクロ
     endif()
 
     # ソースコードでUTF-8を使う(MSVC)
@@ -128,9 +125,6 @@ elseif(APPLE)
         link_libraries(${OpenMP_LIBRARIES})
         add_compile_options("$<$<C_COMPILER_ID:GNU>:-fopenmp>")
         add_compile_options("$<$<CXX_COMPILER_ID:GNU>:-fopenmp>")
-        # set(CMAKE_C_FLAGS “${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}”)
-        # set(CMAKE_CXX_FLAGS “${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}”)
-        # add_compile_definitions(_OPENMP) # プリプロセッサーマクロ
     endif()
 
     # C++標準に準拠しない拡張機能を無効化
@@ -160,9 +154,6 @@ else()
         link_libraries(${OpenMP_LIBRARIES})
         add_compile_options("$<$<C_COMPILER_ID:GNU>:-fopenmp>")
         add_compile_options("$<$<CXX_COMPILER_ID:GNU>:-fopenmp>")
-        # set(CMAKE_C_FLAGS “${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}”)
-        # set(CMAKE_CXX_FLAGS “${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}”)
-        # add_compile_definitions(_OPENMP) # プリプロセッサーマクロ
     endif()
 
     # C++標準に準拠しない拡張機能を無効化
