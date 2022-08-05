@@ -10,25 +10,12 @@ message(STATUS "CMake Ver: ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE
 message(STATUS "========== [END] Version Management ==========")
 
 ###############################################################################
-# 前処理
-###############################################################################
-message(STATUS "========== [START] Preprocessing ==========")
-
-find_program(PYTHON_INTERPRETER "python")
-if(NOT EXISTS ${PYTHON_INTERPRETER})
-    message(FATAL_ERROR "python [${PYTHON_INTERPRETER}] not found.")
-    error() # Place Unknown command to stop cmake process here.
-endif()
-message(STATUS "Python interpreter: ${PYTHON_INTERPRETER}")
-
-message(STATUS "========== [END] Preprocessing ==========")
-
-###############################################################################
 # 全ターゲットに影響を与えるオプション
 ###############################################################################
 message(STATUS "========== [START] C++ All Target Options ==========")
 
 # Switching Option
+option(BUILD_PYTHON_INTERPRETER "Enable/Disable: Python interpreter" OFF)
 option(BUILD_CPP_OPENMP "Enable/Disable: OpenMP" OFF)
 option(BUILD_CPP_TEST "Enable/Disable: Building Test" OFF)
 option(BUILD_CPP_SHARED_LIBS "Enable/Disable: Shared Libraries" ON)
@@ -200,6 +187,22 @@ message(STATUS "CMAKE_CXX_FLAGS_MINSIZEREL: ${CMAKE_CXX_FLAGS_MINSIZEREL}")
 message(STATUS "CMAKE_CXX_FLAGS_RELWITHDEBINFO: ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
 
 message(STATUS "========== [END] C++ All Target Options ==========")
+
+###############################################################################
+# 前処理
+###############################################################################
+message(STATUS "========== [START] Preprocessing ==========")
+
+if(BUILD_PYTHON_INTERPRETER)
+    find_program(PYTHON_INTERPRETER "python3")
+    if(NOT EXISTS ${PYTHON_INTERPRETER})
+        message(FATAL_ERROR "python [${PYTHON_INTERPRETER}] not found.")
+        error() # Place Unknown command to stop cmake process here.
+    endif()
+    message(STATUS "Python interpreter: ${PYTHON_INTERPRETER}")
+endif()
+
+message(STATUS "========== [END] Preprocessing ==========")
 
 ###############################################################################
 # C++ core
