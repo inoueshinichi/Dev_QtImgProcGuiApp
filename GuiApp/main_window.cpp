@@ -11,7 +11,9 @@
 
 #include "ui_MainWindow.h"
 #include "main_window.h"
+#include "image_window.h"
 #include "filter_dialog.h"
+#include "image_scene.h"
 
 
 
@@ -23,6 +25,18 @@
 #include <QRect>
 #include <QMimeData>
 #include <QUrl>
+
+#include <Qt>
+#include <QLabel>
+#include <QString>
+#include <QDrag>
+#include <QEvent>
+#include <QMessageBox>
+#include <QLineEdit>
+#include <QFileDialog>
+#include <QDialog>
+#include <QInputDialog>
+#include <QColorDialog>
 
 #include <algorithm>
 #include <vector>
@@ -40,12 +54,12 @@ using namespace std::chrono;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , m_pUi(new Ui::MainWindow())
-    , m_pStatusBarLabel(new QLabel())
-    , m_pLastActiveImgWin(nullptr) 
+    , mUi(new Ui::MainWindow())
+    , mStatusBarLabel(new QLabel())
+    , mLastActiveImgWin(nullptr) 
 {
     // UI
-    m_pUi->setupUi(this);
+    mUi->setupUi(this);
 
     // WA
     setAttribute(Qt::WA_AcceptTouchEvents);
@@ -56,10 +70,10 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow() 
 {
-    if (m_pUi) 
+    if (mUi) 
     {
-        delete m_pUi;
-        m_pUi = nullptr;
+        delete mUi;
+        mUi = nullptr;
     }
 }
 
@@ -76,23 +90,23 @@ void MainWindow::MenuBarConnection()
     /* Menu -> File */
 
     // New
-    connect(m_pUi->actionNew, &QAction::triggered,
+    connect(mUi->actionNew, &QAction::triggered,
             this, &MainWindow::SlotActMenuBarFileNew);
 
     // Open
-    connect(m_pUi->actionOpen, &QAction::triggered,
+    connect(mUi->actionOpen, &QAction::triggered,
             this, &MainWindow::SlotActMenuBarFileOpen);
 
     // Close All
-    connect(m_pUi->actionCloseAll, &QAction::triggered,
+    connect(mUi->actionCloseAll, &QAction::triggered,
             this, &MainWindow::SlotActMenuBarFileCloseAll);
 
     // Print
-    connect(m_pUi->actionPrint, &QAction::triggered,
+    connect(mUi->actionPrint, &QAction::triggered,
             this, &MainWindow::SlotActMenuBarFilePrint);
 
     // Quit
-    connect(m_pUi->actionQuit, &QAction::triggered,
+    connect(mUi->actionQuit, &QAction::triggered,
             this, &MainWindow::SlotActMenuBarFileQuit);
 
 }
@@ -104,7 +118,7 @@ void MainWindow::MenuBarConnection()
 void MainWindow::ToolBarConnection() 
 {
 //    // 右クリックでToolBarを非表示にできないようにする
-//     m_pUi->toolBar->toggleViewAction()->setEnabled(false);
+//     mUi->toolBar->toggleViewAction()->setEnabled(false);
 }
 
 void MainWindow::UiConnection() {}
@@ -112,18 +126,18 @@ void MainWindow::UiConnection() {}
 void MainWindow::CustomConnection() {}
 
 
-void MainWindow::HelperImgProc(const QString &process, 
+void MainWindow::HelperImgProc(const QString& process, 
                                std::function<void(QImage &)> func) 
 {
     /* ヘルパー関数 */
     auto tp_start = high_resolution_clock::now();
 
-    QImage img = m_pLastActiveImgWin->GetDibImg();
+    QImage img = mLastActiveImgWin->GetDibImg();
 
     // 画像処理タスク
     func(img);
 
-    m_pLastActiveImgWin->SetDibImg(img);
+    mLastActiveImgWin->SetDibImg(img);
 
     auto tp_end = high_resolution_clock::now();
     auto duration = duration_cast<milliseconds>(tp_end - tp_start).count();
@@ -131,8 +145,8 @@ void MainWindow::HelperImgProc(const QString &process,
 
     std::string status = is::common::format_string("%s: %ld[ms]", 
                                     process.toStdString().c_str(), duration);
-    m_pUi->statusBar->clearMessage();
-    m_pUi->statusBar->showMessage(QString::fromStdString(status));
+    mUi->statusBar->clearMessage();
+    mUi->statusBar->showMessage(QString::fromStdString(status));
 }
 
 
@@ -208,9 +222,9 @@ void MainWindow::dropEvent(QDropEvent *event)
     if (event->mimeData()->hasUrls()) 
     {
         std::set<std::string> currImgWinFilenames;
-        for (const auto& p_imgWin : GetImgWinRegistry()) 
+        for (const auto& imgWin : GetImgWinRegistry()) 
         {
-            currImgWinFilenames.insert(p_imgWin->Filename().toStdString());
+            currImgWinFilenames.insert(imgWin->Filename().toStdString());
         }
 
         foreach(QUrl url, event->mimeData()->urls()) 
@@ -269,16 +283,16 @@ MainWindow::ImgWinRegistry_t &MainWindow::GetImgWinRegistry()
  */
 ImageWindow* MainWindow::GenImgWin(const QString &filename) 
 {
-    ImageWindow *p_imgWin = new ImageWindow(this);
-    p_imgWin->SetFilename(filename);
-    GetImgWinRegistry().insert(p_imgWin);
-    p_imgWin->show();
-    p_imgWin->activateWindow();
+    ImageWindow *imgWin = new ImageWindow(this);
+    imgWin->SetFilename(filename);
+    GetImgWinRegistry().insert(imgWin);
+    imgWin->show();
+    imgWin->activateWindow();
 
-    m_pStatusBarLabel->setText(QString::number(GetImgWinRegistry().size()));
-    m_pUi->statusBar->addPermanentWidget(m_pStatusBarLabel);
+    mStatusBarLabel->setText(QString::number(GetImgWinRegistry().size()));
+    mUi->statusBar->addPermanentWidget(mStatusBarLabel);
 
-    return p_imgWin;
+    return imgWin;
 }
 
 //////////////////////////////////////////////////////////
@@ -294,14 +308,14 @@ void MainWindow::SlotRmImgWin(ImageWindow *ptr)
 {
     GetImgWinRegistry().erase(ptr);
     size_t count = GetImgWinRegistry().size();
-    m_pStatusBarLabel->setText(QString::number(count));
-    m_pUi->statusBar->addPermanentWidget(m_pStatusBarLabel);
+    mStatusBarLabel->setText(QString::number(count));
+    mUi->statusBar->addPermanentWidget(mStatusBarLabel);
 
     IS_DEBUG_STREAM("Erase a image window. Given is %p.\n", (void *)ptr);
 
-    if (m_pLastActiveImgWin == ptr) 
+    if (mLastActiveImgWin == ptr) 
     {
-        m_pLastActiveImgWin = nullptr;
+        mLastActiveImgWin = nullptr;
     }
 }
 
@@ -313,7 +327,7 @@ void MainWindow::SlotRmImgWin(ImageWindow *ptr)
  */
 void MainWindow::SlotActiveImgWin(ImageWindow *ptr) 
 {
-    m_pLastActiveImgWin = ptr;
+    mLastActiveImgWin = ptr;
 }
 
 /**
@@ -339,9 +353,9 @@ void MainWindow::SlotActMenuBarFileOpen()
                                                   fileFilter);
 
     std::set<std::string> currImgWinFilenames;
-    for (const auto& p_imgWin : GetImgWinRegistry()) 
+    for (const auto& imgWin : GetImgWinRegistry()) 
     {
-        currImgWinFilenames.insert(p_imgWin->Filename().toStdString());
+        currImgWinFilenames.insert(imgWin->Filename().toStdString());
     }
 
     foreach (QString path, fileList) 
@@ -357,9 +371,9 @@ void MainWindow::SlotActMenuBarFileOpen()
 
             std::string newFilename = GetNewSerialNo(filename.toStdString(),
                                                      currImgWinFilenames);
-            ImageWindow *p_newImgWin = GenImgWin(QString::fromStdString(newFilename));
+            ImageWindow *newImgWin = GenImgWin(QString::fromStdString(newFilename));
 
-            p_newImgWin->SetDibImg(img, true, true);
+            newImgWin->SetDibImg(img, true, true);
         }
     }
 }
@@ -371,11 +385,11 @@ void MainWindow::SlotActMenuBarFileOpen()
 void MainWindow::SlotActMenuBarFileClose() 
 {
     auto &registry = GetImgWinRegistry();
-    if (m_pLastActiveImgWin) 
+    if (mLastActiveImgWin) 
     {
-        m_pLastActiveImgWin->close();
-        registry.erase(m_pLastActiveImgWin);
-        m_pLastActiveImgWin = nullptr;
+        mLastActiveImgWin->close();
+        registry.erase(mLastActiveImgWin);
+        mLastActiveImgWin = nullptr;
     }
 }
 
@@ -406,10 +420,10 @@ void MainWindow::SlotActMenuBarFileCloseAll()
  */
 void MainWindow::SlotActMenuBarFileSave() 
 {
-    auto qimg = m_pLastActiveImgWin->Scene()->GetDibImg();
+    auto qimg = mLastActiveImgWin->Scene()->GetDibImg();
     if (!qimg.isNull()) 
     {
-        auto filename = m_pLastActiveImgWin->Filename();
+        auto filename = mLastActiveImgWin->Filename();
         QString cwd = QString::fromStdString(fs::current_path().string());
         auto path = cwd + tr("/") + filename;
 
@@ -427,7 +441,7 @@ void MainWindow::SlotActMenuBarFileSave()
     }
     else 
     {
-      QMessageBox::warning(m_pLastActiveImgWin, 
+      QMessageBox::warning(mLastActiveImgWin, 
                             tr("画像の保存"),
                             tr("画像がありません."));
     }
@@ -439,10 +453,10 @@ void MainWindow::SlotActMenuBarFileSave()
  */
 void MainWindow::SlotActMenuBarFileSaveAs() 
 {
-   if (sender() == m_pLastActiveImgWin->Ui()->actionSaveAsCsv) 
+   if (sender() == mLastActiveImgWin->Ui()->actionSaveAsCsv) 
    {
       IS_DEBUG_STREAM("Save As Csv\n");
-   } else if (sender() == m_pLastActiveImgWin->Ui()->actionSaveAsTsv) 
+   } else if (sender() == mLastActiveImgWin->Ui()->actionSaveAsTsv) 
    {
       IS_DEBUG_STREAM("Save As Tsv\n");
    }
@@ -454,7 +468,7 @@ void MainWindow::SlotActMenuBarFileSaveAs()
  */
 void MainWindow::SlotActMenuBarFilePrint() 
 {
-  QMessageBox::warning(m_pLastActiveImgWin, tr("画像の印刷"), tr("工事中..."));
+  QMessageBox::warning(mLastActiveImgWin, tr("画像の印刷"), tr("工事中..."));
 }
 
 /**
@@ -472,7 +486,7 @@ void MainWindow::SlotActMenuBarFileQuit()
  */
 void MainWindow::SlotActMenuBarEditUndo() 
 {
-    QMessageBox::warning(m_pLastActiveImgWin, tr("Undo"), tr("工事中..."));
+    QMessageBox::warning(mLastActiveImgWin, tr("Undo"), tr("工事中..."));
 }
 
 /**
@@ -481,14 +495,14 @@ void MainWindow::SlotActMenuBarEditUndo()
  */
 void MainWindow::SlotActMenuBarEditRename() 
 {
-    auto new_name = QInputDialog::getText(m_pLastActiveImgWin, 
+    auto new_name = QInputDialog::getText(mLastActiveImgWin, 
                                         tr("画像ファイル名の変更"),
                                         tr("新しいファイル名"));
     
     if (new_name.isEmpty())
         return;
 
-    auto qname = m_pLastActiveImgWin->Filename();
+    auto qname = mLastActiveImgWin->Filename();
     std::string name = qname.toStdString();
     IS_DEBUG_STREAM("Before %s\n", name.c_str());
     auto tokens = is::common::split_string(name, ".");
@@ -497,7 +511,7 @@ void MainWindow::SlotActMenuBarEditRename()
 
     IS_DEBUG_STREAM("After %s\n", filename.toStdString().c_str());
     
-    m_pLastActiveImgWin->SetFilename(filename);
+    mLastActiveImgWin->SetFilename(filename);
 
 }
 
@@ -507,10 +521,10 @@ void MainWindow::SlotActMenuBarEditRename()
  */
 void MainWindow::SlotActMenuBarEditCut() 
 {
-    // QMessageBox::warning(m_pLastActiveImgWin, tr("ROI領域のカット"), 
+    // QMessageBox::warning(mLastActiveImgWin, tr("ROI領域のカット"), 
     //                     tr("工事中..."));
 
-    std::map<int, QRectF> localRects = m_pLastActiveImgWin->GetRectsOnDibImg();
+    std::map<int, QRectF> localRects = mLastActiveImgWin->GetRectsOnDibImg();
 
     auto func = [&](QImage& img) -> void {
 
@@ -529,7 +543,7 @@ void MainWindow::SlotActMenuBarEditCut()
 
         // 指定領域をコピー
         QRect roi = localRects[last].toRect();
-        m_copyImg = img.copy(roi);
+        mCopyImg = img.copy(roi);
 
         // 指定領域をクリア
         int l, t, r, b;
@@ -563,10 +577,10 @@ void MainWindow::SlotActMenuBarEditCut()
  */
 void MainWindow::SlotActMenuBarEditCopy() 
 {
-    // QMessageBox::warning(m_pLastActiveImgWin, tr("ROI領域のコピー"),
+    // QMessageBox::warning(mLastActiveImgWin, tr("ROI領域のコピー"),
     //                     tr("工事中..."));
 
-    std::map<int, QRectF> localRects = m_pLastActiveImgWin->GetRectsOnDibImg();
+    std::map<int, QRectF> localRects = mLastActiveImgWin->GetRectsOnDibImg();
 
     auto func = [&](QImage& img) -> void {
 
@@ -582,7 +596,7 @@ void MainWindow::SlotActMenuBarEditCopy()
 
         // 指定領域をコピー
         QRect roi = localRects[last].toRect();
-        m_copyImg = img.copy(roi);
+        mCopyImg = img.copy(roi);
     };
 
     HelperImgProc(QString("Copy"), func);
@@ -594,7 +608,7 @@ void MainWindow::SlotActMenuBarEditCopy()
  */
 void MainWindow::SlotActMenuBarEditPaste() 
 {
-  QMessageBox::warning(m_pLastActiveImgWin, tr("指定ポイントを中心する貼り付け"),
+  QMessageBox::warning(mLastActiveImgWin, tr("指定ポイントを中心する貼り付け"),
                       tr("工事中..."));
 }
 
@@ -604,10 +618,10 @@ void MainWindow::SlotActMenuBarEditPaste()
  */
 void MainWindow::SlotActMenuBarEditClear() 
 {
-    // QMessageBox::warning(m_pLastActiveImgWin, tr("ROI領域のクリア"),
+    // QMessageBox::warning(mLastActiveImgWin, tr("ROI領域のクリア"),
     //                   tr("工事中..."));
 
-    std::map<int, QRectF> localRects = m_pLastActiveImgWin->GetRectsOnDibImg();
+    std::map<int, QRectF> localRects = mLastActiveImgWin->GetRectsOnDibImg();
 
     auto func = [&](QImage &img) -> void {
         using byte = uchar;
@@ -665,10 +679,10 @@ void MainWindow::SlotActMenuBarEditClear()
  */
 void MainWindow::SlotActMenuBarEditClearOutside() 
 {
-    // QMessageBox::warning(m_pLastActiveImgWin, tr("ROI領域以外のクリア"),
+    // QMessageBox::warning(mLastActiveImgWin, tr("ROI領域以外のクリア"),
     //                   tr("工事中..."));
 
-    std::map<int, QRectF> localRects = m_pLastActiveImgWin->GetRectsOnDibImg();
+    std::map<int, QRectF> localRects = mLastActiveImgWin->GetRectsOnDibImg();
 
     auto func = [&](QImage &img) -> void {
         if (localRects.size() > 0) 
@@ -717,7 +731,7 @@ void MainWindow::SlotActMenuBarEditClearOutside()
  */
 void MainWindow::SlotActMenuBarEditFill() 
 {
-    QMessageBox::warning(m_pLastActiveImgWin, tr("ROI領域の色指定"),
+    QMessageBox::warning(mLastActiveImgWin, tr("ROI領域の色指定"),
                           tr("工事中..."));
 
     auto color = QColorDialog::getColor();
@@ -729,10 +743,10 @@ void MainWindow::SlotActMenuBarEditFill()
  */
 void MainWindow::SlotActMenuBarEditInvert() 
 {
-    // QMessageBox::warning(m_pLastActiveImgWin, tr("色反転"), 
+    // QMessageBox::warning(mLastActiveImgWin, tr("色反転"), 
     //                         tr("工事中..."));
 
-    std::map<int, QRectF> localRects = m_pLastActiveImgWin->GetRectsOnDibImg();
+    std::map<int, QRectF> localRects = mLastActiveImgWin->GetRectsOnDibImg();
 
     auto func = [&](QImage &img) -> void {
 
@@ -779,7 +793,7 @@ void MainWindow::SlotActMenuBarEditInvert()
  */
 void MainWindow::SlotActMenuBarImageType() 
 {
-    auto p_ui = m_pLastActiveImgWin->Ui();
+    auto p_ui = mLastActiveImgWin->Ui();
 
     p_ui->actionCvt8bit->setChecked(false);
     p_ui->actionCvt24bit->setChecked(false);
@@ -825,27 +839,27 @@ void MainWindow::SlotActMenuBarImageShowInfo() {}
 void MainWindow::SlotActMenuBarImageColor() 
 {
     auto sender = this->sender();
-    if (sender == m_pLastActiveImgWin->Ui()->actionRGBToGray) 
+    if (sender == mLastActiveImgWin->Ui()->actionRGBToGray) 
     {
         IS_DEBUG_STREAM("RGB -> Gray\n");
     }
-    else if (sender == m_pLastActiveImgWin->Ui()->actionGrayToRGB) 
+    else if (sender == mLastActiveImgWin->Ui()->actionGrayToRGB) 
     {
         IS_DEBUG_STREAM("Gray -> RGB\n");
     }
-    else if (sender == m_pLastActiveImgWin->Ui()->actionRGBToHSV) 
+    else if (sender == mLastActiveImgWin->Ui()->actionRGBToHSV) 
     {
         IS_DEBUG_STREAM("RGB -> HSV\n");
     }
-    else if (sender == m_pLastActiveImgWin->Ui()->actionHSVToRGB) 
+    else if (sender == mLastActiveImgWin->Ui()->actionHSVToRGB) 
     {
         IS_DEBUG_STREAM("HSV -> RGB\n");
     }
-    else if (sender == m_pLastActiveImgWin->Ui()->actionRGBToYUV) 
+    else if (sender == mLastActiveImgWin->Ui()->actionRGBToYUV) 
     {
         IS_DEBUG_STREAM("RGB -> YUV\n");
     }
-    // else if (sender == m_pLastActiveImgWin->ui()->actionYUVToRGB) {
+    // else if (sender == mLastActiveImgWin->ui()->actionYUVToRGB) {
         
     // }
 }
@@ -870,12 +884,12 @@ void MainWindow::SlotActMenuBarImageTransform() {}
  */
 void MainWindow::SlotActMenuBarImageCrop() 
 {
-    std::map<int, QRectF> localRects = m_pLastActiveImgWin->GetRectsOnDibImg();
-    QImage img = m_pLastActiveImgWin->GetDibImg();
+    std::map<int, QRectF> localRects = mLastActiveImgWin->GetRectsOnDibImg();
+    QImage img = mLastActiveImgWin->GetDibImg();
 
     for (const auto& roi : localRects) 
     {
-        auto filename = m_pLastActiveImgWin->Filename();
+        auto filename = mLastActiveImgWin->Filename();
         int pos = filename.lastIndexOf(tr("."));
         auto name = filename.left(pos);
         auto ext = filename.mid(pos + 1);
@@ -897,12 +911,12 @@ void MainWindow::SlotActMenuBarImageCrop()
 void MainWindow::SlotActMenuBarImageDuplicate() 
 {
     std::set<std::string> currImgWinFilenames;
-    for (const auto &p_imgWin : GetImgWinRegistry()) 
+    for (const auto &imgWin : GetImgWinRegistry()) 
     {
-        currImgWinFilenames.insert(p_imgWin->Filename().toStdString());
+        currImgWinFilenames.insert(imgWin->Filename().toStdString());
     }
 
-    auto filename = m_pLastActiveImgWin->Filename();
+    auto filename = mLastActiveImgWin->Filename();
     int pos = filename.lastIndexOf(tr("."));
     auto name = filename.left(pos);
     auto ext = filename.mid(pos + 1);
@@ -915,7 +929,7 @@ void MainWindow::SlotActMenuBarImageDuplicate()
                     name.toStdString().c_str(),
                     ext.toStdString().c_str());
 
-    QImage img = m_pLastActiveImgWin->GetDibImg().copy();
+    QImage img = mLastActiveImgWin->GetDibImg().copy();
 
     filename = name + tr(".") + ext;
     std::string newFilename = GetNewSerialNo(filename.toStdString(), currImgWinFilenames);
@@ -931,7 +945,7 @@ void MainWindow::SlotActMenuBarImageDuplicate()
  */
 void MainWindow::SlotActMenuBarFilter() 
 {
-    auto p_filter_dlg = new FilterDialog(m_pLastActiveImgWin);
+    auto p_filter_dlg = new FilterDialog(mLastActiveImgWin);
     p_filter_dlg->show();
     p_filter_dlg->activateWindow();
 }
@@ -947,6 +961,6 @@ void MainWindow::SlotActMenuBarFilter()
  */
 void MainWindow::SlotActMenuBarCameraWindow() 
 {
-    QMessageBox::warning(m_pLastActiveImgWin, tr("Camera"), 
+    QMessageBox::warning(mLastActiveImgWin, tr("Camera"), 
                         tr("工事中..."));
 }
