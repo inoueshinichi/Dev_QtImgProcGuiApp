@@ -14,37 +14,41 @@
 #include "GuiApp.h"
 
 #include <QGraphicsView>
-#include <Qt>
-#include <QRectF>
-#include <QRect>
-#include <QImage>
-#include <QPixmap>
-#include <QPainter>
-#include <QColor>
-#include <QString>
-#include <QDrag>
+
+// QtCustom
+#include "graphics_item.h"
 
 
 class ImageView : public QGraphicsView 
 {
     Q_OBJECT
 
+    // アイテム
+    CrossLine mCrossLine;
+    Profile mProfile;
+    RoiRect mRoi;
+    RoiEllipse mEllipse;
+    //RoiLine mLine;
+
+    QRectF mRect;
+    QPointF mAnchor;
+
     // マウス
-    bool m_isMousePressLeft{false};
-    bool m_isMousePressRight{false};
-    bool m_isMousePressMiddle{false};
-    bool m_isMouseDrag{false};
+    bool mIsMousePressLeft{false};
+    bool mIsMousePressRight{false};
+    bool mIsMousePressMiddle{false};
+    bool mIsMouseDrag{false};
 
-    bool m_isGenFigure{false};
+    bool mIsGenFigure{false};
 
-    void UpdateStatusBar(const QPoint &viewPos);
+    void UpdateStatusBar(const class QPoint& viewPos);
 
-    void DrawCrossLine(const QPoint &viewPos);
-    void DrawProfile(const QPoint &viewPos,
+    void DrawCrossLine(const class QPoint& viewPos);
+    void DrawProfile(const class QPoint& viewPos,
                      bool isXRed, bool isXGreen, bool isXBlue,
                      bool isYRed, bool isYGreen, bool isYBlue);
-    void DrawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSquareDrag);
-    void RemoveFigure(const QPoint &viewPos);
+    void DrawFigure(const class QPoint& viewPos, bool isCenterDrag, bool isSquareDrag);
+    void RemoveFigure(const class QPoint& viewPos);
 
 protected:
     typedef struct ZoomLebel 
@@ -66,24 +70,31 @@ protected:
         
     } ZoomLevel;
 
-    ZoomLevel m_zoomLevel;
-    bool m_isAcceptDragDrop {false};
+    ZoomLevel mZoomLevel;
+    bool mIsAcceptDragDrop {false};
 
 public:
     explicit ImageView(QWidget *parent=nullptr);
     virtual ~ImageView();
 
+    CrossLine& GetCrossLine() { return mCrossLine; }
+    Profile& GetProfile() { return mProfile; }
+    RoiRect& GetRoiRect() { return mRoi; }
+    RoiEllipse& GetRoiEllipse() { return mEllipse; }
+    QRectF& GetRectF() { return mRect; }
+    QPointF& GetAnchor() { return mAnchor; }
+
 protected:
-    virtual void mousePressEvent(QMouseEvent *event) override;
-    virtual void mouseMoveEvent(QMouseEvent *event) override;
-    virtual void mouseReleaseEvent(QMouseEvent *event) override;
-    virtual void mouseDoubleClickEvent(QMouseEvent *event) override;
+    virtual void mousePressEvent(class QMouseEvent* event) override;
+    virtual void mouseMoveEvent(class QMouseEvent* event) override;
+    virtual void mouseReleaseEvent(class QMouseEvent* event) override;
+    virtual void mouseDoubleClickEvent(class QMouseEvent* event) override;
 
 signals:
     void EmitShowPosToStatusBar(
-        const QPointF &imgLocalPos,
-        const QPointF &scenePos,
-        const QPoint &viewPos);
+        const class QPointF& imgLocalPos,
+        const class QPointF& scenePos,
+        const class QPoint& viewPos);
 };
 
 
