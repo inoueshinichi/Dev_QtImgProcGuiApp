@@ -1,11 +1,4 @@
 #include "main_window.h"
-
-#include <IsComputerVision/camera/camera_controller.hpp>
-
-#include <memory>
-#include <thread>
-#include <chrono>
-
 #include <QApplication>
 
 int main(int argc, char** argv) 
@@ -35,13 +28,6 @@ int main(int argc, char** argv)
     MainWindow main_win;
     main_win.show();
 
-    // // CameraControllerテスト
-    // CameraController camCtrl;
-    // camCtrl.setCameraType("general", "usb");
-    // camCtrl.startCamera(0, 50);
-    // camCtrl.fetchFrame();   
-    // std::this_thread::sleep_for(std::chrono::seconds(5));
-    // camCtrl.stopCamera();
-
+  
     return app.exec();
 }

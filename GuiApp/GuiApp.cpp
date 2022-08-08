@@ -153,99 +153,99 @@ std::pair<QImage::Format, QString> GetFormatStr(const QImage &img)
 }
 
 
-// void showStatus(const QImage &img) {
-//     /* QImageのステータスをチェック */
+// // void showStatus(const QImage &img) {
+// //     /* QImageのステータスをチェック */
 
-//     qint64 cacheKey = img.cacheKey();
-//     int bitPlaneCount = img.bitPlaneCount();
+// //     qint64 cacheKey = img.cacheKey();
+// //     int bitPlaneCount = img.bitPlaneCount();
+// // }
+
+
+
+// is::nbla::NdArrayPtr QImage2NdArray(const QImage& img)
+// {
+//     /* QImageからNdArrayへの変換 */
+//     using ubyte = unsigned char;
+//     using namespace is::nbla;
+//     const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+
+//     int width = img.width();
+//     int height = img.height();
+//     int mem_channels = img.depth() / 8; // Gray(8), RGB(24), RGBA(32)
+
+//     // RGBAの場合, Aを除外する
+//     int channels = mem_channels > 3 ? 3 : mem_channels;
+
+//     IS_DEBUG_STREAM("w: %d, h: %d, c: %d\n", width, height, channels);
+
+//     int mem_width = img.bytesPerLine();
+//     const ubyte* ptr = img.bits();
+
+//     // NdArray
+//     auto dst = zeros<ubyte>({channels, height, width});
+//     ubyte* data_dst = dst->cast_data_and_get_pointer<ubyte>(ctx);
+//     auto sh = dst->shape();
+//     auto st = dst->strides();
+
+//     for (int c = 0; c < sh[0]; ++c)
+//     {
+//         for (int y = 0; y < sh[1]; ++y)
+//         {
+//             for (int x = 0; x < sh[2]; ++x)
+//             {
+//                 data_dst[c * st[0] + y * st[1] + x * st[2]] = 
+//                     ptr[y * mem_width + mem_channels * x + c];
+//             }
+//         }
+//     }
+
+//     return dst;
 // }
 
 
+// QImage NdArray2QImage(is::nbla::NdArrayPtr ndarray)
+// {
+//     /* NdArrayからQImageへの変換 */
+//     IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(ndarray);
 
-is::nbla::NdArrayPtr QImage2NdArray(const QImage& img)
-{
-    /* QImageからNdArrayへの変換 */
-    using ubyte = unsigned char;
-    using namespace is::nbla;
-    const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+//     using ubyte = unsigned char;
+//     using namespace is::nbla;
+//     const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
 
-    int width = img.width();
-    int height = img.height();
-    int mem_channels = img.depth() / 8; // Gray(8), RGB(24), RGBA(32)
+//     ubyte* data_array = ndarray->cast_data_and_get_pointer<ubyte>(ctx);
+//     auto sh = ndarray->shape();
+//     auto st = ndarray->strides();
+//     int channels = sh[0];
+//     int height = sh[1];
+//     int width = sh[2];
 
-    // RGBAの場合, Aを除外する
-    int channels = mem_channels > 3 ? 3 : mem_channels;
-
-    IS_DEBUG_STREAM("w: %d, h: %d, c: %d\n", width, height, channels);
-
-    int mem_width = img.bytesPerLine();
-    const ubyte* ptr = img.bits();
-
-    // NdArray
-    auto dst = zeros<ubyte>({channels, height, width});
-    ubyte* data_dst = dst->cast_data_and_get_pointer<ubyte>(ctx);
-    auto sh = dst->shape();
-    auto st = dst->strides();
-
-    for (int c = 0; c < sh[0]; ++c)
-    {
-        for (int y = 0; y < sh[1]; ++y)
-        {
-            for (int x = 0; x < sh[2]; ++x)
-            {
-                data_dst[c * st[0] + y * st[1] + x * st[2]] = 
-                    ptr[y * mem_width + mem_channels * x + c];
-            }
-        }
-    }
-
-    return dst;
-}
-
-
-QImage NdArray2QImage(is::nbla::NdArrayPtr ndarray)
-{
-    /* NdArrayからQImageへの変換 */
-    IS_CHECK_NDARRAY_SHAPE_AS_IMAGE(ndarray);
-
-    using ubyte = unsigned char;
-    using namespace is::nbla;
-    const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
-
-    ubyte* data_array = ndarray->cast_data_and_get_pointer<ubyte>(ctx);
-    auto sh = ndarray->shape();
-    auto st = ndarray->strides();
-    int channels = sh[0];
-    int height = sh[1];
-    int width = sh[2];
-
-    QImage::Format format;
+//     QImage::Format format;
     
-    // must c == 1 or 3.
-    if (channels == 1)
-    {
-        format = QImage::Format_Grayscale8;
-    }
-    else
-    {
-        format = QImage::Format_RGB888;
-    }
+//     // must c == 1 or 3.
+//     if (channels == 1)
+//     {
+//         format = QImage::Format_Grayscale8;
+//     }
+//     else
+//     {
+//         format = QImage::Format_RGB888;
+//     }
 
-    QImage img(width, height, format);
-    int mem_width = img.bytesPerLine();
-    ubyte* ptr = img.bits();
+//     QImage img(width, height, format);
+//     int mem_width = img.bytesPerLine();
+//     ubyte* ptr = img.bits();
 
-    for (int c = 0; c < sh[0]; ++c)
-    {
-        for (int y = 0; y < sh[1]; ++y)
-        {
-            for (int x = 0; x < sh[2]; ++x)
-            {
-                ptr[y * mem_width + channels * x + c] =
-                    data_array[c * st[0] + y * st[1] + x * st[2]];
-            }
-        }
-    }
+//     for (int c = 0; c < sh[0]; ++c)
+//     {
+//         for (int y = 0; y < sh[1]; ++y)
+//         {
+//             for (int x = 0; x < sh[2]; ++x)
+//             {
+//                 ptr[y * mem_width + channels * x + c] =
+//                     data_array[c * st[0] + y * st[1] + x * st[2]];
+//             }
+//         }
+//     }
 
-    return img;
-}
+//     return img;
+// }
