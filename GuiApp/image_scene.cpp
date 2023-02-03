@@ -11,6 +11,10 @@
 
 #include "image_scene.h"
 
+#include <QGraphicsSceneMouseEvent>
+#include <QGraphicsPixmapItem>
+#include <QPointF>
+
 
 //////////////////////////////////////////////////////////
 // ctor/dtor
@@ -19,7 +23,7 @@
 ImageScene::ImageScene(QObject* parent)
     : QGraphicsScene(parent) 
 {
-    // m_crossLine.m_isCrossLine = true; // 仮
+    // mCrossLine.m_isCrossLine = true; // 仮
 }
 
 ImageScene::~ImageScene() {}
@@ -73,23 +77,23 @@ bool ImageScene::SetDibImg(const QImage& img, bool isRaw)
         return false;
     }
 
-    m_editImgIns.m_memDibImg = img.copy(); // ここのcopy必要!
+    mEditSceneImg.m_memDibImg = img.copy(); // ここのcopy必要!
 
     if (isRaw)
     {
-        m_rawDibImg = m_editImgIns.m_memDibImg.copy();
+        mRawDibImg = mEditSceneImg.m_memDibImg.copy();
     }
 
     // ディスプレイに表示するQImageはARGB32(OxffRRGGBB)フォーマットで統一
-    m_editImgIns.m_offScreenDdbImg = QPixmap::fromImage(m_editImgIns.m_memDibImg);
+    mEditSceneImg.m_offScreenDdbImg = QPixmap::fromImage(mEditSceneImg.m_memDibImg);
 
     // QGraphicsPixmapItemにセット
-    m_editImgIns.m_pItemOffScreenDdbImg->setPixmap(m_editImgIns.m_offScreenDdbImg);
+    mEditSceneImg.m_pItemOffScreenDdbImg->setPixmap(mEditSceneImg.m_offScreenDdbImg);
 
-    if (!m_editImgIns.m_isSceneImg) 
+    if (!mEditSceneImg.m_isSceneImg) 
     {
-        m_editImgIns.m_isSceneImg = true;
-        this->addItem(m_editImgIns.m_pItemOffScreenDdbImg);
+        mEditSceneImg.m_isSceneImg = true;
+        this->addItem(mEditSceneImg.m_pItemOffScreenDdbImg);
     }
 
     // 描画指令
@@ -105,7 +109,7 @@ bool ImageScene::SetDibImg(const QImage& img, bool isRaw)
  */
 QImage ImageScene::GetDibImg() 
 {
-    return m_editImgIns.m_memDibImg;
+    return mEditSceneImg.m_memDibImg;
 }
 
 void ImageScene::ResetRawImg() 
@@ -113,16 +117,16 @@ void ImageScene::ResetRawImg()
     /* 原画像に戻す */
 
     // 初期化
-    m_editImgIns.m_memDibImg = m_rawDibImg.copy();
+    mEditSceneImg.m_memDibImg = mRawDibImg.copy();
 
     // ディスプレイに表示するQImageはARGB32(OxffRRGGBB)フォーマットで統一
-    m_editImgIns.m_offScreenDdbImg = QPixmap::fromImage(m_rawDibImg);
+    mEditSceneImg.m_offScreenDdbImg = QPixmap::fromImage(mRawDibImg);
 
     // QGraphicsPixmapItemにセット
-    m_editImgIns.m_pItemOffScreenDdbImg->setPixmap(m_editImgIns.m_offScreenDdbImg);
-    if (!m_editImgIns.m_isSceneImg) {
-        m_editImgIns.m_isSceneImg = true;
-        this->addItem(m_editImgIns.m_pItemOffScreenDdbImg);
+    mEditSceneImg.m_pItemOffScreenDdbImg->setPixmap(mEditSceneImg.m_offScreenDdbImg);
+    if (!mEditSceneImg.m_isSceneImg) {
+        mEditSceneImg.m_isSceneImg = true;
+        this->addItem(mEditSceneImg.m_pItemOffScreenDdbImg);
     }
 
     // 描画指令
@@ -133,7 +137,7 @@ QGraphicsPixmapItem *ImageScene::GetEditImgItem(const QPointF &scenePos)
 {
     /* QGraphicsPixmapItem上のローカル座標を計算
     */
-    auto p_item = m_editImgIns.m_pItemOffScreenDdbImg;
+    auto p_item = mEditSceneImg.m_pItemOffScreenDdbImg;
     if (p_item->contains(scenePos)) 
     {
         return p_item;

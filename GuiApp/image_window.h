@@ -14,45 +14,45 @@
 
 #include "ui_ImageWindow.h"
 #include "image_view.h"
-#include "image_scene.h"
-
-#include <IsComputerVision/camera/camera_controller.hpp>
 
 #include <QMainWindow>
+
+// #include <IsComputerVision/camera/camera_controller.hpp>
+
+
 #include <QEvent>
 #include <QString>
-#include <QLabel>
+
 #include <Qt>
-#include <QTimer>
+
 #include <QImage>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class ImageWindow; }
 QT_END_NAMESPACE
 
-class MainWindow;
 
 class ImageWindow : public QMainWindow 
 {    
     Q_OBJECT
     
-    MainWindow*      m_pMainWindow;
-    Ui::ImageWindow* m_pUi;
-    ImageScene*      m_pScene;
-    QLabel*          m_pStatusBarLabel;
-    QString          m_filename;
-    std::string      m_posStatus;
+    class MainWindow* mMainWindow;
+    Ui::ImageWindow* mUi;
+    class ImageScene* mScene;
+    class QLabel* mStatusBarLabel;
+    QString          mfilename;
+    std::string      mPosStatus;
 
     // Camera
-    QTimer*          m_pCamTimer;
-    int m_camTimerId {0};
-    Qt::TimerType m_camTimerType;
-    is::imgproc::CameraController m_camCtrl;
-    QImage::Format m_camFormat;
-    int m_camWidth {0};
-    int m_camHeight {0};
-    int m_camChannels {0};
-    size_t m_camMemSizePerLine {0};
+    class QTimer* mCamTimer;
+    int mCamTimerId {0};
+    Qt::TimerType mCamTimerType;
+    // is::cv::CameraController mCamCtrl;
+    QImage::Format mCamFormat;
+    int mCamWidth {0};
+    int mCamHeight {0};
+    int mCamChannels {0};
+    size_t mCamMemSizePerLine {0};
 
     void UiConnection();
     void MemuBarConnection();
@@ -65,7 +65,7 @@ public:
 
     void SetFilename(const QString& filename);
     QString Filename() const;
-    ImageScene* Scene() const;
+    class ImageScene* Scene() const;
     Ui::ImageWindow* Ui() const;
     void ResetDibImg();
     QImage GetDibImg();
@@ -78,13 +78,13 @@ protected:
 
 signals:
     /* --- ImageWindow --- */
-    void RemoveImgWin(ImageWindow *ptr);
-    void ActiveImgWin(ImageWindow *ptr);
+    void RemoveImgWin(class ImageWindow* ptr);
+    void ActiveImgWin(class ImageWindow* ptr);
 
 public slots:
-    void SlotShowPosToStatusBar(const QPointF &imgLocalPos,
-                                const QPointF &scenePos,
-                                const QPoint &viewPos);
+    void SlotShowPosToStatusBar(const QPointF& imgLocalPos,
+                                const QPointF& scenePos,
+                                const QPoint& viewPos);
 
 private slots:
     void SlotResetDibImg(bool checked);

@@ -12,6 +12,7 @@
 
 #include "image_window.h"
 #include "main_window.h"
+#include "image_scene.h"
 
 #include <cstring>
 #include <ctime>
@@ -19,6 +20,9 @@
 #include <iostream>
 
 #include <QGraphicsItem>
+#include <QTimer>
+#include <QLabel>
+
 
 
 //////////////////////////////////////////////////////////
@@ -27,24 +31,24 @@
 
 ImageWindow::ImageWindow(QWidget *p_parent)
     : QMainWindow(p_parent)
-    , m_pMainWindow(qobject_cast<MainWindow *>(p_parent))
-    , m_pUi(new Ui::ImageWindow())
-    , m_pStatusBarLabel(new QLabel()) 
+    , mMainWindow(qobject_cast<MainWindow *>(p_parent))
+    , mUi(new Ui::ImageWindow())
+    , mStatusBarLabel(new QLabel()) 
 {
     
     // ui
-    m_pUi->setupUi(this);
+    mUi->setupUi(this);
     this->setAttribute(Qt::WA_DeleteOnClose);
 
     // view
-    m_pScene = new ImageScene(this);
-    m_pUi->graphicsViewImage->setScene(m_pScene);
+    mScene = new ImageScene(this);
+    mUi->graphicsViewImage->setScene(mScene);
 
     // statusbar
     SlotShowPosToStatusBar(QPointF(0, 0), QPointF(0, 0), QPoint(0, 0));
 
     // timer
-    m_pCamTimer = new QTimer(this);
+    mCamTimer = new QTimer(this);
 
     /*Singal/Slot*/
     UiConnection();
@@ -55,16 +59,16 @@ ImageWindow::ImageWindow(QWidget *p_parent)
 
 ImageWindow::~ImageWindow() 
 {
-    if (m_pUi) 
+    if (mUi) 
     {
-        delete m_pUi;
-        m_pUi = nullptr;
+        delete mUi;
+        mUi = nullptr;
     }
 
-    if (m_pScene) 
+    if (mScene) 
     {
-        delete m_pScene;
-        m_pScene = nullptr;
+        delete mScene;
+        mScene = nullptr;
     }
 }
 
@@ -75,10 +79,10 @@ ImageWindow::~ImageWindow()
 void ImageWindow::UiConnection() 
 {
     // 仮の設定
-    connect(m_pUi->pushButtonStartCapture, &QPushButton::clicked,
+    connect(mUi->pushButtonStartCapture, &QPushButton::clicked,
         this, &ImageWindow::SlotStartCapture);
     
-    connect(m_pUi->pushButtonStopCapture, &QPushButton::clicked,
+    connect(mUi->pushButtonStopCapture, &QPushButton::clicked,
         this, &ImageWindow::SlotStopCapture);
 }
 
@@ -86,160 +90,160 @@ void ImageWindow::MemuBarConnection()
 {
     /* Menu -> File */
     // New
-    connect(m_pUi->actionNew, &QAction::triggered,
-        m_pMainWindow, &MainWindow::SlotActMenuBarFileNew);
+    connect(mUi->actionNew, &QAction::triggered,
+        mMainWindow, &MainWindow::SlotActMenuBarFileNew);
 
     // Open
-    connect(m_pUi->actionOpen, &QAction::triggered,
-        m_pMainWindow, &MainWindow::SlotActMenuBarFileOpen);
+    connect(mUi->actionOpen, &QAction::triggered,
+        mMainWindow, &MainWindow::SlotActMenuBarFileOpen);
 
     // Close
-    connect(m_pUi->actionClose, &QAction::triggered,
-        m_pMainWindow, &MainWindow::SlotActMenuBarFileClose);
+    connect(mUi->actionClose, &QAction::triggered,
+        mMainWindow, &MainWindow::SlotActMenuBarFileClose);
 
     // Save
-    connect(m_pUi->actionSave, &QAction::triggered,
-        m_pMainWindow, &MainWindow::SlotActMenuBarFileSave);
+    connect(mUi->actionSave, &QAction::triggered,
+        mMainWindow, &MainWindow::SlotActMenuBarFileSave);
 
     // Save As
     // CSV
-    connect(m_pUi->actionSaveAsCsv, &QAction::triggered,
-        m_pMainWindow, &MainWindow::SlotActMenuBarFileSaveAs);
+    connect(mUi->actionSaveAsCsv, &QAction::triggered,
+        mMainWindow, &MainWindow::SlotActMenuBarFileSaveAs);
     // TSV
-    connect(m_pUi->actionSaveAsTsv, &QAction::triggered, 
-        m_pMainWindow, &MainWindow::SlotActMenuBarFileSaveAs);
+    connect(mUi->actionSaveAsTsv, &QAction::triggered, 
+        mMainWindow, &MainWindow::SlotActMenuBarFileSaveAs);
 
     /* Menu -> Edit */
     // Undo
-    connect(m_pUi->actionUndo, &QAction::triggered,
-        m_pMainWindow, &MainWindow::SlotActMenuBarEditUndo);
+    connect(mUi->actionUndo, &QAction::triggered,
+        mMainWindow, &MainWindow::SlotActMenuBarEditUndo);
 
     // Rename
-    connect(m_pUi->actionRename, &QAction::triggered, 
-        m_pMainWindow, &MainWindow::SlotActMenuBarEditRename);
+    connect(mUi->actionRename, &QAction::triggered, 
+        mMainWindow, &MainWindow::SlotActMenuBarEditRename);
 
     // Cut
-    connect(m_pUi->actionCut, &QAction::triggered, 
-        m_pMainWindow, &MainWindow::SlotActMenuBarEditCut);
+    connect(mUi->actionCut, &QAction::triggered, 
+        mMainWindow, &MainWindow::SlotActMenuBarEditCut);
 
     // Copy
-    connect(m_pUi->actionCopy, &QAction::triggered, 
-        m_pMainWindow, &MainWindow::SlotActMenuBarEditCopy);
+    connect(mUi->actionCopy, &QAction::triggered, 
+        mMainWindow, &MainWindow::SlotActMenuBarEditCopy);
 
     // Paste
-    connect(m_pUi->actionPaste, &QAction::triggered, 
-        m_pMainWindow, &MainWindow::SlotActMenuBarEditPaste);
+    connect(mUi->actionPaste, &QAction::triggered, 
+        mMainWindow, &MainWindow::SlotActMenuBarEditPaste);
 
     // Clear
-    connect(m_pUi->actionClear, &QAction::triggered, 
-        m_pMainWindow, &MainWindow::SlotActMenuBarEditClear);
+    connect(mUi->actionClear, &QAction::triggered, 
+        mMainWindow, &MainWindow::SlotActMenuBarEditClear);
 
     // Clear outside
-    connect(m_pUi->actionClearOutside, &QAction::triggered, 
-        m_pMainWindow, &MainWindow::SlotActMenuBarEditClearOutside);
+    connect(mUi->actionClearOutside, &QAction::triggered, 
+        mMainWindow, &MainWindow::SlotActMenuBarEditClearOutside);
 
     // Fill
-    connect(m_pUi->actionFill, &QAction::triggered, 
-        m_pMainWindow, &MainWindow::SlotActMenuBarEditFill);
+    connect(mUi->actionFill, &QAction::triggered, 
+        mMainWindow, &MainWindow::SlotActMenuBarEditFill);
 
     // Invert
-    connect(m_pUi->actionInvert, &QAction::triggered, 
-        m_pMainWindow, &MainWindow::SlotActMenuBarEditInvert);
+    connect(mUi->actionInvert, &QAction::triggered, 
+        mMainWindow, &MainWindow::SlotActMenuBarEditInvert);
 
 
     /* Menu -> Image */
     // Type
-    connect(m_pUi->actionCvt8bit, &QAction::triggered, 
-        m_pMainWindow, &MainWindow::SlotActMenuBarImageType);
-    connect(m_pUi->actionCvt24bit, &QAction::triggered, 
-        m_pMainWindow, &MainWindow::SlotActMenuBarImageType);
-    connect(m_pUi->actionCvtRGBA, &QAction::triggered, 
-        m_pMainWindow, &MainWindow::SlotActMenuBarImageType); 
+    connect(mUi->actionCvt8bit, &QAction::triggered, 
+        mMainWindow, &MainWindow::SlotActMenuBarImageType);
+    connect(mUi->actionCvt24bit, &QAction::triggered, 
+        mMainWindow, &MainWindow::SlotActMenuBarImageType);
+    connect(mUi->actionCvtRGBA, &QAction::triggered, 
+        mMainWindow, &MainWindow::SlotActMenuBarImageType); 
 
     // ShowInfo
 
     // Color
-    connect(m_pUi->actionRGBToGray, &QAction::triggered,
-        m_pMainWindow, &MainWindow::SlotActMenuBarImageColor);
-    connect(m_pUi->actionGrayToRGB, &QAction::triggered,
-        m_pMainWindow, &MainWindow::SlotActMenuBarImageColor);
-    connect(m_pUi->actionRGBToHSV, &QAction::triggered,
-        m_pMainWindow, &MainWindow::SlotActMenuBarImageColor);
-    connect(m_pUi->actionHSVToRGB, &QAction::triggered,
-        m_pMainWindow, &MainWindow::SlotActMenuBarImageColor);
-    connect(m_pUi->actionRGBToYUV, &QAction::triggered,
-        m_pMainWindow, &MainWindow::SlotActMenuBarImageColor);
-    // connect(m_pUi->actionYUVToRGB, &QAction::triggered,
-    //     m_pMainWindow, &MainWindow::slotActMenuBarImageColor);
+    connect(mUi->actionRGBToGray, &QAction::triggered,
+        mMainWindow, &MainWindow::SlotActMenuBarImageColor);
+    connect(mUi->actionGrayToRGB, &QAction::triggered,
+        mMainWindow, &MainWindow::SlotActMenuBarImageColor);
+    connect(mUi->actionRGBToHSV, &QAction::triggered,
+        mMainWindow, &MainWindow::SlotActMenuBarImageColor);
+    connect(mUi->actionHSVToRGB, &QAction::triggered,
+        mMainWindow, &MainWindow::SlotActMenuBarImageColor);
+    connect(mUi->actionRGBToYUV, &QAction::triggered,
+        mMainWindow, &MainWindow::SlotActMenuBarImageColor);
+    // connect(mUi->actionYUVToRGB, &QAction::triggered,
+    //     mMainWindow, &MainWindow::slotActMenuBarImageColor);
 
     // Crop
-    connect(m_pUi->actionCrop, &QAction::triggered, 
-        m_pMainWindow, &MainWindow::SlotActMenuBarImageCrop);
+    connect(mUi->actionCrop, &QAction::triggered, 
+        mMainWindow, &MainWindow::SlotActMenuBarImageCrop);
 
     // Duplicate
-    connect(m_pUi->actionDuplicate, &QAction::triggered, 
-        m_pMainWindow, &MainWindow::SlotActMenuBarImageDuplicate);
+    connect(mUi->actionDuplicate, &QAction::triggered, 
+        mMainWindow, &MainWindow::SlotActMenuBarImageDuplicate);
 
 
         
     /* Menu -> Camera */
-    connect(m_pUi->actionCameraGeneral, &QAction::triggered,
-        m_pMainWindow, &MainWindow::SlotActMenuBarCameraWindow);
-    connect(m_pUi->actionCameraIds, &QAction::triggered,
-        m_pMainWindow, &MainWindow::SlotActMenuBarCameraWindow);
-    connect(m_pUi->actionCameraOmron, &QAction::triggered,
-        m_pMainWindow, &MainWindow::SlotActMenuBarCameraWindow);
-    connect(m_pUi->actionCameraBasler, &QAction::triggered,
-        m_pMainWindow, &MainWindow::SlotActMenuBarCameraWindow);
-    connect(m_pUi->actionCameraCognex, &QAction::triggered,
-        m_pMainWindow, &MainWindow::SlotActMenuBarCameraWindow);
+    connect(mUi->actionCameraGeneral, &QAction::triggered,
+        mMainWindow, &MainWindow::SlotActMenuBarCameraWindow);
+    connect(mUi->actionCameraIds, &QAction::triggered,
+        mMainWindow, &MainWindow::SlotActMenuBarCameraWindow);
+    connect(mUi->actionCameraOmron, &QAction::triggered,
+        mMainWindow, &MainWindow::SlotActMenuBarCameraWindow);
+    connect(mUi->actionCameraBasler, &QAction::triggered,
+        mMainWindow, &MainWindow::SlotActMenuBarCameraWindow);
+    connect(mUi->actionCameraCognex, &QAction::triggered,
+        mMainWindow, &MainWindow::SlotActMenuBarCameraWindow);
 
 
     /* Menu -> Process */
     // Filter
-    connect(m_pUi->actionFilter, &QAction::triggered,
-        m_pMainWindow, &MainWindow::SlotActMenuBarFilter);
+    connect(mUi->actionFilter, &QAction::triggered,
+        mMainWindow, &MainWindow::SlotActMenuBarFilter);
 }
 
 void ImageWindow::ToolBarConnection() 
 {
-    // connect(m_pUi->actionCrossLine, &QAction::toggled, m_pScene, &ImageScene::slotToggleCrossLine);
+    // connect(mUi->actionCrossLine, &QAction::toggled, mScene, &ImageScene::slotToggleCrossLine);
 
     /* QAction -> ImageScene */
 
     // Reset DIB Image
-    connect(m_pUi->actionResetImage, &QAction::triggered,
+    connect(mUi->actionResetImage, &QAction::triggered,
             this, &ImageWindow::SlotResetDibImg);
 
     // CrossLine
-    connect(m_pUi->actionCrossLine, &QAction::toggled, 
+    connect(mUi->actionCrossLine, &QAction::toggled, 
             this, &ImageWindow::SlotToggleCrossLine);
 
     // Profile-X(R)
-    connect(m_pUi->actionProfileXRed, &QAction::toggled, 
+    connect(mUi->actionProfileXRed, &QAction::toggled, 
             this, &ImageWindow::SlotToggleProfile);
     // Profile-X(G)
-    connect(m_pUi->actionProfileXGreen, &QAction::toggled, 
+    connect(mUi->actionProfileXGreen, &QAction::toggled, 
             this, &ImageWindow::SlotToggleProfile);
     // Profile-X(B)
-    connect(m_pUi->actionProfileXBlue, &QAction::toggled, 
+    connect(mUi->actionProfileXBlue, &QAction::toggled, 
             this, &ImageWindow::SlotToggleProfile);
     // Profile-Y(R)
-    connect(m_pUi->actionProfileYRed, &QAction::toggled, 
+    connect(mUi->actionProfileYRed, &QAction::toggled, 
             this, &ImageWindow::SlotToggleProfile);
     // Profile-Y(G)
-    connect(m_pUi->actionProfileYGreen, &QAction::toggled, 
+    connect(mUi->actionProfileYGreen, &QAction::toggled, 
             this, &ImageWindow::SlotToggleProfile);
     // Profile-Y(B)
-    connect(m_pUi->actionProfileYBlue, &QAction::toggled, 
+    connect(mUi->actionProfileYBlue, &QAction::toggled, 
             this, &ImageWindow::SlotToggleProfile);
 
     // Roi
-    connect(m_pUi->actionRoi, &QAction::toggled, 
+    connect(mUi->actionRoi, &QAction::toggled, 
             this, &ImageWindow::SlotToggleRoi);
 
     // Ellipse
-    connect(m_pUi->actionEllipse, &QAction::toggled,
+    connect(mUi->actionEllipse, &QAction::toggled,
             this, &ImageWindow::SlotToggleEllipse);
 }
 
@@ -252,7 +256,7 @@ void ImageWindow::CustomConnection()
         (MainWindow *)(this->parent()), &MainWindow::SlotActiveImgWin);
 
     /* ImageView -> ImageWindow */
-    connect(m_pUi->graphicsViewImage, &ImageView::EmitShowPosToStatusBar,
+    connect(mUi->graphicsViewImage, &ImageView::EmitShowPosToStatusBar,
             this, &ImageWindow::SlotShowPosToStatusBar);
 }
 
@@ -302,25 +306,25 @@ void ImageWindow::SetFilename(const QString& filename)
     
     QString timeNow(timeString);
     this->setWindowTitle(timeNow + filename);
-    m_filename = filename;
+    mfilename = filename;
 }
 
-QString ImageWindow::Filename() const { return m_filename; }
-ImageScene *ImageWindow::Scene() const { return m_pScene; }
-Ui::ImageWindow *ImageWindow::Ui() const { return m_pUi; }
+QString ImageWindow::Filename() const { return mfilename; }
+ImageScene *ImageWindow::Scene() const { return mScene; }
+Ui::ImageWindow *ImageWindow::Ui() const { return mUi; }
 
 
 void ImageWindow::ResetDibImg() 
 {
     /* 原画像に戻す */
-    m_pScene->ResetRawImg();
+    mScene->ResetRawImg();
 }
 
 
 QImage ImageWindow::GetDibImg() 
 {
     /* シーン上の編集画像を取得 */
-    return m_pScene->GetDibImg();
+    return mScene->GetDibImg();
 }
 
 bool ImageWindow::SetDibImg(QImage& img, bool isSceneClear, bool isRaw) 
@@ -335,17 +339,17 @@ bool ImageWindow::SetDibImg(QImage& img, bool isSceneClear, bool isRaw)
     if (depth == 8) 
     {
         img = img.convertToFormat(QImage::Format_Grayscale8);
-        m_pUi->actionCvt8bit->setChecked(true);
+        mUi->actionCvt8bit->setChecked(true);
     } 
     else if (depth == 24) 
     {
         img = img.convertToFormat(QImage::Format_RGB888);
-        m_pUi->actionCvt24bit->setChecked(true);
+        mUi->actionCvt24bit->setChecked(true);
     }
     else if (depth == 32) 
     {
         img = img.convertToFormat(QImage::Format_RGBA8888);
-        m_pUi->actionCvtRGBA->setChecked(true);
+        mUi->actionCvtRGBA->setChecked(true);
     }
     else 
     {
@@ -362,15 +366,15 @@ bool ImageWindow::SetDibImg(QImage& img, bool isSceneClear, bool isRaw)
                                 depth,
                                 datasize);
 
-    m_pUi->lineEditImageStatus->clear();
-    m_pUi->lineEditImageStatus->setText(QString::fromStdString(status));
+    mUi->lineEditImageStatus->clear();
+    mUi->lineEditImageStatus->setText(QString::fromStdString(status));
 
     if (isSceneClear) 
     {
-         m_pScene->clear();
+         mScene->clear();
     }
 
-    return m_pScene->SetDibImg(img, isRaw);
+    return mScene->SetDibImg(img, isRaw);
 }
 
 
@@ -380,8 +384,8 @@ std::map<int, QRectF> ImageWindow::GetRectsOnDibImg() const
     /* シーン上のRoiを取得 */
 
     std::map<int, QRectF> rects;
-    for (auto iter = m_pScene->m_roi.m_regionFigures.begin(); 
-        iter != m_pScene->m_roi.m_regionFigures.end(); ++iter) 
+    for (auto iter = mUi->graphicsViewImage->GetRoiRect().m_regionFigures.begin(); 
+        iter != mUi->graphicsViewImage->GetRoiRect().m_regionFigures.end(); ++iter) 
     {
         rects[iter->first] = iter->second->rect();
     }
@@ -403,12 +407,12 @@ void ImageWindow::SlotShowPosToStatusBar(
     */
    using namespace is::common;
 
-    m_posStatus = format_string("ImageLocalPos(%4.1f, %4.1f), ScenePos(%4.1f, %4.1f), ViewPos(%4d, %4d)",
+    mPosStatus = format_string("ImageLocalPos(%4.1f, %4.1f), ScenePos(%4.1f, %4.1f), ViewPos(%4d, %4d)",
                                imgLocalPos.x(), imgLocalPos.y(),
                                scenePos.x(), scenePos.y(),
                                viewPos.x(), viewPos.y());
-    m_pStatusBarLabel->setText(QString::fromStdString(m_posStatus));
-    this->statusBar()->addPermanentWidget(m_pStatusBarLabel);
+    mStatusBarLabel->setText(QString::fromStdString(mPosStatus));
+    this->statusBar()->addPermanentWidget(mStatusBarLabel);
 }
 
 //////////////////////////////////////////////////////////
@@ -426,12 +430,12 @@ void ImageWindow::SlotResetDibImg(bool checked)
 void ImageWindow::SlotToggleCrossLine(bool checked) 
 {
     /*十字線の(非)表示*/
-    m_pScene->m_crossLine.m_isCrossLine = checked;
+    mUi->graphicsViewImage->GetCrossLine().SetChecked(checked);
 
-    if (!checked) 
+    if (!mUi->graphicsViewImage->GetCrossLine().GetChecked()) 
     {
-        m_pScene->removeItem(m_pScene->m_crossLine.m_pItemLineX);
-        m_pScene->removeItem(m_pScene->m_crossLine.m_pItemLineY);
+        mScene->removeItem(mUi->graphicsViewImage->GetCrossLine().GetLineItemX());
+        mScene->removeItem(mUi->graphicsViewImage->GetCrossLine().GetLineItemY());
     }
 }
 
@@ -439,59 +443,59 @@ void ImageWindow::SlotToggleProfile(bool checked)
 {
     /*プロファイルの(非)表示*/
     auto p_sender = QObject::sender();
-    if (p_sender == m_pUi->actionProfileXRed) 
+    if (p_sender == mUi->actionProfileXRed) 
     {
         if (!checked) 
         {
-            m_pScene->removeItem(m_pScene->m_profile.m_directX.m_pItemPathRed);
-            m_pScene->m_profile.m_directX.m_isAddedRed = false;
+            mScene->removeItem(mUi->graphicsViewImage->GetProfile().GetDirectionX().GetItemPathRed());
+            mUi->graphicsViewImage->GetProfile().GetDirectionX().SetAddedRedChecked(false);
         }
-        m_pScene->m_profile.m_directX.m_isPathRed = checked;
+        mUi->graphicsViewImage->GetProfile().GetDirectionX().SetPathRedChecked(checked);
     }
-    else if (p_sender == m_pUi->actionProfileXGreen) 
+    else if (p_sender == mUi->actionProfileXGreen) 
     {
         if (!checked) 
         {
-            m_pScene->removeItem(m_pScene->m_profile.m_directX.m_pItemPathGreen);
-            m_pScene->m_profile.m_directX.m_isAddedGreen = false;
+            mScene->removeItem(mUi->graphicsViewImage->GetProfile().GetDirectionX().GetItemPathGreen());
+            mUi->graphicsViewImage->GetProfile().GetDirectionX().SetAddedGreenChecked(false);
         }
-        m_pScene->m_profile.m_directX.m_isPathGreen = checked;
+        mUi->graphicsViewImage->GetProfile().GetDirectionX().SetPathGreenChecked(checked);
     }
-    else if (p_sender == m_pUi->actionProfileXBlue) 
+    else if (p_sender == mUi->actionProfileXBlue) 
     {
         if (!checked) 
         {
-            m_pScene->removeItem(m_pScene->m_profile.m_directX.m_pItemPathBlue);
-            m_pScene->m_profile.m_directX.m_isAddedBlue = false;
+            mScene->removeItem(mUi->graphicsViewImage->GetProfile().GetDirectionX().GetItemPathBlue());
+            mUi->graphicsViewImage->GetProfile().GetDirectionX().SetAddedBlueChecked(false);
         }
-        m_pScene->m_profile.m_directX.m_isPathBlue = checked;
+        mUi->graphicsViewImage->GetProfile().GetDirectionX().SetPathBlueChecked(checked);
     }
-    else if (p_sender == m_pUi->actionProfileYRed) 
+    else if (p_sender == mUi->actionProfileYRed) 
     {
         if (!checked) 
         {
-            m_pScene->removeItem(m_pScene->m_profile.m_directY.m_pItemPathRed);
-            m_pScene->m_profile.m_directY.m_isAddedRed = false;
+            mScene->removeItem(mUi->graphicsViewImage->GetProfile().GetDirectionY().GetItemPathRed());
+            mUi->graphicsViewImage->GetProfile().GetDirectionY().SetAddedRedChecked(false);
         }
-        m_pScene->m_profile.m_directY.m_isPathRed = checked;
+        mUi->graphicsViewImage->GetProfile().GetDirectionY().SetPathRedChecked(checked);
     }
-    else if (p_sender == m_pUi->actionProfileYGreen) 
+    else if (p_sender == mUi->actionProfileYGreen) 
     {
         if (!checked) 
         {
-            m_pScene->removeItem(m_pScene->m_profile.m_directY.m_pItemPathGreen);
-            m_pScene->m_profile.m_directY.m_isAddedGreen = false;
+            mScene->removeItem(mUi->graphicsViewImage->GetProfile().GetDirectionY().GetItemPathGreen());
+            mUi->graphicsViewImage->GetProfile().GetDirectionY().SetAddedGreenChecked(false);
         }
-        m_pScene->m_profile.m_directY.m_isPathGreen = checked;
+        mUi->graphicsViewImage->GetProfile().GetDirectionY().SetPathGreenChecked(checked);
     }
-    else if (p_sender == m_pUi->actionProfileYBlue) 
+    else if (p_sender == mUi->actionProfileYBlue) 
     {
         if (!checked) 
         {
-            m_pScene->removeItem(m_pScene->m_profile.m_directY.m_pItemPathBlue);
-            m_pScene->m_profile.m_directY.m_isAddedBlue = false;
+            mScene->removeItem(mUi->graphicsViewImage->GetProfile().GetDirectionY().GetItemPathBlue());
+            mUi->graphicsViewImage->GetProfile().GetDirectionY().SetAddedBlueChecked(false);
         }
-        m_pScene->m_profile.m_directY.m_isPathBlue = checked;
+        mUi->graphicsViewImage->GetProfile().GetDirectionY().SetPathBlueChecked(checked);
     }
 }
 
@@ -500,16 +504,16 @@ void ImageWindow::SlotToggleRoi(bool checked)
 {
     /*矩形領域の(非)表示*/
 
-    m_pScene->m_roi.m_isRegionFigure = checked;
+    mUi->graphicsViewImage->GetRoiRect().m_isRegionFigure = checked;
 
     if (!checked) 
     {
-        size_t num = m_pScene->m_roi.m_regionFigures.size();
+        size_t num = mUi->graphicsViewImage->GetRoiRect().m_regionFigures.size();
         for (size_t i = 0; i < num; ++i) 
         {
-            m_pScene->m_roi.RemoveRect(m_pScene, i);
+            mUi->graphicsViewImage->GetRoiRect().RemoveRect(mScene, i);
         }
-        m_pScene->m_roi.Release();
+        mUi->graphicsViewImage->GetRoiRect().Release();
     }
 }
 
@@ -518,16 +522,16 @@ void ImageWindow::SlotToggleEllipse(bool checked)
 {
     /* 楕円領域の(非)表示 */
 
-    m_pScene->m_ellipse.m_isRegionFigure = checked;
+    mUi->graphicsViewImage->GetRoiEllipse().m_isRegionFigure = checked;
 
     if (!checked) 
     {
-        size_t num = m_pScene->m_ellipse.m_regionFigures.size();
+        size_t num = mUi->graphicsViewImage->GetRoiEllipse().m_regionFigures.size();
         for (size_t i = 0; i < num; ++i) 
         {
-            m_pScene->m_ellipse.RemoveRect(m_pScene, i);
+            mUi->graphicsViewImage->GetRoiEllipse().RemoveRect(mScene, i);
         }
-        m_pScene->m_ellipse.Release();
+        mUi->graphicsViewImage->GetRoiEllipse().Release();
     }
 }
 
@@ -536,59 +540,59 @@ void ImageWindow::SlotStartCapture()
 {
     /* カメラキャプチャ開始 */
 
-    // CameraController
-    std::string maker = "general";
-    std::string type = "usb";
-    m_camCtrl.setCameraType(maker, type);
+    // // CameraController
+    // std::string maker = "general";
+    // std::string type = "usb";
+    // mCamCtrl.setCameraType(maker, type);
 
-    if (m_camCtrl.startCamera(0, 0)) 
-    {
-        // start worker-thread.
+    // if (mCamCtrl.startCamera(0, 0)) 
+    // {
+    //     // start worker-thread.
 
-        m_camWidth = m_camCtrl.width();
-        m_camHeight = m_camCtrl.height();
-        m_camChannels = m_camCtrl.channels();
-        m_camMemSizePerLine = m_camCtrl.memSizePerLine();
+    //     mCamWidth = mCamCtrl.width();
+    //     mCamHeight = mCamCtrl.height();
+    //     mCamChannels = mCamCtrl.channels();
+    //     mCamMemSizePerLine = mCamCtrl.memSizePerLine();
 
-        if (m_camChannels == 1) 
-        {
-            m_camFormat = QImage::Format_Grayscale8;
-        }
-        else if (m_camChannels == 3) 
-        {
-            m_camFormat = QImage::Format_RGB888;
-        }
-        else if (m_camChannels == 4) 
-        {
-            m_camFormat = QImage::Format_RGBA8888;
-        }
-        else 
-        {
-            IS_DEBUG_STREAM("No support camera format. Given channels is %d\n", m_camChannels);
-            m_camCtrl.stopCamera();
-            return;
-        }
+    //     if (mCamChannels == 1) 
+    //     {
+    //         mCamFormat = QImage::Format_Grayscale8;
+    //     }
+    //     else if (mCamChannels == 3) 
+    //     {
+    //         mCamFormat = QImage::Format_RGB888;
+    //     }
+    //     else if (mCamChannels == 4) 
+    //     {
+    //         mCamFormat = QImage::Format_RGBA8888;
+    //     }
+    //     else 
+    //     {
+    //         IS_DEBUG_STREAM("No support camera format. Given channels is %d\n", mCamChannels);
+    //         mCamCtrl.stopCamera();
+    //         return;
+    //     }
 
-        // WindowTitle
-        std::string winTitle = is::common::format_string("%s_%s.bmp", maker.c_str(), type.c_str());
-        SetFilename(QString::fromStdString(winTitle));
+    //     // WindowTitle
+    //     std::string winTitle = is::common::format_string("%s_%s.bmp", maker.c_str(), type.c_str());
+    //     SetFilename(QString::fromStdString(winTitle));
 
-        // QTimer   
-        connect(m_pCamTimer, &QTimer::timeout, this, &ImageWindow::SlotTimerHandler);
-        m_camTimerId = m_pCamTimer->timerId();
+    //     // QTimer   
+    //     connect(mCamTimer, &QTimer::timeout, this, &ImageWindow::SlotTimerHandler);
+    //     mCamTimerId = mCamTimer->timerId();
 
-        // https://doc.qt.io/qt-5/qt.html#TimerType-enum
-        // Qt::TimerType
-        // 0 : Qt::PreciseTimer
-        // 1 : Qt::CoarseTimer
-        // 2 : Qt::VeryCoarseTimer
-        m_camTimerType = m_pCamTimer->timerType(); // default: Qt::CoarseTimer
-        IS_DEBUG_STREAM("TimerId: %d, TimerType: %d\n", m_camTimerId, m_camTimerType);
+    //     // https://doc.qt.io/qt-5/qt.html#TimerType-enum
+    //     // Qt::TimerType
+    //     // 0 : Qt::PreciseTimer
+    //     // 1 : Qt::CoarseTimer
+    //     // 2 : Qt::VeryCoarseTimer
+    //     mCamTimerType = mCamTimer->timerType(); // default: Qt::CoarseTimer
+    //     IS_DEBUG_STREAM("TimerId: %d, TimerType: %d\n", mCamTimerId, mCamTimerType);
 
-        m_pCamTimer->start(30);
+    //     mCamTimer->start(30);
 
-        IS_DEBUG_STREAM("Start draw timer for camera frame.\n");
-    }
+    //     IS_DEBUG_STREAM("Start draw timer for camera frame.\n");
+    // }
 }
 
 
@@ -596,16 +600,16 @@ void ImageWindow::SlotStopCapture()
 {
     /* カメラキャプチャ停止 */
 
-    // QTimer
-    if (m_pCamTimer->isActive()) 
-    {
-        m_pCamTimer->stop();
-        disconnect(m_pCamTimer, &QTimer::timeout, this, &ImageWindow::SlotTimerHandler);
-        IS_DEBUG_STREAM("Stop draw timer for camera frame.\n");
-    }
+    // // QTimer
+    // if (mCamTimer->isActive()) 
+    // {
+    //     mCamTimer->stop();
+    //     disconnect(mCamTimer, &QTimer::timeout, this, &ImageWindow::SlotTimerHandler);
+    //     IS_DEBUG_STREAM("Stop draw timer for camera frame.\n");
+    // }
 
-    // CameraController
-    m_camCtrl.stopCamera();
+    // // CameraController
+    // mCamCtrl.stopCamera();
 }
 
 
@@ -613,15 +617,15 @@ void ImageWindow::SlotTimerHandler()
 {
     /* タイマーハンドラ */
 
-    auto frameDesc = m_camCtrl.fetchFrame();
-    auto& frame = std::get<0>(frameDesc);
-    auto& fps = std::get<1>(frameDesc);
+//     auto frameDesc = mCamCtrl.fetchFrame();
+//     auto& frame = std::get<0>(frameDesc);
+//     auto& fps = std::get<1>(frameDesc);
 
-    // IS_DEBUG_STREAM("Timer handler: mem-size: %ld, fps: %f\n", 
-    //     frame.size(), fps);
+//     // IS_DEBUG_STREAM("Timer handler: mem-size: %ld, fps: %f\n", 
+//     //     frame.size(), fps);
 
-    QImage frameImg(frame.data(), m_camWidth, m_camHeight, 
-                    (int)m_camMemSizePerLine, m_camFormat);
+//     QImage frameImg(frame.data(), mCamWidth, mCamHeight, 
+//                     (intC, mCamFormat);
 
-   SetDibImg(frameImg, false, true);
+//    SetDibImg(frameImg, false, true);
 }

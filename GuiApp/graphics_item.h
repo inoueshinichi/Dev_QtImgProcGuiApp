@@ -16,86 +16,154 @@
 #include <map>
 #include <tuple>
 
-typedef struct CrossLine 
+class CrossLine 
 {
-    QGraphicsLineItem *m_pItemLineX;
-    QGraphicsLineItem *m_pItemLineY;
+    QGraphicsLineItem* mItemLineX;
+    QGraphicsLineItem* mItemLineY;
 
-    bool m_isCrossLine{false};
+    bool mIsCrossLine{false};
 
+public:
     CrossLine() 
     {
-        m_pItemLineX = new QGraphicsLineItem();
-        m_pItemLineY = new QGraphicsLineItem();
-        m_pItemLineX->setPen(QPen(QColor(Qt::green)));
-        m_pItemLineY->setPen(QPen(QColor(Qt::green)));
+        mItemLineX = new QGraphicsLineItem();
+        mItemLineY = new QGraphicsLineItem();
+        mItemLineX->setPen(QPen(QColor(Qt::green)));
+        mItemLineY->setPen(QPen(QColor(Qt::green)));
     }
 
     ~CrossLine() 
     {
-        if (m_pItemLineX) 
+        if (mItemLineX) 
         {
-            delete m_pItemLineX;
-            m_pItemLineX = nullptr;
+            delete mItemLineX;
+            mItemLineX = nullptr;
         }
-        if (m_pItemLineY) 
+        if (mItemLineY) 
         {
-            delete m_pItemLineY;
-            m_pItemLineY = nullptr;
+            delete mItemLineY;
+            mItemLineY = nullptr;
         }
     }
-} CrossLine;
+
+    bool GetChecked() const { return mIsCrossLine; }
+    void SetChecked(bool checked) { mIsCrossLine = checked; }
+
+    QGraphicsLineItem* GetLineItemX() { return mItemLineX; }
+    QGraphicsLineItem* GetLineItemY() { return mItemLineY; }
+};
 
 
-typedef struct Profile 
+class Direction
 {
-    typedef struct Direction 
+    friend class Profile;
+
+    QPainterPath mPathRed;
+    QPainterPath mPathGreen;
+    QPainterPath mPathBlue;
+    QGraphicsPathItem* mItemPathRed;
+    QGraphicsPathItem* mItemPathGreen;
+    QGraphicsPathItem* mItemPathBlue;
+
+    bool mIsPathRed{false};
+    bool mIsPathGreen{false};
+    bool mIsPathBlue{false};
+    
+    bool mIsAddedRed{false};
+    bool mIsAddedGreen{false};
+    bool mIsAddedBlue{false};
+
+public:
+
+    Direction() 
     {
-        QPainterPath m_pathRed;
-        QPainterPath m_pathGreen;
-        QPainterPath m_pathBlue;
-        QGraphicsPathItem *m_pItemPathRed;
-        QGraphicsPathItem *m_pItemPathGreen;
-        QGraphicsPathItem *m_pItemPathBlue;
+        mItemPathRed = new QGraphicsPathItem();
+        mItemPathGreen = new QGraphicsPathItem();
+        mItemPathBlue = new QGraphicsPathItem();
+    }
 
-        bool m_isPathRed{false};
-        bool m_isPathGreen{false};
-        bool m_isPathBlue{false};
-        
-        bool m_isAddedRed{false};
-        bool m_isAddedGreen{false};
-        bool m_isAddedBlue{false};
-
-        Direction() 
+    ~Direction() 
+    {
+        if (mItemPathRed) 
         {
-            m_pItemPathRed = new QGraphicsPathItem();
-            m_pItemPathGreen = new QGraphicsPathItem();
-            m_pItemPathBlue = new QGraphicsPathItem();
+            delete mItemPathRed;
+            mItemPathRed = nullptr;
         }
-
-        ~Direction() 
+        if (mItemPathGreen) 
         {
-            if (m_pItemPathRed) 
-            {
-                delete m_pItemPathRed;
-                m_pItemPathRed = nullptr;
-            }
-            if (m_pItemPathGreen) 
-            {
-                delete m_pItemPathGreen;
-                m_pItemPathGreen = nullptr;
-            }
-            if (m_pItemPathBlue) 
-            {
-                delete m_pItemPathBlue;
-                m_pItemPathBlue = nullptr;
-            }
+            delete mItemPathGreen;
+            mItemPathGreen = nullptr;
         }
-    } Direction;
+        if (mItemPathBlue) 
+        {
+            delete mItemPathBlue;
+            mItemPathBlue = nullptr;
+        }
+    }
 
-    Direction m_directX;
-    Direction m_directY;
-} Profile;
+    void SetPathRed() { mItemPathRed->setPath(mPathRed); }
+    void SetPathGreen() { mItemPathGreen->setPath(mPathGreen); }
+    void SetPathBlue() { mItemPathBlue-> setPath(mPathBlue); }
+    QPainterPath& GetPathRed() { return mPathRed; }
+    QPainterPath& GetPathGreen() { return mPathGreen; }
+    QPainterPath& GetPathBlue() { return mPathBlue; }
+    QGraphicsPathItem* GetItemPathRed() { return mItemPathRed; }
+    QGraphicsPathItem* GetItemPathGreen() { return mItemPathGreen; }
+    QGraphicsPathItem* GetItemPathBlue() { return mItemPathBlue; }
+
+    bool GetPathRedChecked() const { return mIsPathRed; }
+    void SetPathRedChecked(bool checked) {  mIsPathRed = checked; }
+    bool GetPathGreenChecked() const { return mIsPathGreen; }
+    void SetPathGreenChecked(bool checked) {  mIsPathGreen = checked; }
+    bool GetPathBlueChecked() const { return mIsPathBlue; }
+    void SetPathBlueChecked(bool checked) {  mIsPathBlue = checked; }
+
+    bool GetAddedRedChecked() const { return mIsAddedRed; }
+    void SetAddedRedChecked(bool checked) {  mIsAddedRed = checked; }
+    bool GetAddedGreenChecked() const { return mIsAddedGreen; }
+    void SetAddedGreenChecked(bool checked) {  mIsAddedGreen = checked; }
+    bool GetAddedBlueChecked() const { return mIsAddedBlue; }
+    void SetAddedBlueChecked(bool checked) {  mIsAddedBlue = checked; }
+
+};
+
+class Profile 
+{
+    Direction mDirectX;
+    Direction mDirectY;
+
+public:
+    Direction& GetDirectionX() { return mDirectX; }
+    Direction& GetDirectionY() { return mDirectY; }
+
+    void ClearPath()
+    {
+        mDirectX.GetPathRed().clear();
+        mDirectX.GetPathGreen().clear();
+        mDirectX.GetPathBlue().clear();
+        mDirectY.GetPathRed().clear();
+        mDirectY.GetPathGreen().clear();
+        mDirectY.GetPathBlue().clear();
+    }
+
+
+    void MoveToDirXRed(double x, double y) { mDirectX.mPathRed.moveTo(x, y); }
+    void LineToDirXRed(double x, double y) { mDirectX.mPathRed.lineTo(x, y); }
+    void MoveToDirXGreen(double x, double y) { mDirectX.mPathGreen.moveTo(x, y); }
+    void LineToDirXGreen(double x, double y) { mDirectX.mPathGreen.lineTo(x, y); }
+    void MoveToDirXBlue(double x, double y) { mDirectX.mPathBlue.moveTo(x, y); }
+    void LineToDirXBlue(double x, double y) { mDirectX.mPathBlue.lineTo(x, y); }
+
+    void MoveToDirYRed(double x, double y) { mDirectY.mPathRed.moveTo(x, y); }
+    void LineToDirYRed(double x, double y) { mDirectY.mPathRed.lineTo(x, y); }
+    void MoveToDirYGreen(double x, double y) { mDirectY.mPathGreen.moveTo(x, y); }
+    void LineToDirYGreen(double x, double y) { mDirectY.mPathGreen.lineTo(x, y); }
+    void MoveToDirYBlue(double x, double y) { mDirectY.mPathBlue.moveTo(x, y); }
+    void LineToDirYBlue(double x, double y) { mDirectY.mPathBlue.lineTo(x, y); }
+
+
+    
+};
 
 
 template <typename QtItemOnScene>
@@ -285,24 +353,3 @@ using RoiEllipse = RegionFigure<QGraphicsEllipseItem>;
 // } Roi;
 
 
-typedef struct SceneImage 
-{
-    QImage m_memDibImg;
-    QPixmap m_offScreenDdbImg;
-    QGraphicsPixmapItem *m_pItemOffScreenDdbImg;
-    bool m_isSceneImg {false};
-
-    SceneImage() 
-    {
-        m_pItemOffScreenDdbImg = new QGraphicsPixmapItem();
-    }
-
-    ~SceneImage() 
-    {
-        if (m_pItemOffScreenDdbImg) 
-        {
-            delete m_pItemOffScreenDdbImg;
-            m_pItemOffScreenDdbImg = nullptr;
-        }
-    }
-} SceneImage;

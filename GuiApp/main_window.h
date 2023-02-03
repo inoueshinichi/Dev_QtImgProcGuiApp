@@ -11,20 +11,9 @@
 #pragma once
 
 #include "GuiApp.h"
-#include "image_window.h"
 
 #include <QMainWindow>
-#include <Qt>
-#include <QDrag>
-#include <QMessageBox>
-#include <QLineEdit>
-#include <QFileDialog>
-#include <QDialog>
-#include <QInputDialog>
-#include <QColorDialog>
 #include <QImage>
-#include <QString>
-#include <QLabel>
 
 #include <functional>
 
@@ -39,10 +28,10 @@ class MainWindow : public QMainWindow
     Q_OBJECT
     Q_DISABLE_COPY(MainWindow)
     
-    Ui::MainWindow*  m_pUi;
-    QLabel*          m_pStatusBarLabel;
-    ImageWindow*     m_pLastActiveImgWin;
-    QImage           m_copyImg;
+    Ui::MainWindow* mUi;
+    class QLabel* mStatusBarLabel;
+    class ImageWindow* mLastActiveImgWin;
+    QImage mCopyImg;
 
 private:
     void MenuBarConnection();
@@ -50,32 +39,32 @@ private:
     void UiConnection();
     void CustomConnection();
 
-    void HelperImgProc(const QString &process, std::function<void(QImage&)> func);
+    void HelperImgProc(const class QString& process, std::function<void(QImage&)> func);
 
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget* parent = nullptr);
     virtual ~MainWindow();
 
     /*ImageWindow*/
-    using ImgWinRegistry_t = std::set<ImageWindow*>;
+    using ImgWinRegistry_t = std::set<class ImageWindow*>;
     static ImgWinRegistry_t& GetImgWinRegistry();
-    ImageWindow* GenImgWin(const QString &filename);
+    class ImageWindow* GenImgWin(const class QString& filename);
 
 protected:
     /*Drag/Drop*/
-    void dragEnterEvent(QDragEnterEvent *event) override;
-    void dragLeaveEvent(QDragLeaveEvent *event) override;
-    void dragMoveEvent(QDragMoveEvent *event) override;
-    void dropEvent(QDropEvent *event) override;
+    void dragEnterEvent(class QDragEnterEvent *event) override;
+    void dragLeaveEvent(class QDragLeaveEvent *event) override;
+    void dragMoveEvent(class QDragMoveEvent *event) override;
+    void dropEvent(class QDropEvent *event) override;
 
     /*Mouse*/
 
 signals:
     
 public slots:
-    void SlotRmImgWin(ImageWindow *ptr);
-    void SlotActiveImgWin(ImageWindow *ptr);
+    void SlotRmImgWin(class ImageWindow* ptr);
+    void SlotActiveImgWin(class ImageWindow* ptr);
 
     /* Menu -> File */
     void SlotActMenuBarFileNew();

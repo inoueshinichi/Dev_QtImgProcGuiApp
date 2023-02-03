@@ -5,20 +5,18 @@
 #include <IsCommon/format_string.hpp>
 #include <IsCommon/join_string.hpp>
 #include <IsCommon/split_string.hpp>
-#include <IsCommon/tm.hpp>
+// #include <IsCommon/tm.hpp>
 #include <IsCommon/thread_pool.hpp>
 #include <IsCommon/singleton_manager.hpp>
 
 // ComputerVision
-#include <IsComputerVision/IsComputerVision.hpp>
+// #include <IsComputerVision/IsComputerVision.hpp>
 
 // Qt
 #include <Qt>
 #include <QImage>
 #include <QString>
 
-// QtCustom
-#include "qt_custom_graphics_item.h"
 
 // Std
 #include <cassert>
@@ -72,20 +70,20 @@ std::pair<QImage::Format, QString> GetFormatStr(const QImage& img);
 
 
 
-/**
- * @brief QImage (W, H, C) -> NdArray(byte) (C, H, W)
- * 
- * @param img 
- * @return is::nbla::NdArrayPtr 
- */
-is::nbla::NdArrayPtr QImage2NdArray(const QImage& img);
+// /**
+//  * @brief QImage (W, H, C) -> NdArray(byte) (C, H, W)
+//  * 
+//  * @param img 
+//  * @return is::nbla::NdArrayPtr 
+//  */
+// is::nbla::NdArrayPtr QImage2NdArray(const QImage& img);
 
-/**
- * @brief NdArray(byte) (C, H, W) -> QImage
- * 
- * @param array 
- * @return QImage 
- */
-QImage NdArray2QImage(is::nbla::NdArrayPtr ndarray);
+// /**
+//  * @brief NdArray(byte) (C, H, W) -> QImage
+//  * 
+//  * @param array 
+//  * @return QImage 
+//  */
+// QImage NdArray2QImage(is::nbla::NdArrayPtr ndarray);
 
 

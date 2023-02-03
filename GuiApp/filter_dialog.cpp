@@ -4,7 +4,7 @@
 #include "image_window.h"
 
 // ComputerVision
-#include <IsComputerVision/filter/blur/average.hpp>
+// #include <IsComputerVision/filter/blur/average_blur.hpp>
 
 #include <Qt>
 
@@ -82,21 +82,21 @@ void FilterDialog::SlotAverageFilter()
 {
     IS_DEBUG_STREAM("SlotAverageFilter\n");
 
-    using namespace is::nbla;
-    using namespace is::imgproc;
-    using ubyte = unsigned char;
-    const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
+    // using namespace is::nbla;
+    // using namespace is::imgproc;
+    // using ubyte = unsigned char;
+    // const auto &ctx = SingletonManager::get<GlobalContext>()->get_current_context();
 
-    int ksize_x = 15;
-    int ksize_y = 15;
+    // int ksize_x = 15;
+    // int ksize_y = 15;
  
-    auto func = [&](NdArrayPtr img) -> NdArrayPtr {
-        return average(img, Size(ksize_x, ksize_y));
-    };
+    // auto func = [&](NdArrayPtr img) -> NdArrayPtr {
+    //     return average_blur(img, Size(ksize_x, ksize_y));
+    // };
 
-    auto qimg = m_pImgWin->GetDibImg();
-    auto src = QImage2NdArray(qimg);
-    auto dst = is::common::invoke_tm_chrono_ms_ret(func, src);
-    qimg = NdArray2QImage(dst);
-    m_pImgWin->SetDibImg(qimg);
+    // auto qimg = m_pImgWin->GetDibImg();
+    // auto src = QImage2NdArray(qimg);
+    // auto dst = is::common::invoke_tm_chrono_ms_ret(func, src);
+    // qimg = NdArray2QImage(dst);
+    // m_pImgWin->SetDibImg(qimg);
 }

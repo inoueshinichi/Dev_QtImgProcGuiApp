@@ -7,13 +7,20 @@
 #include <QPoint>
 #include <QRectF>
 #include <QRect>
+#include <QImage>
+#include <QPixmap>
+#include <QPainter>
+#include <QColor>
+#include <QString>
+#include <QDrag>
+#include <Qt>
 
 //////////////////////////////////////////////////////////
 // ctor/dtor
 //////////////////////////////////////////////////////////
 ImageView::ImageView(QWidget *parent)
     : QGraphicsView(parent)
-    , m_isAcceptDragDrop(false) 
+    , mIsAcceptDragDrop(false) 
 {
 
     /*DragDropの有効化*/
@@ -95,22 +102,22 @@ void ImageView::DrawCrossLine(const QPoint &viewPos)
 
             // 水平線
             qreal y = localPos.y();
-            p_scene->m_crossLine.m_pItemLineX->setLine(0, y, localRect.width(), y);
+            mCrossLine.GetLineItemX()->setLine(0, y, localRect.width(), y);
 
-            if (p_scene->m_crossLine.m_pItemLineX->contains(scenePos)) 
+            if (mCrossLine.GetLineItemX()->contains(scenePos)) 
             {
-                p_scene->removeItem(p_scene->m_crossLine.m_pItemLineX);
+                p_scene->removeItem(mCrossLine.GetLineItemX());
             }
-            p_scene->addItem(p_scene->m_crossLine.m_pItemLineX);
+            p_scene->addItem(mCrossLine.GetLineItemX());
 
             // 垂直線
             qreal x = localPos.x();
-            p_scene->m_crossLine.m_pItemLineY->setLine(x, 0, x, localRect.height());
-            if (p_scene->m_crossLine.m_pItemLineY->contains(scenePos)) 
+            mCrossLine.GetLineItemY()->setLine(x, 0, x, localRect.height());
+            if (mCrossLine.GetLineItemY()->contains(scenePos)) 
             {
-                p_scene->removeItem(p_scene->m_crossLine.m_pItemLineY);
+                p_scene->removeItem(mCrossLine.GetLineItemY());
             }
-            p_scene->addItem(p_scene->m_crossLine.m_pItemLineY);
+            p_scene->addItem(mCrossLine.GetLineItemY());
         }
     }
 }
@@ -152,110 +159,107 @@ void ImageView::DrawProfile(const QPoint &viewPos,
             QPointF right = this->mapToScene(viewWidth, viewPos.y());
             QPointF bottom = this->mapToScene(viewPos.x(), viewHeight);
 
-            p_scene->m_profile.m_directX.m_pathRed.clear();
-            p_scene->m_profile.m_directX.m_pathGreen.clear();
-            p_scene->m_profile.m_directX.m_pathBlue.clear();
-            p_scene->m_profile.m_directY.m_pathRed.clear();
-            p_scene->m_profile.m_directY.m_pathGreen.clear();
-            p_scene->m_profile.m_directY.m_pathBlue.clear();
+            mProfile.ClearPath();
 
             // 水平プロファイル
             for (int x = left.x() + 1; x < right.x(); ++x) 
             {
                 if (x - 1 <= 0 || x >= width) continue;
                     
-                color = p_scene->m_editImgIns.m_memDibImg.pixelColor(x - 1, profileY);
+                color = p_scene->GetEditSceneImg().m_memDibImg.pixelColor(x - 1, profileY);
                 red = color.red();
                 green = color.green();
                 blue = color.blue();
-                nextColor = p_scene->m_editImgIns.m_memDibImg.pixelColor(x, profileY);
+                nextColor = p_scene->GetEditSceneImg().m_memDibImg.pixelColor(x, profileY);
                 nextRed = nextColor.red();
                 nextGreen = nextColor.green();
                 nextBlue = nextColor.blue();
-                p_scene->m_profile.m_directX.m_pathRed.moveTo(x - 1, bottom.y() - red); // red
-                p_scene->m_profile.m_directX.m_pathRed.lineTo(x, bottom.y() - nextRed);
-                p_scene->m_profile.m_directX.m_pathGreen.moveTo(x - 1, bottom.y() - green); // green
-                p_scene->m_profile.m_directX.m_pathGreen.lineTo(x, bottom.y() - nextGreen);
-                p_scene->m_profile.m_directX.m_pathBlue.moveTo(x - 1, bottom.y() - blue); // blue
-                p_scene->m_profile.m_directX.m_pathBlue.lineTo(x, bottom.y() - nextBlue);
+                mProfile.MoveToDirXRed(x - 1, bottom.y() - red); // red
+                mProfile.LineToDirXRed(x, bottom.y() - nextRed);
+                mProfile.MoveToDirXGreen(x - 1, bottom.y() - green); // green
+                mProfile.LineToDirXGreen(x, bottom.y() - nextGreen);
+                mProfile.MoveToDirXBlue(x - 1, bottom.y() - blue); // blue
+                mProfile.LineToDirXBlue(x, bottom.y() - nextBlue);
             }
-            p_scene->m_profile.m_directX.m_pItemPathRed->setPath(p_scene->m_profile.m_directX.m_pathRed);
-            p_scene->m_profile.m_directX.m_pItemPathGreen->setPath(p_scene->m_profile.m_directX.m_pathGreen);
-            p_scene->m_profile.m_directX.m_pItemPathBlue->setPath(p_scene->m_profile.m_directX.m_pathBlue);
+            mProfile.GetDirectionX().SetPathRed();
+            mProfile.GetDirectionX().SetPathGreen();
+            mProfile.GetDirectionX().SetPathBlue();
 
             // 垂直プロファイル
             for (int y = top.y() + 1; y < bottom.y(); ++y) 
             {
                 if (y - 1 <= 0 || y >= height) continue;
 
-                color = p_scene->m_editImgIns.m_memDibImg.pixelColor(profileX, y - 1);
+                color = p_scene->GetEditSceneImg().m_memDibImg.pixelColor(profileX, y - 1);
                 red = color.red();
                 green = color.green();
                 blue = color.blue();
-                nextColor = p_scene->m_editImgIns.m_memDibImg.pixelColor(profileX, y);
+                nextColor = p_scene->GetEditSceneImg().m_memDibImg.pixelColor(profileX, y);
                 nextRed = nextColor.red();
                 nextGreen = nextColor.green();
                 nextBlue = nextColor.blue();
-                p_scene->m_profile.m_directY.m_pathRed.moveTo(right.x() - red, y - 1); // red
-                p_scene->m_profile.m_directY.m_pathRed.lineTo(right.x() - nextRed, y);
-                p_scene->m_profile.m_directY.m_pathGreen.moveTo(right.x() - green, y - 1); // green
-                p_scene->m_profile.m_directY.m_pathGreen.lineTo(right.x() - nextGreen, y);
-                p_scene->m_profile.m_directY.m_pathBlue.moveTo(right.x() - blue, y - 1); // blue
-                p_scene->m_profile.m_directY.m_pathBlue.lineTo(right.x() - nextBlue, y);
+                mProfile.MoveToDirYRed(right.x() - red, y - 1); // red
+                mProfile.LineToDirYRed(right.x() - nextRed, y);
+                mProfile.MoveToDirYGreen(right.x() - green, y - 1); // green
+                mProfile.LineToDirYGreen(right.x() - nextGreen, y);
+                mProfile.MoveToDirYBlue(right.x() - blue, y - 1); // blue
+                mProfile.LineToDirYBlue(right.x() - nextBlue, y);
             }
-            p_scene->m_profile.m_directY.m_pItemPathRed->setPath(p_scene->m_profile.m_directY.m_pathRed);
-            p_scene->m_profile.m_directY.m_pItemPathGreen->setPath(p_scene->m_profile.m_directY.m_pathGreen);
-            p_scene->m_profile.m_directY.m_pItemPathBlue->setPath(p_scene->m_profile.m_directY.m_pathBlue);
+            mProfile.GetDirectionY().SetPathRed();
+            mProfile.GetDirectionY().SetPathGreen();
+            mProfile.GetDirectionY().SetPathBlue();
 
-            if (p_scene->m_editImgIns.m_memDibImg.isGrayscale()) 
+
+
+            if (p_scene->GetEditSceneImg().m_memDibImg.isGrayscale()) 
             {
                 /* GRAY */
-                p_scene->m_profile.m_directX.m_pItemPathRed->setPen(QPen(QColor(Qt::green)));
-                p_scene->m_profile.m_directX.m_pItemPathGreen->setPen(QPen(QColor(Qt::green)));
-                p_scene->m_profile.m_directX.m_pItemPathBlue->setPen(QPen(QColor(Qt::green)));
-                p_scene->m_profile.m_directY.m_pItemPathRed->setPen(QPen(QColor(Qt::green)));
-                p_scene->m_profile.m_directY.m_pItemPathGreen->setPen(QPen(QColor(Qt::green)));
-                p_scene->m_profile.m_directY.m_pItemPathBlue->setPen(QPen(QColor(Qt::green)));
+                mProfile.GetDirectionX().GetItemPathRed()->setPen(QPen(QColor(Qt::green)));
+                mProfile.GetDirectionX().GetItemPathGreen()->setPen(QPen(QColor(Qt::green)));
+                mProfile.GetDirectionX().GetItemPathBlue()->setPen(QPen(QColor(Qt::green)));
+                mProfile.GetDirectionY().GetItemPathRed()->setPen(QPen(QColor(Qt::green)));
+                mProfile.GetDirectionY().GetItemPathGreen()->setPen(QPen(QColor(Qt::green)));
+                mProfile.GetDirectionY().GetItemPathBlue()->setPen(QPen(QColor(Qt::green)));
             }
             else 
             {
-                p_scene->m_profile.m_directX.m_pItemPathRed->setPen(QPen(QColor(Qt::red)));
-                p_scene->m_profile.m_directX.m_pItemPathGreen->setPen(QPen(QColor(Qt::green)));
-                p_scene->m_profile.m_directX.m_pItemPathBlue->setPen(QPen(QColor(Qt::blue)));
-                p_scene->m_profile.m_directY.m_pItemPathRed->setPen(QPen(QColor(Qt::red)));
-                p_scene->m_profile.m_directY.m_pItemPathGreen->setPen(QPen(QColor(Qt::green)));
-                p_scene->m_profile.m_directY.m_pItemPathBlue->setPen(QPen(QColor(Qt::blue)));
+                mProfile.GetDirectionX().GetItemPathRed()->setPen(QPen(QColor(Qt::red)));
+                mProfile.GetDirectionX().GetItemPathGreen()->setPen(QPen(QColor(Qt::green)));
+                mProfile.GetDirectionX().GetItemPathBlue()->setPen(QPen(QColor(Qt::blue)));
+                mProfile.GetDirectionY().GetItemPathRed()->setPen(QPen(QColor(Qt::red)));
+                mProfile.GetDirectionY().GetItemPathGreen()->setPen(QPen(QColor(Qt::green)));
+                mProfile.GetDirectionY().GetItemPathBlue()->setPen(QPen(QColor(Qt::blue)));
             }
 
-            if (isXRed && !p_scene->m_profile.m_directX.m_isAddedRed) 
+            if (isXRed && !mProfile.GetDirectionX().GetAddedRedChecked()) 
             {
-                p_scene->addItem(p_scene->m_profile.m_directX.m_pItemPathRed);
-                p_scene->m_profile.m_directX.m_isAddedRed = true;
+                p_scene->addItem(mProfile.GetDirectionX().GetItemPathRed());
+                mProfile.GetDirectionX().SetAddedRedChecked(true);
             }
-            if (isXGreen && !p_scene->m_profile.m_directX.m_isAddedGreen) 
+            if (isXGreen && !mProfile.GetDirectionX().GetAddedGreenChecked()) 
             {
-                p_scene->addItem(p_scene->m_profile.m_directX.m_pItemPathGreen);
-                p_scene->m_profile.m_directX.m_isAddedGreen = true;
+                p_scene->addItem(mProfile.GetDirectionX().GetItemPathGreen());
+                mProfile.GetDirectionX().SetAddedGreenChecked(true);
             }
-            if (isXBlue && !p_scene->m_profile.m_directX.m_isAddedBlue) 
+            if (isXBlue && !mProfile.GetDirectionX().GetAddedBlueChecked()) 
             {
-                p_scene->addItem(p_scene->m_profile.m_directX.m_pItemPathBlue);
-                p_scene->m_profile.m_directX.m_isAddedBlue = true;
+                p_scene->addItem(mProfile.GetDirectionX().GetItemPathBlue());
+                mProfile.GetDirectionX().SetAddedBlueChecked(true);
             }
-            if (isYRed && !p_scene->m_profile.m_directY.m_isAddedRed) 
+            if (isYRed && !mProfile.GetDirectionY().GetAddedRedChecked()) 
             {
-                p_scene->addItem(p_scene->m_profile.m_directY.m_pItemPathRed);
-                p_scene->m_profile.m_directY.m_isAddedRed = true;
+                p_scene->addItem(mProfile.GetDirectionY().GetItemPathRed());
+                mProfile.GetDirectionY().SetAddedRedChecked(true);
             }
-            if (isYGreen && !p_scene->m_profile.m_directY.m_isAddedGreen) 
+            if (isYGreen && !mProfile.GetDirectionY().GetAddedGreenChecked()) 
             {
-                p_scene->addItem(p_scene->m_profile.m_directY.m_pItemPathGreen);
-                p_scene->m_profile.m_directY.m_isAddedGreen = true;
+                p_scene->addItem(mProfile.GetDirectionY().GetItemPathGreen());
+                mProfile.GetDirectionY().SetAddedGreenChecked(true);
             }
-            if (isYBlue && !p_scene->m_profile.m_directY.m_isAddedBlue) 
+            if (isYBlue && !mProfile.GetDirectionY().GetAddedBlueChecked()) 
             {
-                p_scene->addItem(p_scene->m_profile.m_directY.m_pItemPathBlue);
-                p_scene->m_profile.m_directY.m_isAddedBlue = true;
+                p_scene->addItem(mProfile.GetDirectionY().GetItemPathBlue());
+                mProfile.GetDirectionY().SetAddedBlueChecked(true);
             }
         }
     }
@@ -275,30 +279,30 @@ void ImageView::DrawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSqua
         QPointF localPos = p_item->mapToItem(p_item, scenePos);
         QRectF localRect = p_item->boundingRect(); // Local座標における矩形サイズ
 
-        if (m_isMousePressLeft && !m_isMouseDrag) 
+        if (mIsMousePressLeft && !mIsMouseDrag) 
         {
             // アンカーポイント
-            p_scene->m_anchor = localPos;
-            p_scene->m_rect.setTopLeft(localPos);
-            p_scene->m_rect.setBottomRight(localPos);
+            mAnchor = localPos;
+            mRect.setTopLeft(localPos);
+            mRect.setBottomRight(localPos);
         }
-        else if (m_isMousePressLeft && m_isMouseDrag) 
+        else if (mIsMousePressLeft && mIsMouseDrag) 
         {
-            if (!m_isGenFigure) 
+            if (!mIsGenFigure) 
             {
                 // 矩形
-                if (p_scene->m_roi.m_isRegionFigure) 
+                if (mRoi.m_isRegionFigure) 
                 {
-                    p_scene->m_roi.MakeRect(p_scene, p_scene->m_rect); // 新規作成
+                    mRoi.MakeRect(p_scene, mRect); // 新規作成
                 }
 
                 // 楕円
-                if (p_scene->m_ellipse.m_isRegionFigure) 
+                if (mEllipse.m_isRegionFigure) 
                 {
-                    p_scene->m_ellipse.MakeRect(p_scene, p_scene->m_rect); // 新規作成
+                    mEllipse.MakeRect(p_scene, mRect); // 新規作成
                 }
 
-                m_isGenFigure = true;
+                mIsGenFigure = true;
             }
 
             QPointF dp, tl, br;
@@ -306,7 +310,7 @@ void ImageView::DrawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSqua
 
             if (isCenterDrag) 
             {
-                dp = localPos - p_scene->m_anchor;
+                dp = localPos - mAnchor;
                 dw = std::abs(dp.x()); // 幅
                 dh = std::abs(dp.y()); // 高さ
 
@@ -315,16 +319,16 @@ void ImageView::DrawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSqua
                     dw = (dw < dh) ? dw : dh;
                     dh = dw;
                 }
-                tl.setX(p_scene->m_anchor.x() - dw);
-                tl.setY(p_scene->m_anchor.y() - dh);
-                br.setX(p_scene->m_anchor.x() + dw);
-                br.setY(p_scene->m_anchor.y() + dh);
+                tl.setX(mAnchor.x() - dw);
+                tl.setY(mAnchor.y() - dh);
+                br.setX(mAnchor.x() + dw);
+                br.setY(mAnchor.y() + dh);
             }
             else 
             {
                 qreal ax, ay, lx, ly;
-                ax = p_scene->m_anchor.x();
-                ay = p_scene->m_anchor.y();
+                ax = mAnchor.x();
+                ay = mAnchor.y();
                 lx = localPos.x();
                 ly = localPos.y();
                 qreal l, r, t, b;
@@ -387,66 +391,66 @@ void ImageView::DrawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSqua
                 br.setX(r); br.setY(b);
             }
 
-            p_scene->m_rect.setTopLeft(tl);
-            p_scene->m_rect.setBottomRight(br);
+            mRect.setTopLeft(tl);
+            mRect.setBottomRight(br);
 
             // 矩形
-            if (p_scene->m_roi.m_isRegionFigure) 
+            if (mRoi.m_isRegionFigure) 
             {
-                p_scene->m_roi.UpdateRect(p_scene, p_scene->m_rect); // 描画更新
+                mRoi.UpdateRect(p_scene, mRect); // 描画更新
             }
 
             // 楕円
-            if (p_scene->m_ellipse.m_isRegionFigure) 
+            if (mEllipse.m_isRegionFigure) 
             {
-                p_scene->m_ellipse.UpdateRect(p_scene, p_scene->m_rect); // 描画更新
+                mEllipse.UpdateRect(p_scene, mRect); // 描画更新
             }
         }
-        else if (!m_isMousePressLeft && m_isMouseDrag) 
+        else if (!mIsMousePressLeft && mIsMouseDrag) 
         {
             // 矩形
-            if (p_scene->m_roi.m_isRegionFigure) 
+            if (mRoi.m_isRegionFigure) 
             {
                 qreal w, h;
-                w = p_scene->m_rect.width();
-                h = p_scene->m_rect.height();
+                w = mRect.width();
+                h = mRect.height();
                 IS_DEBUG_STREAM("w:%d, h:%d\n", (int)w, (int)h);
                 if (w > 2 && h > 2) 
                 {
-                    p_scene->m_roi.UpdateRect(p_scene, p_scene->m_rect); // 描画更新
+                    mRoi.UpdateRect(p_scene, mRect); // 描画更新
                 }
                 else 
                 {
-                    p_scene->m_roi.RemoveRect(p_scene, p_scene->m_roi.m_regionFigures.size() - 1);
-                    p_scene->m_rect.setX(0);
-                    p_scene->m_rect.setY(0);
-                    p_scene->m_rect.setWidth(0);
-                    p_scene->m_rect.setHeight(0);
+                    mRoi.RemoveRect(p_scene, mRoi.m_regionFigures.size() - 1);
+                    mRect.setX(0);
+                    mRect.setY(0);
+                    mRect.setWidth(0);
+                    mRect.setHeight(0);
                 }
             }
 
             // 楕円
-              if (p_scene->m_ellipse.m_isRegionFigure) 
+              if (mEllipse.m_isRegionFigure) 
               {
                 qreal w, h;
-                w = p_scene->m_rect.width();
-                h = p_scene->m_rect.height();
+                w = mRect.width();
+                h = mRect.height();
                 IS_DEBUG_STREAM("w:%d, h:%d\n", (int)w, (int)h);
                 if (w > 2 && h > 2) 
                 {
-                    p_scene->m_ellipse.UpdateRect(p_scene, p_scene->m_rect); // 描画更新
+                    mEllipse.UpdateRect(p_scene, mRect); // 描画更新
                 }
                 else 
                 {
-                    p_scene->m_ellipse.RemoveRect(p_scene, p_scene->m_ellipse.m_regionFigures.size() - 1);
-                    p_scene->m_rect.setX(0);
-                    p_scene->m_rect.setY(0);
-                    p_scene->m_rect.setWidth(0);
-                    p_scene->m_rect.setHeight(0);
+                    mEllipse.RemoveRect(p_scene, mEllipse.m_regionFigures.size() - 1);
+                    mRect.setX(0);
+                    mRect.setY(0);
+                    mRect.setWidth(0);
+                    mRect.setHeight(0);
                 }
             }
 
-            m_isGenFigure = false;
+            mIsGenFigure = false;
         }
         else 
         {
@@ -465,15 +469,15 @@ void ImageView::RemoveFigure(const QPoint &viewPos)
     if (p_item) 
     {
         // 矩形
-        if (p_scene->m_roi.m_isRegionFigure) 
+        if (mRoi.m_isRegionFigure) 
         {
-            p_scene->m_roi.RemoveRect(p_scene, p_item);
+            mRoi.RemoveRect(p_scene, p_item);
         }
 
         // 楕円
-        if (p_scene->m_ellipse.m_isRegionFigure) 
+        if (mEllipse.m_isRegionFigure) 
         {
-            p_scene->m_ellipse.RemoveRect(p_scene, p_item);
+            mEllipse.RemoveRect(p_scene, p_item);
         }
     }
 }
@@ -491,15 +495,15 @@ void ImageView::mousePressEvent(QMouseEvent *event)
     auto mouseButton = event->button();
     if (mouseButton == Qt::MouseButton::LeftButton) 
     {
-        m_isMousePressLeft = true;
+        mIsMousePressLeft = true;
     }
     else if (mouseButton == Qt::MouseButton::RightButton) 
     {
-        m_isMousePressRight = true;
+        mIsMousePressRight = true;
     }
     else if (Qt::MouseButton::MiddleButton) 
     {
-        m_isMousePressMiddle = true;
+        mIsMousePressMiddle = true;
     }
     else 
     {
@@ -507,31 +511,31 @@ void ImageView::mousePressEvent(QMouseEvent *event)
     }
 
     // 十字線@Press
-    if (p_scene->m_crossLine.m_isCrossLine) 
+    if (mCrossLine.GetChecked()) 
     {
         DrawCrossLine(event->pos());
     }
 
     // プロファイル@Press
-    if (p_scene->m_profile.m_directX.m_isPathRed ||
-        p_scene->m_profile.m_directX.m_isPathGreen ||
-        p_scene->m_profile.m_directX.m_isPathBlue ||
-        p_scene->m_profile.m_directY.m_isPathRed ||
-        p_scene->m_profile.m_directY.m_isPathGreen ||
-        p_scene->m_profile.m_directY.m_isPathBlue) 
+    if (mProfile.m_directX.m_isPathRed ||
+        mProfile.m_directX.m_isPathGreen ||
+        mProfile.m_directX.m_isPathBlue ||
+        mProfile.m_directY.m_isPathRed ||
+        mProfile.m_directY.m_isPathGreen ||
+        mProfile.m_directY.m_isPathBlue) 
     {
         DrawProfile(event->pos(),
-                    p_scene->m_profile.m_directX.m_isPathRed,
-                    p_scene->m_profile.m_directX.m_isPathGreen,
-                    p_scene->m_profile.m_directX.m_isPathBlue,
-                    p_scene->m_profile.m_directY.m_isPathRed,
-                    p_scene->m_profile.m_directY.m_isPathGreen,
-                    p_scene->m_profile.m_directY.m_isPathBlue);
+                    mProfile.m_directX.m_isPathRed,
+                    mProfile.m_directX.m_isPathGreen,
+                    mProfile.m_directX.m_isPathBlue,
+                    mProfile.m_directY.m_isPathRed,
+                    mProfile.m_directY.m_isPathGreen,
+                    mProfile.m_directY.m_isPathBlue);
     }
 
     // 図形
-    if (p_scene->m_roi.m_isRegionFigure ||
-        p_scene->m_ellipse.m_isRegionFigure) 
+    if (mRoi.m_isRegionFigure ||
+        mEllipse.m_isRegionFigure) 
     {
         DrawFigure(event->pos(),
                    event->modifiers() & Qt::ControlModifier,
@@ -548,41 +552,41 @@ void ImageView::mouseMoveEvent(QMouseEvent *event)
     UpdateStatusBar(event->pos());
     auto p_scene = qobject_cast<ImageScene *>(this->scene());
 
-    if (m_isMousePressLeft || m_isMousePressMiddle || m_isMousePressRight) 
+    if (mIsMousePressLeft || mIsMousePressMiddle || mIsMousePressRight) 
     {
-        m_isMouseDrag = true;
+        mIsMouseDrag = true;
     }
     else 
     {
-        m_isMouseDrag = false;
+        mIsMouseDrag = false;
     }
 
     // 十字線@Press
-    if (p_scene->m_crossLine.m_isCrossLine)
+    if (mCrossLine.GetChecked())
     {
         DrawCrossLine(event->pos());
     }
 
     // プロファイル@Press
-    if (p_scene->m_profile.m_directX.m_isPathRed ||
-        p_scene->m_profile.m_directX.m_isPathGreen ||
-        p_scene->m_profile.m_directX.m_isPathBlue ||
-        p_scene->m_profile.m_directY.m_isPathRed ||
-        p_scene->m_profile.m_directY.m_isPathGreen ||
-        p_scene->m_profile.m_directY.m_isPathBlue) 
+    if (mProfile.m_directX.m_isPathRed ||
+        mProfile.m_directX.m_isPathGreen ||
+        mProfile.m_directX.m_isPathBlue ||
+        mProfile.m_directY.m_isPathRed ||
+        mProfile.m_directY.m_isPathGreen ||
+        mProfile.m_directY.m_isPathBlue) 
     {
         DrawProfile(event->pos(),
-                    p_scene->m_profile.m_directX.m_isPathRed,
-                    p_scene->m_profile.m_directX.m_isPathGreen,
-                    p_scene->m_profile.m_directX.m_isPathBlue,
-                    p_scene->m_profile.m_directY.m_isPathRed,
-                    p_scene->m_profile.m_directY.m_isPathGreen,
-                    p_scene->m_profile.m_directY.m_isPathBlue);
+                    mProfile.m_directX.m_isPathRed,
+                    mProfile.m_directX.m_isPathGreen,
+                    mProfile.m_directX.m_isPathBlue,
+                    mProfile.m_directY.m_isPathRed,
+                    mProfile.m_directY.m_isPathGreen,
+                    mProfile.m_directY.m_isPathBlue);
     }
 
     // 図形
-    if (p_scene->m_roi.m_isRegionFigure ||
-        p_scene->m_ellipse.m_isRegionFigure) 
+    if (mRoi.m_isRegionFigure ||
+        mEllipse.m_isRegionFigure) 
     {
         DrawFigure(event->pos(),
                 event->modifiers() & Qt::ControlModifier,
@@ -603,15 +607,15 @@ void ImageView::mouseReleaseEvent(QMouseEvent *event)
     auto mouseButton = event->button();
     if (mouseButton == Qt::MouseButton::LeftButton) 
     {
-        m_isMousePressLeft = false;
+        mIsMousePressLeft = false;
     }
     else if (mouseButton == Qt::MouseButton::RightButton)
     {
-        m_isMousePressRight = false;
+        mIsMousePressRight = false;
     }
     else if (Qt::MouseButton::MiddleButton) 
     {
-        m_isMousePressMiddle = false;
+        mIsMousePressMiddle = false;
     }
     else 
     {
@@ -619,15 +623,15 @@ void ImageView::mouseReleaseEvent(QMouseEvent *event)
     }
 
     // 図形
-    if (p_scene->m_roi.m_isRegionFigure ||
-        p_scene->m_ellipse.m_isRegionFigure) 
+    if (mRoi.m_isRegionFigure ||
+        mEllipse.m_isRegionFigure) 
     {
         DrawFigure(event->pos(),
                    event->modifiers() & Qt::ControlModifier,
                    event->modifiers() & Qt::ShiftModifier);
     }
 
-    m_isMouseDrag = false;
+    mIsMouseDrag = false;
 
     QGraphicsView::mouseReleaseEvent(event);
 }

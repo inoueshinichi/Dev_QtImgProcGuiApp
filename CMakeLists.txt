@@ -10,27 +10,14 @@ message(STATUS "CMake Ver: ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE
 message(STATUS "========== [END] Version Management ==========")
 
 ###############################################################################
-# 前処理
-###############################################################################
-message(STATUS "========== [START] Preprocessing ==========")
-
-find_program(PYTHON_INTERPRETER "python")
-if(NOT EXISTS ${PYTHON_INTERPRETER})
-    message(FATAL_ERROR "python [${PYTHON_INTERPRETER}] not found.")
-    error() # Place Unknown command to stop cmake process here.
-endif()
-message(STATUS "Python interpreter: ${PYTHON_INTERPRETER}")
-
-message(STATUS "========== [END] Preprocessing ==========")
-
-###############################################################################
 # 全ターゲットに影響を与えるオプション
 ###############################################################################
 message(STATUS "========== [START] C++ All Target Options ==========")
 
 # Switching Option
+option(BUILD_PYTHON_INTERPRETER "Enable/Disable: Python interpreter" OFF)
 option(BUILD_CPP_OPENMP "Enable/Disable: OpenMP" OFF)
-option(BUILD_CPP_TEST "Enable/Disable: Building Test" ON)
+option(BUILD_CPP_TEST "Enable/Disable: Building Test" OFF)
 option(BUILD_CPP_SHARED_LIBS "Enable/Disable: Shared Libraries" ON)
 option(BUILD_CPP_ZERO_CHECK "Enable/Disable: ZERO_CHECK" OFF)
 option(BUILD_CPP_MSVC_DEFAULT_LOCALE_UTF8 "Enable/Disable utf-8 default locale" OFF) # ANSI: ShiftJIS -> UTF8 @ Windows OS
@@ -80,9 +67,6 @@ if (MSVC)
         link_libraries(${OpenMP_LIBRARIES})
         add_compile_options("$<$<C_COMPILER_ID:MSVC>:/openmp>")
         add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/openmp>")
-        # set(CMAKE_C_FLAGS “${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}”)
-        # set(CMAKE_CXX_FLAGS “${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}”)
-        # add_compile_definitions(_OPENMP) # プリプロセッサーマクロ
     endif()
 
     # ソースコードでUTF-8を使う(MSVC)
@@ -128,9 +112,6 @@ elseif(APPLE)
         link_libraries(${OpenMP_LIBRARIES})
         add_compile_options("$<$<C_COMPILER_ID:GNU>:-fopenmp>")
         add_compile_options("$<$<CXX_COMPILER_ID:GNU>:-fopenmp>")
-        # set(CMAKE_C_FLAGS “${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}”)
-        # set(CMAKE_CXX_FLAGS “${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}”)
-        # add_compile_definitions(_OPENMP) # プリプロセッサーマクロ
     endif()
 
     # C++標準に準拠しない拡張機能を無効化
@@ -160,9 +141,6 @@ else()
         link_libraries(${OpenMP_LIBRARIES})
         add_compile_options("$<$<C_COMPILER_ID:GNU>:-fopenmp>")
         add_compile_options("$<$<CXX_COMPILER_ID:GNU>:-fopenmp>")
-        # set(CMAKE_C_FLAGS “${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}”)
-        # set(CMAKE_CXX_FLAGS “${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}”)
-        # add_compile_definitions(_OPENMP) # プリプロセッサーマクロ
     endif()
 
     # C++標準に準拠しない拡張機能を無効化
@@ -209,6 +187,22 @@ message(STATUS "CMAKE_CXX_FLAGS_MINSIZEREL: ${CMAKE_CXX_FLAGS_MINSIZEREL}")
 message(STATUS "CMAKE_CXX_FLAGS_RELWITHDEBINFO: ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
 
 message(STATUS "========== [END] C++ All Target Options ==========")
+
+###############################################################################
+# 前処理
+###############################################################################
+message(STATUS "========== [START] Preprocessing ==========")
+
+if(BUILD_PYTHON_INTERPRETER)
+    find_program(PYTHON_INTERPRETER "python3")
+    if(NOT EXISTS ${PYTHON_INTERPRETER})
+        message(FATAL_ERROR "python [${PYTHON_INTERPRETER}] not found.")
+        error() # Place Unknown command to stop cmake process here.
+    endif()
+    message(STATUS "Python interpreter: ${PYTHON_INTERPRETER}")
+endif()
+
+message(STATUS "========== [END] Preprocessing ==========")
 
 ###############################################################################
 # C++ core
