@@ -141,7 +141,7 @@ void MainWindow::HelperImgProc(const QString& process,
 
     auto tp_end = high_resolution_clock::now();
     auto duration = duration_cast<milliseconds>(tp_end - tp_start).count();
-    IS_DEBUG_STREAM("%s: %ld[ms]\n", process.toStdString().c_str(), duration);
+    IS_DEBUG_LOG("%s: %ld[ms]\n", process.toStdString().c_str(), duration);
 
     std::string status = is::common::format_string("%s: %ld[ms]", 
                                     process.toStdString().c_str(), duration);
@@ -179,13 +179,13 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *event)
         ppm(R/W), xbm(R/W), xpm(R/W) 
     */
 
-    IS_DEBUG_STREAM("dragEnterEvent\n");
+    IS_DEBUG_LOG("dragEnterEvent\n");
 
     // mimeDataの種類を調べてドラッグ受付許可
     if (event->mimeData()->hasUrls()) 
     {
         event->acceptProposedAction();
-        IS_DEBUG_STREAM("Accept Urls\n");
+        IS_DEBUG_LOG("Accept Urls\n");
     }
 
     QMainWindow::dragEnterEvent(event);
@@ -232,7 +232,7 @@ void MainWindow::dropEvent(QDropEvent *event)
             if (!url.isValid()) 
             {
                 auto qStr = url.toString();
-                IS_DEBUG_STREAM("Invalid URL. Given is %s\n", qStr.toStdString().c_str());
+                IS_DEBUG_LOG("Invalid URL. Given is %s\n", qStr.toStdString().c_str());
                 continue;
             }
 
@@ -240,10 +240,10 @@ void MainWindow::dropEvent(QDropEvent *event)
             if (url.isLocalFile()) 
             {
                 auto qStr = url.toString();
-                IS_DEBUG_STREAM("Recieve URL: %s\n", qStr.toStdString().c_str());
+                IS_DEBUG_LOG("Recieve URL: %s\n", qStr.toStdString().c_str());
 
                 auto localUrl = url.toLocalFile();
-                // IS_DEBUG_STREAM("Recieve local file: %s\n", localUrl.toStdString().c_str());
+                // IS_DEBUG_LOG("Recieve local file: %s\n", localUrl.toStdString().c_str());
 
                 // ImageWindowを生成
                 QImage img;
@@ -311,7 +311,7 @@ void MainWindow::SlotRmImgWin(ImageWindow *ptr)
     mStatusBarLabel->setText(QString::number(count));
     mUi->statusBar->addPermanentWidget(mStatusBarLabel);
 
-    IS_DEBUG_STREAM("Erase a image window. Given is %p.\n", (void *)ptr);
+    IS_DEBUG_LOG("Erase a image window. Given is %p.\n", (void *)ptr);
 
     if (mLastActiveImgWin == ptr) 
     {
@@ -367,7 +367,7 @@ void MainWindow::SlotActMenuBarFileOpen()
             auto tokens = path.split(tr("/"));
             QString filename = tokens[tokens.size() - 1];
 
-            IS_DEBUG_STREAM("%s\n", filename.toStdString().c_str());
+            IS_DEBUG_LOG("%s\n", filename.toStdString().c_str());
 
             std::string newFilename = GetNewSerialNo(filename.toStdString(),
                                                      currImgWinFilenames);
@@ -435,7 +435,7 @@ void MainWindow::SlotActMenuBarFileSave()
 
         if (!savepath.isNull()) 
         {
-          IS_DEBUG_STREAM("%s\n", savepath.toStdString().c_str());
+          IS_DEBUG_LOG("%s\n", savepath.toStdString().c_str());
           qimg.save(savepath);
         }
     }
@@ -455,10 +455,10 @@ void MainWindow::SlotActMenuBarFileSaveAs()
 {
    if (sender() == mLastActiveImgWin->Ui()->actionSaveAsCsv) 
    {
-      IS_DEBUG_STREAM("Save As Csv\n");
+      IS_DEBUG_LOG("Save As Csv\n");
    } else if (sender() == mLastActiveImgWin->Ui()->actionSaveAsTsv) 
    {
-      IS_DEBUG_STREAM("Save As Tsv\n");
+      IS_DEBUG_LOG("Save As Tsv\n");
    }
 }
 
@@ -504,12 +504,12 @@ void MainWindow::SlotActMenuBarEditRename()
 
     auto qname = mLastActiveImgWin->Filename();
     std::string name = qname.toStdString();
-    IS_DEBUG_STREAM("Before %s\n", name.c_str());
+    IS_DEBUG_LOG("Before %s\n", name.c_str());
     auto tokens = is::common::split_string(name, ".");
     QString filename = new_name + QString(".") + 
         QString::fromStdString(tokens[tokens.size() - 1]);
 
-    IS_DEBUG_STREAM("After %s\n", filename.toStdString().c_str());
+    IS_DEBUG_LOG("After %s\n", filename.toStdString().c_str());
     
     mLastActiveImgWin->SetFilename(filename);
 
@@ -841,23 +841,23 @@ void MainWindow::SlotActMenuBarImageColor()
     auto sender = this->sender();
     if (sender == mLastActiveImgWin->Ui()->actionRGBToGray) 
     {
-        IS_DEBUG_STREAM("RGB -> Gray\n");
+        IS_DEBUG_LOG("RGB -> Gray\n");
     }
     else if (sender == mLastActiveImgWin->Ui()->actionGrayToRGB) 
     {
-        IS_DEBUG_STREAM("Gray -> RGB\n");
+        IS_DEBUG_LOG("Gray -> RGB\n");
     }
     else if (sender == mLastActiveImgWin->Ui()->actionRGBToHSV) 
     {
-        IS_DEBUG_STREAM("RGB -> HSV\n");
+        IS_DEBUG_LOG("RGB -> HSV\n");
     }
     else if (sender == mLastActiveImgWin->Ui()->actionHSVToRGB) 
     {
-        IS_DEBUG_STREAM("HSV -> RGB\n");
+        IS_DEBUG_LOG("HSV -> RGB\n");
     }
     else if (sender == mLastActiveImgWin->Ui()->actionRGBToYUV) 
     {
-        IS_DEBUG_STREAM("RGB -> YUV\n");
+        IS_DEBUG_LOG("RGB -> YUV\n");
     }
     // else if (sender == mLastActiveImgWin->ui()->actionYUVToRGB) {
         
@@ -925,7 +925,7 @@ void MainWindow::SlotActMenuBarImageDuplicate()
 
     if (pos > 0) name = name.left(pos);
 
-    IS_DEBUG_STREAM("Duplicate %s.%s\n", 
+    IS_DEBUG_LOG("Duplicate %s.%s\n", 
                     name.toStdString().c_str(),
                     ext.toStdString().c_str());
 

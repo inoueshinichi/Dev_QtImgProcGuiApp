@@ -140,7 +140,7 @@ void ImageView::DrawProfile(const QPoint &viewPos,
         
         if (localRect.contains(localPos.toPoint())) 
         {
-            IS_DEBUG_STREAM("[Profile] Detect target item! LocalPos(%.1f, %.1f)\n", localPos.x(), localPos.y());
+            IS_DEBUG_LOG("[Profile] Detect target item! LocalPos(%.1f, %.1f)\n", localPos.x(), localPos.y());
 
             int profileY = (int)localPos.y();
             int profileX = (int)localPos.x();
@@ -414,7 +414,7 @@ void ImageView::DrawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSqua
                 qreal w, h;
                 w = mRect.width();
                 h = mRect.height();
-                IS_DEBUG_STREAM("w:%d, h:%d\n", (int)w, (int)h);
+                IS_DEBUG_LOG("w:%d, h:%d\n", (int)w, (int)h);
                 if (w > 2 && h > 2) 
                 {
                     mRoi.UpdateRect(p_scene, mRect); // 描画更新
@@ -435,7 +435,7 @@ void ImageView::DrawFigure(const QPoint &viewPos, bool isCenterDrag, bool isSqua
                 qreal w, h;
                 w = mRect.width();
                 h = mRect.height();
-                IS_DEBUG_STREAM("w:%d, h:%d\n", (int)w, (int)h);
+                IS_DEBUG_LOG("w:%d, h:%d\n", (int)w, (int)h);
                 if (w > 2 && h > 2) 
                 {
                     mEllipse.UpdateRect(p_scene, mRect); // 描画更新
@@ -507,7 +507,7 @@ void ImageView::mousePressEvent(QMouseEvent *event)
     }
     else 
     {
-        IS_DEBUG_STREAM("Unknown mouse button in mousePressEvent...\n");
+        IS_DEBUG_LOG("Unknown mouse button in mousePressEvent...\n");
     }
 
     // 十字線@Press
@@ -517,20 +517,20 @@ void ImageView::mousePressEvent(QMouseEvent *event)
     }
 
     // プロファイル@Press
-    if (mProfile.m_directX.m_isPathRed ||
-        mProfile.m_directX.m_isPathGreen ||
-        mProfile.m_directX.m_isPathBlue ||
-        mProfile.m_directY.m_isPathRed ||
-        mProfile.m_directY.m_isPathGreen ||
-        mProfile.m_directY.m_isPathBlue) 
+    if (mProfile.mDirectX.mIsPathRed ||
+        mProfile.mDirectX.mIsPathGreen ||
+        mProfile.mDirectX.mIsPathBlue ||
+        mProfile.mDirectY.mIsPathRed ||
+        mProfile.mDirectY.mIsPathGreen ||
+        mProfile.mDirectY.mIsPathBlue) 
     {
         DrawProfile(event->pos(),
-                    mProfile.m_directX.m_isPathRed,
-                    mProfile.m_directX.m_isPathGreen,
-                    mProfile.m_directX.m_isPathBlue,
-                    mProfile.m_directY.m_isPathRed,
-                    mProfile.m_directY.m_isPathGreen,
-                    mProfile.m_directY.m_isPathBlue);
+                    mProfile.mDirectX.mIsPathRed,
+                    mProfile.mDirectX.mIsPathGreen,
+                    mProfile.mDirectX.mIsPathBlue,
+                    mProfile.mDirectY.mIsPathRed,
+                    mProfile.mDirectY.mIsPathGreen,
+                    mProfile.mDirectY.mIsPathBlue);
     }
 
     // 図形
@@ -568,20 +568,20 @@ void ImageView::mouseMoveEvent(QMouseEvent *event)
     }
 
     // プロファイル@Press
-    if (mProfile.m_directX.m_isPathRed ||
-        mProfile.m_directX.m_isPathGreen ||
-        mProfile.m_directX.m_isPathBlue ||
-        mProfile.m_directY.m_isPathRed ||
-        mProfile.m_directY.m_isPathGreen ||
-        mProfile.m_directY.m_isPathBlue) 
+    if (mProfile.mDirectX.mIsPathRed ||
+        mProfile.mDirectX.mIsPathGreen ||
+        mProfile.mDirectX.mIsPathBlue ||
+        mProfile.mDirectY.mIsPathRed ||
+        mProfile.mDirectY.mIsPathGreen ||
+        mProfile.mDirectY.mIsPathBlue) 
     {
         DrawProfile(event->pos(),
-                    mProfile.m_directX.m_isPathRed,
-                    mProfile.m_directX.m_isPathGreen,
-                    mProfile.m_directX.m_isPathBlue,
-                    mProfile.m_directY.m_isPathRed,
-                    mProfile.m_directY.m_isPathGreen,
-                    mProfile.m_directY.m_isPathBlue);
+                    mProfile.mDirectX.mIsPathRed,
+                    mProfile.mDirectX.mIsPathGreen,
+                    mProfile.mDirectX.mIsPathBlue,
+                    mProfile.mDirectY.mIsPathRed,
+                    mProfile.mDirectY.mIsPathGreen,
+                    mProfile.mDirectY.mIsPathBlue);
     }
 
     // 図形
@@ -619,7 +619,7 @@ void ImageView::mouseReleaseEvent(QMouseEvent *event)
     }
     else 
     {
-        IS_DEBUG_STREAM("Unknown mouse button in mouseMoveEvent...\n");
+        IS_DEBUG_LOG("Unknown mouse button in mouseMoveEvent...\n");
     }
 
     // 図形
@@ -658,7 +658,7 @@ void ImageView::mouseDoubleClickEvent(QMouseEvent *event)
     }
     else 
     {
-        IS_DEBUG_STREAM("Unknown mouse button in mouseMoveEvent...\n");
+        IS_DEBUG_LOG("Unknown mouse button in mouseMoveEvent...\n");
     }
 
     QGraphicsView::mouseDoubleClickEvent(event);

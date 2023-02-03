@@ -1,7 +1,7 @@
 # Directories
 /build
 /.vscode
-/Dev_IsLibrary
+/Dev_IsLibrary-main
 # /Dev_IsLibrary/third-party/*.zip
 # /Dev_IsLibrary/third-party/eigen-3.3.7
 # /Dev_IsLibrary/third-party/opencv-4.5.3

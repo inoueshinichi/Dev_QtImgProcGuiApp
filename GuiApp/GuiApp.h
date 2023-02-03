@@ -1,16 +1,9 @@
 #pragma once
 
-// Common
-#include <IsCommon/IsCommon.hpp>
-#include <IsCommon/format_string.hpp>
-#include <IsCommon/join_string.hpp>
-#include <IsCommon/split_string.hpp>
-// #include <IsCommon/tm.hpp>
-#include <IsCommon/thread_pool.hpp>
-#include <IsCommon/singleton_manager.hpp>
+
 
 // ComputerVision
-// #include <IsComputerVision/IsComputerVision.hpp>
+#include <IsComputerVision/IsComputerVision.hpp>
 
 // Qt
 #include <Qt>

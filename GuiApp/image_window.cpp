@@ -33,7 +33,7 @@ ImageWindow::ImageWindow(QWidget *p_parent)
     : QMainWindow(p_parent)
     , mMainWindow(qobject_cast<MainWindow *>(p_parent))
     , mUi(new Ui::ImageWindow())
-    , mStatusBarLabel(new QLabel()) 
+    , mStatusBarLabel(new QLabel())
 {
     
     // ui
@@ -423,7 +423,7 @@ void ImageWindow::SlotResetDibImg(bool checked)
 {
     /* 原画像に戻す */
     ResetDibImg();
-    IS_DEBUG_STREAM("ImageWindow::slotResetDibImg\n");
+    IS_DEBUG_LOG("ImageWindow::slotResetDibImg\n");
 }
 
 
@@ -540,59 +540,59 @@ void ImageWindow::SlotStartCapture()
 {
     /* カメラキャプチャ開始 */
 
-    // // CameraController
-    // std::string maker = "general";
-    // std::string type = "usb";
-    // mCamCtrl.setCameraType(maker, type);
+    // CameraController
+    std::string maker = "general";
+    std::string type = "usb";
+    mCamCtrl.setCameraType(maker, type);
 
-    // if (mCamCtrl.startCamera(0, 0)) 
-    // {
-    //     // start worker-thread.
+    if (mCamCtrl.startCamera(0, 0)) 
+    {
+        // start worker-thread.
 
-    //     mCamWidth = mCamCtrl.width();
-    //     mCamHeight = mCamCtrl.height();
-    //     mCamChannels = mCamCtrl.channels();
-    //     mCamMemSizePerLine = mCamCtrl.memSizePerLine();
+        mCamWidth = mCamCtrl.width();
+        mCamHeight = mCamCtrl.height();
+        mCamChannels = mCamCtrl.channels();
+        mCamMemSizePerLine = mCamCtrl.memSizePerLine();
 
-    //     if (mCamChannels == 1) 
-    //     {
-    //         mCamFormat = QImage::Format_Grayscale8;
-    //     }
-    //     else if (mCamChannels == 3) 
-    //     {
-    //         mCamFormat = QImage::Format_RGB888;
-    //     }
-    //     else if (mCamChannels == 4) 
-    //     {
-    //         mCamFormat = QImage::Format_RGBA8888;
-    //     }
-    //     else 
-    //     {
-    //         IS_DEBUG_STREAM("No support camera format. Given channels is %d\n", mCamChannels);
-    //         mCamCtrl.stopCamera();
-    //         return;
-    //     }
+        if (mCamChannels == 1) 
+        {
+            mCamFormat = QImage::Format_Grayscale8;
+        }
+        else if (mCamChannels == 3) 
+        {
+            mCamFormat = QImage::Format_RGB888;
+        }
+        else if (mCamChannels == 4) 
+        {
+            mCamFormat = QImage::Format_RGBA8888;
+        }
+        else 
+        {
+            IS_DEBUG_LOG("No support camera format. Given channels is %d\n", mCamChannels);
+            mCamCtrl.stopCamera();
+            return;
+        }
 
-    //     // WindowTitle
-    //     std::string winTitle = is::common::format_string("%s_%s.bmp", maker.c_str(), type.c_str());
-    //     SetFilename(QString::fromStdString(winTitle));
+        // WindowTitle
+        std::string winTitle = is::common::format_string("%s_%s.bmp", maker.c_str(), type.c_str());
+        SetFilename(QString::fromStdString(winTitle));
 
-    //     // QTimer   
-    //     connect(mCamTimer, &QTimer::timeout, this, &ImageWindow::SlotTimerHandler);
-    //     mCamTimerId = mCamTimer->timerId();
+        // QTimer   
+        connect(mCamTimer, &QTimer::timeout, this, &ImageWindow::SlotTimerHandler);
+        mCamTimerId = mCamTimer->timerId();
 
-    //     // https://doc.qt.io/qt-5/qt.html#TimerType-enum
-    //     // Qt::TimerType
-    //     // 0 : Qt::PreciseTimer
-    //     // 1 : Qt::CoarseTimer
-    //     // 2 : Qt::VeryCoarseTimer
-    //     mCamTimerType = mCamTimer->timerType(); // default: Qt::CoarseTimer
-    //     IS_DEBUG_STREAM("TimerId: %d, TimerType: %d\n", mCamTimerId, mCamTimerType);
+        // https://doc.qt.io/qt-5/qt.html#TimerType-enum
+        // Qt::TimerType
+        // 0 : Qt::PreciseTimer
+        // 1 : Qt::CoarseTimer
+        // 2 : Qt::VeryCoarseTimer
+        mCamTimerType = mCamTimer->timerType(); // default: Qt::CoarseTimer
+        IS_DEBUG_LOG("TimerId: %d, TimerType: %d\n", mCamTimerId, mCamTimerType);
 
-    //     mCamTimer->start(30);
+        mCamTimer->start(30);
 
-    //     IS_DEBUG_STREAM("Start draw timer for camera frame.\n");
-    // }
+        IS_DEBUG_LOG("Start draw timer for camera frame.\n");
+    }
 }
 
 
@@ -600,16 +600,16 @@ void ImageWindow::SlotStopCapture()
 {
     /* カメラキャプチャ停止 */
 
-    // // QTimer
-    // if (mCamTimer->isActive()) 
-    // {
-    //     mCamTimer->stop();
-    //     disconnect(mCamTimer, &QTimer::timeout, this, &ImageWindow::SlotTimerHandler);
-    //     IS_DEBUG_STREAM("Stop draw timer for camera frame.\n");
-    // }
+    // QTimer
+    if (mCamTimer->isActive()) 
+    {
+        mCamTimer->stop();
+        disconnect(mCamTimer, &QTimer::timeout, this, &ImageWindow::SlotTimerHandler);
+        IS_DEBUG_LOG("Stop draw timer for camera frame.\n");
+    }
 
-    // // CameraController
-    // mCamCtrl.stopCamera();
+    // CameraController
+    mCamCtrl.stopCamera();
 }
 
 
@@ -617,15 +617,14 @@ void ImageWindow::SlotTimerHandler()
 {
     /* タイマーハンドラ */
 
-//     auto frameDesc = mCamCtrl.fetchFrame();
-//     auto& frame = std::get<0>(frameDesc);
-//     auto& fps = std::get<1>(frameDesc);
+    auto frameDesc = mCamCtrl.fetchFrame();
+    auto& frame = std::get<0>(frameDesc);
+    auto& fps = std::get<1>(frameDesc);
 
-//     // IS_DEBUG_STREAM("Timer handler: mem-size: %ld, fps: %f\n", 
-//     //     frame.size(), fps);
+    IS_DEBUG_LOG("Timer handler: mem-size: %ld, fps: %f\n", 
+        frame.size(), fps);
 
-//     QImage frameImg(frame.data(), mCamWidth, mCamHeight, 
-//                     (intC, mCamFormat);
+    QImage frameImg(frame.data(), mCamWidth, mCamHeight, mCamMemSizePerLine, mCamFormat);
 
-//    SetDibImg(frameImg, false, true);
+   SetDibImg(frameImg, false, true);
 }

@@ -65,15 +65,14 @@ class Direction
     QGraphicsPathItem* mItemPathGreen;
     QGraphicsPathItem* mItemPathBlue;
 
+public:
     bool mIsPathRed{false};
     bool mIsPathGreen{false};
     bool mIsPathBlue{false};
-    
+
     bool mIsAddedRed{false};
     bool mIsAddedGreen{false};
     bool mIsAddedBlue{false};
-
-public:
 
     Direction() 
     {
@@ -129,10 +128,10 @@ public:
 
 class Profile 
 {
+public:
     Direction mDirectX;
     Direction mDirectY;
 
-public:
     Direction& GetDirectionX() { return mDirectX; }
     Direction& GetDirectionY() { return mDirectY; }
 
@@ -220,7 +219,7 @@ public:
         int index = m_regionFigures.size();
         m_regionFigures.insert({index, p_item});
         scene->addItem(p_item);
-        IS_DEBUG_STREAM("New Rect[%d]: (%f, %f, %f, %f)\n",
+        IS_DEBUG_LOG("New Rect[%d]: (%f, %f, %f, %f)\n",
                      index, rect.x(), rect.y(), rect.width(), rect.height());
     }
 
@@ -229,7 +228,7 @@ public:
         int last = m_regionFigures.size() - 1;
         if (last < 0) return;
 
-        IS_DEBUG_STREAM("Update Rect[%d]: (%f, %f, %f, %f)\n",
+        IS_DEBUG_LOG("Update Rect[%d]: (%f, %f, %f, %f)\n",
                      last, rect.x(), rect.y(), rect.width(), rect.height());
 
         auto p_item = m_regionFigures[last];
@@ -246,7 +245,7 @@ public:
             scene->removeItem(p_item);
             delete p_item; p_item = nullptr;
             m_regionFigures.erase(index);
-            IS_DEBUG_STREAM("Rm Rect[%d]\n", index);
+            IS_DEBUG_LOG("Rm Rect[%d]\n", index);
         }
     }
 
@@ -262,7 +261,7 @@ public:
                 delete iter->second;
                 iter->second = nullptr;
                 iter = m_regionFigures.erase(iter);
-                IS_DEBUG_STREAM("Rm Rect[%d]\n", index);
+                IS_DEBUG_LOG("Rm Rect[%d]\n", index);
                 return;
             }
             else 

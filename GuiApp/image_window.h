@@ -17,8 +17,6 @@
 
 #include <QMainWindow>
 
-// #include <IsComputerVision/camera/camera_controller.hpp>
-
 
 #include <QEvent>
 #include <QString>
@@ -27,9 +25,12 @@
 
 #include <QImage>
 
+#include <IsComputerVision/camera/camera_controller.hpp>
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class ImageWindow; }
 QT_END_NAMESPACE
+
 
 
 class ImageWindow : public QMainWindow 
@@ -47,7 +48,7 @@ class ImageWindow : public QMainWindow
     class QTimer* mCamTimer;
     int mCamTimerId {0};
     Qt::TimerType mCamTimerType;
-    // is::cv::CameraController mCamCtrl;
+    is::cv::CameraController mCamCtrl;
     QImage::Format mCamFormat;
     int mCamWidth {0};
     int mCamHeight {0};

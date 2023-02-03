@@ -80,7 +80,7 @@ void FilterDialog::CustomConnection() {}
 //////////////////////////////////////////////////////////
 void FilterDialog::SlotAverageFilter() 
 {
-    IS_DEBUG_STREAM("SlotAverageFilter\n");
+    IS_DEBUG_LOG("SlotAverageFilter\n");
 
     // using namespace is::nbla;
     // using namespace is::imgproc;
