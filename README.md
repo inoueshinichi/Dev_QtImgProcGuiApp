@@ -1,5 +1,9 @@
 # GUI Application based on Qt with IsLibrary(NdArray base Image Processing Library)
 
+## WARNING
++ タスクブロックベースのGUIアプリケーションは別プログラムに記述しているのでストップ.
++ このプログラムとタスクブロックベースのプログラムを統合すべき.
+
 ## 背景
 + 自作ライブラリIsLibraryの実行環境が必要.
 + コンベンショナルな画像処理/3D処理技術をGUIで使用できる環境が必要
